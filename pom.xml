@@ -13,6 +13,7 @@
     <module>helloEsraa</module>
     <module>CompleteMessengerREST</module>
     <module>MessengerREST</module>
+    <module>MessangerCourse</module>
     </modules>
 
     <properties>
