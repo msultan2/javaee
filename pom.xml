@@ -12,7 +12,8 @@
         <module>simpleServlet</module>
     <module>helloEsraa</module>
     <module>CompleteMessengerREST</module>
-  </modules>
+    <module>MessengerREST</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
