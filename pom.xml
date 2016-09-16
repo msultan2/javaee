@@ -10,6 +10,7 @@
 
     <modules>
         <module>simpleServlet</module>
+    <module>helloEsraa</module>
   </modules>
 
     <properties>
