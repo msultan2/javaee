@@ -11,6 +11,7 @@
     <modules>
         <module>simpleServlet</module>
     <module>helloEsraa</module>
+    <module>CompleteMessengerREST</module>
   </modules>
 
     <properties>
