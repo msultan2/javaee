@@ -21,6 +21,7 @@
     <module>TestJunit</module>
     <module>WebServiceClientWSDL</module>
     <module>WebServiceGlassFish2</module>
+    <module>WebServiceServer</module>
   </modules>
 
     <properties>
