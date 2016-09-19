@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://Server3" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://Server3" xmlns:intf="http://Server3" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://Server3" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="getProductCaregories">
+    <complexType/>
+   </element>
+   <element name="getProductCaregoriesResponse">
+    <complexType>
+     <sequence>
+      <element name="getProductCaregoriesReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getProductCaregoriesResponse">
+
+      <wsdl:part element="impl:getProductCaregoriesResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProductCaregoriesRequest">
+
+      <wsdl:part element="impl:getProductCaregories" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="productCatalog">
+
+      <wsdl:operation name="getProductCaregories">
+
+         <wsdl:input message="impl:getProductCaregoriesRequest" name="getProductCaregoriesRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getProductCaregoriesResponse" name="getProductCaregoriesResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="productCatalogSoapBinding" type="impl:productCatalog">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getProductCaregories">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProductCaregoriesRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProductCaregoriesResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="productCatalogService">
+
+      <wsdl:port binding="impl:productCatalogSoapBinding" name="productCatalog">
+
+         <wsdlsoap:address location="http://localhost:7001/WebServiceWebLogic3/services/productCatalog"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
