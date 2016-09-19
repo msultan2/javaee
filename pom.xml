@@ -19,6 +19,7 @@
     <module>java_rest_assignment_master</module>
     <module>Testmart</module>
     <module>TestJunit</module>
+    <module>WebServiceClientWSDL</module>
   </modules>
 
     <properties>
