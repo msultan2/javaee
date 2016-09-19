@@ -25,6 +25,8 @@
     <module>WebServiceWebLogic2</module>
     <module>WebServiceWebLogic2Client</module>
     <module>WSDL</module>
+    <module>WebServiceWebLogic3</module>
+    <module>WebServiceWebLogic3Client</module>
   </modules>
 
     <properties>
