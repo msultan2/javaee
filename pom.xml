@@ -23,6 +23,8 @@
     <module>WebServiceGlassFish2</module>
     <module>WebServiceServer</module>
     <module>WebServiceWebLogic2</module>
+    <module>WebServiceWebLogic2Client</module>
+    <module>WSDL</module>
   </modules>
 
     <properties>
