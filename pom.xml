@@ -28,6 +28,7 @@
     <module>WebServiceWebLogic3</module>
     <module>WebServiceWebLogic3Client</module>
     <module>WebServiceWebLogic4</module>
+    <module>WebServiceWebLogic4Client</module>
   </modules>
 
     <properties>
