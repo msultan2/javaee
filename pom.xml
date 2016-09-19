@@ -20,6 +20,7 @@
     <module>Testmart</module>
     <module>TestJunit</module>
     <module>WebServiceClientWSDL</module>
+    <module>WebServiceGlassFish2</module>
   </modules>
 
     <properties>
