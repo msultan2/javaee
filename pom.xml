@@ -15,6 +15,7 @@
     <module>MessengerREST</module>
     <module>MessangerCourse</module>
     <module>HelloEsraaClient</module>
+    <module>WebServiceClient</module>
   </modules>
 
     <properties>
