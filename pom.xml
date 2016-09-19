@@ -14,7 +14,8 @@
     <module>CompleteMessengerREST</module>
     <module>MessengerREST</module>
     <module>MessangerCourse</module>
-    </modules>
+    <module>HelloEsraaClient</module>
+  </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
