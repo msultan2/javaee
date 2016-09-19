@@ -17,6 +17,7 @@
     <module>HelloEsraaClient</module>
     <module>WebServiceClient</module>
     <module>java_rest_assignment_master</module>
+    <module>Testmart</module>
   </modules>
 
     <properties>
