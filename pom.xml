@@ -30,7 +30,8 @@
     <module>WebServiceWebLogic4</module>
     <module>WebServiceWebLogic4Client</module>
     <module>HelloX</module>
-  </modules>
+    <module>730_rmas</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
