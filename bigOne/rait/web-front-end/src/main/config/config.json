@@ -1,0 +1,48 @@
+{
+    "application": {
+        "name": "Highways England Remote Access Interface Tester",
+        "brand": "RAIT"
+    },
+    "paths": {
+        "frontToBackEnd": "../",
+        "backEnd": {
+            "activity": "activity/",
+            "fileActivity": "fileActivity/",
+            "activityResult": "activityResult/",
+            "refreshToken": "refreshToken",
+            "staticData": "staticData",
+            "resetDevice": "resetDevice",
+            "verify": "verify",
+            "updateKey": "updateKey",
+            "downloadLogs": "downloadLogs",
+            "uploadFirmware": "uploadFirmware",
+            "upgradeFirmware": "upgradeFirmware",
+            "devices": "devices",
+            "removeOldSshPublicKeys": "removeOldSshPublicKeys",
+            "downgradeFirmware": "downgradeFirmware",
+            "rmasKeysOperations": "rmasKeys/",
+            "generateSshKeyPair": "generateKeyPair"
+        },
+        "frontEnd": {
+            "deviceDetails": "#/deviceDetails",
+            "sshKeys": "#/sshKeys"
+        }
+    },
+    "header": [{
+        }],
+    "time": {
+        "activityIdStartPollWaitTimeInMilliseconds": 500,
+        "activityIdPollWaitTimeInMilliseconds": 1000
+    },
+    "enabledActivities": {
+        "downloadLogs": true,
+        "uploadFirmware": true,
+        "upgradeFirmware": true,
+        "downgradeFirmware": true,
+        "updateKey": true,
+        "staticData": true,
+        "resetDevice": true,
+        "removeOldSshPublicKeys": true,
+        "verify": true
+    }
+}

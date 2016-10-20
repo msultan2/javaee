@@ -1,0 +1,215 @@
+---
+- name: Assure/Create directory {{ rmas_base }}/lock
+  file: path={{ rmas_base }}/lock state=directory mode=0775
+
+- name: Assure/Create directory {{ rmas_base }}/webapps
+  file: path={{ rmas_base }}/webapps state=directory mode=0775
+
+- name: Assures/Create directory {{ rmas_base }}/conf
+  file: path={{ rmas_base }}/conf state=directory mode=0775
+
+- name: Assures/Create directory {{ rmas_base }}/temp
+  file: path={{ rmas_base }}/temp state=directory mode=0775
+
+- name: Assures/Create directory {{ rmas_bin }}
+  file: path={{ rmas_bin }} state=directory mode=0775
+
+- name: Assures directory {{ rmas_logs }}
+  stat: path={{ rmas_logs }}
+  register: rmas_logs_reg
+  failed_when: rmas_logs_reg is not defined or rmas_logs_reg.stat is not defined or not rmas_logs_reg.stat.isdir or not rmas_logs_reg.stat.wusr
+
+- name: Check if rmas service exists
+  stat: path={{ service_folder }}/rmas.service
+  register: rmas_service
+
+- name: Debug create rmas service
+  debug: msg="Service rmas does not exist, creating from the tomcat service"
+  when: not rmas_service.stat.exists
+
+- name: Create rmas service
+  shell: cp {{ service_folder }}/tomcat.service {{ service_folder }}/rmas.service && chmod 755 {{ service_folder }}/rmas.service
+  when: not rmas_service.stat.exists
+  notify:
+    - enable rmas
+    - reload rmas
+
+- name: Modify pid location
+  replace: dest="{{ service_folder }}/rmas.service"
+           regexp="CATALINA_PID=.+"
+           replace="CATALINA_PID={{ rmas_base }}/lock/rmas.pid"
+  notify:
+    - restart rmas
+    - reload rmas
+
+- name: Modify tomcat base to rmas
+  replace: dest="{{ service_folder }}/rmas.service"
+           regexp="CATALINA_BASE=.+"
+           replace="CATALINA_BASE={{ rmas_base }}"
+  notify:
+    - restart rmas
+    - reload rmas
+
+- name: Modify catalina opts
+  replace: dest="{{ service_folder }}/rmas.service"
+           regexp="'CATALINA_OPTS=.+"
+           replace="'CATALINA_OPTS=-Xmx6G'"
+  notify:
+    - restart rmas
+    - reload rmas
+
+- name: Modify catalina opts
+  replace: dest="{{ service_folder }}/rmas.service"
+           regexp="ExecStart=.+"
+           replace="ExecStart=/opt/rmas/bin/startup.sh"
+  notify:
+    - restart rmas
+    - reload rmas
+
+- name: Add catalina out
+  lineinfile: dest="{{ service_folder }}/rmas.service"
+              insertafter="Environment='JAVA_OPTS.+"
+              line="Environment='CATALINA_OUT={{ rmas_logs }}/catalina.out'"
+  notify:
+    - restart rmas
+    - reload rmas
+
+- name: Modify user
+  replace: dest="{{ service_folder }}/rmas.service"
+           regexp="User=.+"
+           replace="User={{ rmas_user }}"
+  notify:
+    - restart rmas
+    - reload rmas
+
+- name: Modify group
+  replace: dest="{{ service_folder }}/rmas.service"
+           regexp="Group=.+"
+           replace="#Group={{ rmas_user }}"
+  notify:
+    - restart rmas
+    - reload rmas
+
+- name: Assures {{ recordconfig_folder }} dir exists or create one
+  file: path={{ recordconfig_folder }} state=directory
+
+- name: Check md5 sum of {{ tomcat_conf }} directory
+  shell: cat {{ tomcat_conf }}/* | md5sum
+  changed_when: false
+  register: check_original_config_md5
+
+- name: Version of original configuration md5
+  debug: msg='{{ check_original_config_md5.stdout }}'
+
+- name: Check md5 sum of {{ recordconfig_folder }} directory
+  shell: cat {{ recordconfig_folder }}/* | md5sum
+  changed_when: false
+  register: check_recorded_config_md5
+
+- name: Version of record configuration md5
+  debug: msg='{{ check_recorded_config_md5.stdout }}'
+
+- name: Copies {{ tomcat_conf }} to {{ rmas_base }} only if md5 does not match
+  shell: cp -rf {{ tomcat_conf }}/* {{ rmas_base }}/conf
+  when: check_original_config_md5.stdout != check_recorded_config_md5.stdout
+  notify: restart rmas
+
+- name: Copies {{ tomcat_conf }} to {{ recordconfig_folder }} only if md5 are not equal
+  shell: cp -rf {{ tomcat_conf }}/* {{ recordconfig_folder }}
+  when: check_original_config_md5.stdout != check_recorded_config_md5.stdout
+
+- name: Update configrations if md5 do not match.
+  debug: msg='The configuration in {{ rmas_base }}/conf was refreshed from {{ tomcat_conf }}'
+  when: check_original_config_md5.stdout != check_recorded_config_md5.stdout
+
+- name: Disable port 8080
+  replace: dest={{ rmas_base }}/conf/server.xml
+           regexp='(^\s*<Connector port="8080" [\s\S]*?/>)'
+           replace='<!-- \1 -->'
+           backup=yes
+
+- name: Configure port 8009
+  replace: dest={{ rmas_base }}/conf/server.xml
+           regexp='port="8009"\sprotocol'
+           replace='address="127.0.0.1" port="8009" maxThreads="512" minSpareThreads="50" maxSpareThreads="150" enableLookups="false" protocol'
+           backup=yes
+
+- name: Set log output
+  replace: dest={{ rmas_base }}/conf/server.xml
+           regexp='directory="logs"'
+           replace='directory="{{ rmas_logs }}"'
+           backup=yes
+
+- name: Add tomcat manager role
+  lineinfile: dest={{ rmas_base }}/conf/tomcat-users.xml
+              insertbefore='</tomcat-users>'
+              line='<role rolename="manager"/>'
+
+- name: Add tomcat rmas role
+  lineinfile: dest={{ rmas_base }}/conf/tomcat-users.xml
+              insertbefore='</tomcat-users>'
+              line='<role rolename="rmasuser"/>'
+
+- name: Add tomcat admin user
+  lineinfile: dest={{ rmas_base }}/conf/tomcat-users.xml
+              insertbefore='</tomcat-users>'
+              line='<user username="admin" password="ssl1324" roles="manager"/>'
+
+- name: Add tomcat rmas user
+  lineinfile: dest={{ rmas_base }}/conf/tomcat-users.xml
+              insertbefore='</tomcat-users>'
+              line='<user username="rmasuser" password="ssl1324" roles="rmasuser"/>'
+
+- name: Set tomcat log output
+  replace: dest={{ rmas_base }}/conf/logging.properties
+           regexp='\${catalina.base}/logs'
+           replace='{{ rmas_logs }}'
+           backup=yes
+
+- name: Copies {{ tomcat_bin }} to {{ rmas_bin }}
+  shell: cp -rf {{ tomcat_bin }}/* {{ rmas_bin }}
+
+- name: Detect the version of the Core to symlink
+  delegate_to: 127.0.0.1
+  always_run: yes
+  changed_when: false
+  shell: "basename `ls site-deploy/target/deployment-artifact/test-site-issue/730_rmas-webapp-core-*-${servertype}.war`"
+  register: core_version_result
+
+- name: Core Version
+  debug: msg={{ core_version_result.stdout }}
+
+- name: Detect the version of the Web to symlink
+  delegate_to: 127.0.0.1
+  always_run: yes
+  changed_when: false
+  shell: "basename `ls site-deploy/target/deployment-artifact/test-site-issue/730_rmas-webapp-[!core]*.war`"
+  register: web_version_result
+
+- name: Web version
+  debug: msg={{ web_version_result.stdout }}
+
+- name: Move Web ${servertype} to webapps directory of rmas
+  copy:
+   src: "../../../{{ web_version_result.stdout }}"
+   dest: "{{ rmas_base }}/webapps/ROOT.war"
+   mode: 0755
+  notify: restart rmas
+
+- name: Move core ${servertype} to webapps directory as core
+  copy:
+   src: "../../../{{ core_version_result.stdout }}"
+   dest: "{{ rmas_base }}/webapps/rmas-core.war"
+   mode: 0755
+  notify: restart rmas
+
+- name: Move delete old log files script to bin directory
+  copy:
+   src: "../../../delete-old-logs.sh"
+   dest: "{{ rmas_base }}/bin/delete-old-logs.sh"
+   mode: 0755
+  notify: restart rmas
+
+- name: Delete old log archives every day at 5:00
+  shell: "(sudo crontab -l -u rmas | grep -v \"delete-old-logs.sh\" ; echo \"0 5 * * * {{ rmas_base }}/bin/delete-old-logs.sh\") | sudo crontab -u rmas -"
+

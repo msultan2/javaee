@@ -1,0 +1,57 @@
+<div class="container-fluid full-width">
+    <div class="page-header" >
+        <h1>Device List</h1>
+    </div>
+    <form class="form">
+        <device-filter config="config.deviceFilterDirective" filters="devices.filters"></device-filter>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-warning btn-sm pull-right  margin-space-right" type="submit" ng-click="reset()">Reset</button>
+                <button class="btn btn-primary btn-sm pull-right  margin-space-right" type="submit" ng-click="getDeviceList()">Search</button>
+                <button class="btn btn-primary btn-sm pull-right  margin-space-right" type="submit" ng-click="addFilterRow()"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+        </div>
+    </form>
+    <div class="panel panel-default">
+        <div class="panel-body">
+        <a class="btn btn-primary btn-sm pull-right margin-space-right" role="button" ng-href="{{deviceEnrolmentPath}}">Add device</a>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>IP address</th>
+                            <th>Status</th>
+                            <th>Device list</th>
+                            <th class="hidden-xs">HE geographic address</th>
+                            <th class="hidden-xs hidden-sm">RCC</th>
+                            <th class="hidden-xs hidden-sm hidden-md">Manufacturer</th>
+                            <th class="hidden-xs hidden-sm hidden-md">Firmware version</th>
+                            <th class="hidden-xs hidden-sm hidden-md">Maintenance region</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="device in devices.list">
+                            <td><a ng-href="{{deviceOperationPath}}/{{device.ipAddress}}">{{device.ipAddress}}</a></td>
+                            <td>{{device.status}}</td>
+                            <td><span ng-repeat="(key, value) in device.deviceList">
+                                    <span ng-if="$index > 0">, </span>{{ key }}</span>
+                            </td>
+                            <td class="hidden-xs">{{device.haGeographicAddress}}</td>
+                            <td class="hidden-xs hidden-sm">{{device.rccRegion}}</td>
+                            <td class="hidden-xs hidden-sm hidden-md">{{device.manufacturer}}</td>
+                            <td class="hidden-xs hidden-sm hidden-md">{{device.firmwareVersion}}</td>
+                            <td class="hidden-xs hidden-sm hidden-md">{{device.maintenanceContractRegion}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot ng-show="devices.maxReached" class="text-center">
+                        <tr>
+                            <td colspan="6">{{devices.maxReachedMessage|errorMessageFilter}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>

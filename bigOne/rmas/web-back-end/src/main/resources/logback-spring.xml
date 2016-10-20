@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    
+    <property name="RMAS_AUDIT_FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } user:%X{userId} activityId:%X{activityId} device:%X{device} --- [%t] %logger: %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    
+    <appender name="AUDIT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/logs/rmas/audit.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>audit.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${RMAS_AUDIT_FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    
+    <logger name="Audit">
+        <level value="info"/>
+        <appender-ref ref="AUDIT_FILE"/>
+    </logger>
+    
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/logs/rmas/rmas.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>rmas.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    
+    <logger name="com.ssl.rmas">
+		<level value="debug" />
+	</logger>
+
+<!-- 	<logger name="org.springframework.security"> -->
+<!-- 		<level value="debug" /> -->
+<!-- 	</logger> -->
+	
+<!--     <logger name="org.springframework.integration"> -->
+<!--         <level value="debug" /> -->
+<!--     </logger> -->
+
+<!--     <logger name="org.springframework.web"> -->
+<!--         <level value="debug" /> -->
+<!--     </logger> -->
+
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+        <appender-ref ref="CONSOLE" />
+	</root>
+	
+</configuration>

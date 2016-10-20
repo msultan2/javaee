@@ -1,0 +1,29 @@
+<div class="container-fluid">
+    <div class="page-header" >
+        <h1>SSH Key</h1>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 col-centered">
+            <div class="panel panel-default">                
+                <div class="panel-body">
+                    <div class="row" ng-show="sshKeyPaths">
+                        <label>Private key:&nbsp;</label> 
+                        <span>{{sshKeyPaths.private}}</span>
+                    </div>
+                    <div class="row" ng-show="sshKeyPaths">
+                        <label>Public key:&nbsp;</label> 
+                        <span>{{sshKeyPaths.public}}</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="btn-toolbar text-center">
+                            <button class="btn btn-primary" ng-click="generate()" ng-disabled="state.generating">
+                                <span ng-hide="state.generating">Generate new SSH key pair</span>
+                                <span ng-show="state.generating">Generating...<i class="glyphicon glyphicon-refresh glyphicon-spin"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

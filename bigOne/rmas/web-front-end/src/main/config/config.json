@@ -1,0 +1,72 @@
+{
+    "application": {
+        "name": "Highways England Remote Maintenance Access Service",
+        "brand": "RMAS"
+    },
+    "paths": {
+        "frontToBackEnd": "../rmas-core/",        
+        "backEnd": {
+            "activity": "activity/",
+            "fileActivity": "fileActivity/",
+            "activityResult": "activityResult/",
+            "refreshToken": "refreshToken",
+            "staticData": "staticData",
+            "resetDevice": "resetDevice",
+            "verify": "verify",
+            "removeOldSshPublicKeys": "removeOldSshPublicKeys",
+            "downloadLogs": "downloadLogs",
+            "userRegistrations": "userRegistrations",
+            "userRegistrationRequests": "userRegistrations/search/findUsersPendingRequests",
+            "allHEApprovers": "users/search/findAllHEApprovers",
+            "users": "users/",
+            "updateUserDetails": "users/updateUserDetails",
+            "userDetails": "users/search/findOwnUserProfile",
+            "user2faEnabled": "users/search/findOwn2faStatus",
+            "resetPassword": "resetPassword",
+            "changePassword": "users/changePassword",
+            "login": "login",
+            "devices": "devices",
+            "rmasKeysOperations": "rmasKeys/",
+            "currentPublicKey": "search/findCurrentPublicKey",
+            "generateSshKeyPair": "generateKeyPair",
+            "filteredDevices": "devices/search/findFilteredDevices",
+            "accountClassificationNames": "accountClassifications/search/findAllNames",
+            "userGroups": "userGroups",
+            "logArchive": "/logArchive",
+            "rccs": "rccs",
+            "twoFactorAuthenticationGenSecret": "twoFactorAuthentication/generateSecret",
+            "twoFactorAuthenticationVerify": "twoFactorAuthentication/verifySecret",
+            "insertDevice": "devices/insert"
+        },
+        "frontEnd": {
+            "requestResetPassword": "/#/requestResetPassword",
+            "deviceOperation": "/#/deviceOperation",
+            "registration": "/#/registration",
+            "profile": "/#/profile",
+            "changePassword": "/#/changePassword",
+            "devices": "#/devices",
+            "userRegistrationRequests": "#/pendingUserRegistrationRequests",
+            "userRegistrationRequestDetail": "#/pendingUserRegistrationRequestDetail",
+            "userGroups": "#/userGroups",
+            "sshKeys": "#/sshKeys",
+            "setup2fa": "#/setup2fa",
+            "deviceEnrolment": "#/devices/deviceEnrolment"
+        }
+    },
+    "time": {
+        "activityIdStartPollWaitTimeInMilliseconds": 500,
+        "activityIdPollWaitTimeInMilliseconds": 1000,
+        "cacheTimeoutInMinutes": 5
+    },
+    "enabledActivities": {
+        "downloadLogs": true,
+        "uploadFirmware": false,
+        "upgradeFirmware": false,
+        "downgradeFirmware": false,
+        "updateKey": false,
+        "staticData": true,
+        "verify": true,
+        "removeOldSshPublicKeys": true,
+        "resetDevice": true
+    }
+}

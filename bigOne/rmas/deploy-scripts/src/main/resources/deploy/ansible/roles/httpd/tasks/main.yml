@@ -1,0 +1,5 @@
+---
+- name: Create/Modify Apache proxy file - /opt/httpd24/conf/extra/rmas_proxy_ajp.conf
+  template: src="../../proxy/rmas_proxy_ajp.conf"
+                   dest="/etc/httpd/conf.d/rmas_proxy_ajp.conf"
+  notify: reload httpd

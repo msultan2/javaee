@@ -1,0 +1,33 @@
+<form role="form" ng-submit="ok()">
+    <div class="container-fluid">
+        <div class="modal-header">
+            <h1 class="modal-title">Download Logs</h1>
+        </div>
+        <div class="modal-body" ng-show="message.level !== 'error'">
+            <div class="row" ng-show="!downloading">
+                <div class="col-md-6">
+                    <label>Start date</label>
+                    <date-picker ng-model="startDate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-readonly="true"></date-picker>
+                </div>
+                <div class="col-md-6">
+                    <label>End date</label>
+                    <date-picker ng-model="endDate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-readonly="true"></date-picker>
+                </div>
+            </div>
+            <div ng-show="downloading" >
+                <div class="row">
+                    <label>Status:&nbsp;</label> {{results.status || "Downloading.."}}
+                </div>
+                <div error-message-directive></div>
+                <div class="row" ng-show="results && (results.status === 'SUCCESS' || results.status === 'PARTIAL_SUCCESS')">
+                    <span><a ng-controller="saveZipController" ng-click="getZipFile()" href="" oncontextmenu="return false;">Download</a> the archive</span>
+                </div>
+            </div>
+        </div>
+        <div ng-show="message.level === 'error'" class="alert alert-danger">{{message.text| errorMessageFilter}}</div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-show="!downloading && message.level !== 'error'" type="button" ng-click="download()">Download</button>
+            <modal-result-footer/>
+        </div>
+    </div>
+</form>

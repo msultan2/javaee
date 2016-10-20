@@ -1,0 +1,8 @@
+---
+rmas_user: ${rmas_user}
+mongodb_port: ${mongodb_port}
+mongodb_db_name: ${mongodb_db_name}
+mongodb_auth_db: ${mongodb_auth_db}
+mongodb_user_site: ${mongodb_user_site}
+mongodb_user_site_pass: ${mongodb_user_site_pass}
+

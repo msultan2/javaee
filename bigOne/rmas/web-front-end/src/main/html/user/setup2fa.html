@@ -1,0 +1,40 @@
+<div class="container-fluid full-width">
+	<div ng-show="messageLevel === 'success'" class="alert alert-success">{{message}}</div>
+	<div ng-show="messageLevel === 'error'" class="alert alert-danger">{{message}}</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-9 col-md-7 col-lg-6 col-centered">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>Two Factor Authentication</h1>
+				</div>
+				<div class="panel-body">
+				    <div class="row col-xs-12">
+					    <p>
+                            Two factor authentication: <span ng-if="user.twoFactorAuthentication.enabled">enabled</span><span ng-if="!(user.twoFactorAuthentication.enabled)">disabled</span>
+                        </p>
+					</div>
+					<div class="row col-xs-12" ng-show="angular.isUndefined(user.newTwoFactorAuthentication.url) && !(user.twoFactorAuthentication.enabled)">
+                        <p>Here you can set up two factor authentication. Once you have set this up you will be required to use your authenticator on all subsequent logins.</p>
+						<button type="button" class="btn btn-primary" ng-click="generateNewToken()" ng-disabled="generatingToken">Generate new token</button>
+					</div>
+					<div class="row col-xs-12" ng-if="angular.isDefined(user.newTwoFactorAuthentication.url)">
+				        <qrcode version="10" error-correction-level="M" data="{{user.newTwoFactorAuthentication.url}}"></qrcode>
+                        <p>Please use your authenticator app  (e.g. Google Authenticator) on your smart phone or tablet to scan this QR Code or enter the code '{{user.newTwoFactorAuthentication.secret}}' in to your app manually.</p>
+                        <p>Please insert the code from your app to verify your new two factor authentication configuration</p>
+                        <form name="verifyTokenForm" class="css-form" novalidate>
+                            <div class="row col-xs-8 col-sm-4">
+                                <div class="form-group">
+                                    <label for="twoFactorVerify">Verification code</label>
+                                    <input min="0" max="999999" class="form-control" type="number" id="twoFactorVerify" ng-model="user.newTwoFactorAuthentication.verificationCode" placeholder="000000" required integer/>
+                                </div>
+                            </div>
+                            <div class="row col-xs-12">
+                                <button type="submit" class="btn btn-primary" ng-click="verifyTokenAndCode()" ng-disabled="verifyTokenForm.$pristine || verifyTokenForm.$invalid">Verify new token</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

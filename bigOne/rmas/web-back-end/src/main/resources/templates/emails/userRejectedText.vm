@@ -1,0 +1,13 @@
+Hello ${userName}
+
+#if(!$rejectReason)
+    Your application to the RMAS system has been rejected.
+    Please contact with your project sponsor for more details.
+#else
+    Your application to RMAS system has been rejected for the following reason: 
+    "${rejectReason}"
+#end
+
+Thank you.
+
+The RMAS team

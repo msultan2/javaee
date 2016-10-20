@@ -1,0 +1,29 @@
+<div class="container-fluid">
+    <div class="page-header" >
+        <h1>Pending User Registration Requests</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Employer</th>
+                        <th class="hidden-xs">RCC</th>
+                        <th class="hidden-xs hidden-sm">Maintenance region</th>
+                        <th class="hidden-xs hidden-sm hidden-md">Access required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="request in userRegistrationRequests.list">
+                        <td><a ng-href="{{pendingUserRegistrationPath}}/{{request.id}}">{{request.name}}</a></td>
+                        <td>{{request.employer}}</td>
+                        <td class="hidden-xs">{{request.rcc}}</td>
+                        <td class="hidden-xs hidden-sm">{{request.mcr}}</td>
+                        <td class="hidden-xs hidden-sm hidden-md">{{request.accessRequired}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
