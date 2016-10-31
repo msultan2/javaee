@@ -1,0 +1,775 @@
+.datatable-buttons {
+    text-align:right;
+}
+
+.column-selection-dialog div {
+    float:left;
+    width:280px;
+}
+.column-selection-dialog div label{
+    display:inline-block;
+    width:260px;
+    font-size:8pt;
+    border-bottom:1px dashed #aaa;
+    margin-bottom: 3px;
+    margin-left:20px;
+}
+
+.column-selection-dialog div input{
+    display:inline-block;
+}
+
+
+
+.filters div {
+    float:left;
+    margin-bottom:5px;
+}
+.filters div label.auto-width {
+    width:auto;
+}
+.filters h2 {
+    border-bottom: 1px dashed #aaa;
+}
+.string-filter-section {
+    width:100%;
+    clear:both;
+}
+.numeric-filter-section {
+    width:100%;
+    clear:both;
+}
+.enum-filter-section {
+    width:100%;
+    clear:both;
+}
+.date-filter-section {
+    width:100%;
+    clear:both;
+}
+.date-filter-section div{
+    width:650px;
+    clear:both;
+}
+.boolean-filter-section{
+    width:100%;
+}
+.filters div label {
+    font-size:8pt;
+    float:left;
+    width:160px;
+    margin-top:5px;
+    text-align:right;
+}
+.filters div input.datatable-column-filter-string {
+    float:left;
+    width:130px;
+    margin-left:5px;
+    text-align:center;
+}
+.filters div input.datatable-column-filter-numeric-min {
+    float:left;
+    width:130px;
+    margin-left:5px;
+    text-align:center;
+}
+.filters div input.datatable-column-filter-numeric-max {
+    float:left;
+    width:130px;
+    margin-left:5px;
+    text-align:center;
+}
+.filters div input.datatable-column-filter-time-min {
+    float:left;
+    width:130px;
+    margin-left:5px;
+    text-align:center;
+    font-size: 0.9em;
+}
+.filters div input.datatable-column-filter-time-max {
+    float:left;
+    width:130px;
+    margin-left:5px;
+    text-align:center;
+    font-size: 0.9em;
+}
+.filters div input.datatable-column-filter-date-min {
+    float:left;
+    width:130px;
+    margin-left:5px;
+    text-align:center;
+    font-size: 0.9em;
+}
+.filters div input.datatable-column-filter-date-max {
+    float:left;
+    width:130px;
+    margin-left:5px;
+    text-align:center;
+    font-size: 0.9em;
+}
+.filters div input.datatable-column-filter-enum {
+    float:left;
+    width:400px;
+    margin-left:5px;
+    text-align:center;
+}
+.filters div input.datatable-column-filter-boolean {
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+}
+.filters div input.datatable-column-filter-and {
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+}
+.filters div input.datatable-column-filter-or {
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+}
+.enum-selection-dialog div {
+    float:left;
+}
+.enum-selection-dialog div label{
+    float:left;
+    width:340px;
+    font-size:8pt;
+    border-bottom:1px dashed #aaa;
+    margin-bottom: 3px;
+    margin-left:20px;
+}
+.enum-selection-dialog div input{
+    float:left;
+}
+
+
+
+
+
+/* GENERIC SELECTORS START */
+html {
+
+}
+body {	
+    /* font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", "sans-serif"; */
+    font-family: "Helvetica","Arial", "Verdana", "sans-serif";
+    font-size: 0.7em;
+    color: #444;
+}
+h1 {
+    clear: both;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    padding: 4px;
+    font-size: 1.2em;
+}
+h2 {
+    padding: 4px;
+    margin-left: 10px;
+    margin-bottom: 5px;
+}
+p {
+    margin-left: 50px;
+    margin-bottom: 10px;
+}
+label {
+    display: block;
+}
+textarea {
+    width:100%;
+    height:100px;
+    margin-bottom: 10px;
+}
+a:link {
+    color: #666;
+}
+a:visited {
+    color: #666;
+}
+a:hover {
+    color: #666;
+}
+a:active {
+    color: #666;
+}
+/* GENERIC SELECTORS END */
+
+/* GENERAL START */
+#dialog-container {
+    display:none;
+}
+.buttons {
+    margin:10px;
+    float:right;
+}
+p.error {
+    margin-left: 0px;
+    padding:2px;
+    border: 2px solid #F00;
+    background-color: #FFD6D3;
+}
+/* GENERAL END */
+
+/* BUG FIXES START */
+hr.hr-clear-float {
+    display:block;
+    clear:left;
+    visibility: hidden;
+}
+/* BUG FIXES END */
+
+/* BANNER START */
+#banner {
+    background-color: #fff;
+    border-bottom: 5px solid #aaa;
+    padding:5px;
+}
+#banner h1 {
+    font-size: 1.8em;
+    margin:0px;
+}
+#banner h2 {
+    display: inline;
+}
+#branding-image {
+
+}
+#user-links {
+    display: inline;
+    margin-left:20px;
+}
+#min-width-div {
+    width: 800px;
+    height: 1px;
+}
+/* BANNER END */
+
+/* FOOTER START */
+#footer {
+
+}
+/* FOOTER END */
+
+/* LINKS START */
+#links {
+    margin-bottom: 20px;
+}
+#common-links {
+    margin: 0px;
+    border-top: none;
+}
+#common-links .ui-button{
+    border-top: none;
+}
+/* LINKS END */
+
+/* JEDITABLE START */
+form.jeditable label {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+form.jeditable input {
+    width:300px;
+    margin-bottom: 10px;
+}
+form.jeditable select {
+    width:300px;
+    margin-bottom: 10px;
+}
+form.jeditable label.error {
+    display: inline-block;
+    color: #F00;
+    margin-left: 10px;
+}
+form.jeditable input.error {
+    border-color: #F00;
+    background-color: #FFD6D3;
+}
+form.jeditable select.error {
+    border-color: #F00;
+    background-color: #FFD6D3;
+}
+form.jeditable textarea.error {
+    border-color: #F00;
+    background-color: #FFD6D3;
+}
+/* JEDITABLE END */
+
+/* CONFIGURATION EDIT START */
+.configuration-group {
+    border: 1px dashed #bbb;
+    padding:10px;
+    margin: 10px;
+    background-color: #eee;
+}
+
+#configuration-form div.configuration-group h2 {
+    font-weight: bold;
+    border-bottom: 1px dashed #bbb;
+    padding:3px;
+}
+#configuration-form div.configuration-group div.configuration {
+    width: 800px;
+    display: inline-block;   
+}
+#configuration-form div.configuration-group div.configuration label {
+    width: 200px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 5px;
+}
+#configuration-form div.configuration-group div.configuration label.error {
+    display: inline;
+    color:#f00;
+    margin-left: 5px;
+}
+#configuration-form div.configuration-group div.configuration input {
+    width: 400px;
+    display: inline-block;
+}
+#configuration-form div.configuration-group div.configuration input.datetimepicker {
+    width: 150px;
+    text-align: center;
+    display: inline-block;
+}
+#configuration-form div.configuration-group div.configuration input.timepicker {
+    width: 100px;
+    text-align: center;
+    display: inline-block;
+}
+#configuration-form div.configuration-group div.configuration input.datepicker {
+    width: 150px;
+    text-align: center;
+    display: inline-block;
+}
+#configuration-form div.configuration-group div.configuration input.digits {
+    width: 100px;
+    display: inline-block;
+}
+#configuration-form div.configuration-group div.configuration input.number {
+    width: 100px;
+    display: inline-block;
+}
+#configuration-form div.configuration-group div.configuration input.error {
+    border-color: #f00;
+}
+.detector-configuration-edit-buttons {
+    margin-left:20px;
+}
+/* CONFIGURATION EDIT END */
+
+/* SIGN IN START */
+#sign-in-form {
+    margin-top: 30px;
+    margin-left: 30px;
+}
+#sign-in-form label {
+    margin-bottom: 3px;
+}
+#sign-in-form input {
+    margin-bottom: 3px;
+    width:150px;
+}
+#sign-in-form #sign-in-button{
+    display: block;
+    width:80px;
+}
+/* SIGN IN END */
+
+/* INSTATION USER START */
+#instation-user-details {
+    border: 1px dashed #aaa;
+    margin:5px;
+    padding: 10px;    
+}
+#instation-user-details button {
+    float:right;
+}
+#instation-user-details ul {
+    margin-left: 200px;
+}
+#instation-user-details ul li {
+    list-style-type: disc;
+    margin-bottom:2px;
+    text-align: left;
+    width: 300px;
+}
+#instation-user-details div{
+    margin:5px;
+}
+#instation-user-details label {
+    width: 200px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 5px;
+    font-weight: bold;
+}
+#instation-user-details span {
+    width: 200px;
+    display: inline-block;
+}
+/* INSTATION USER END */
+
+/* DIALOG ELEMENTS START */
+.checkbox-select {
+    padding:10px;
+    border: 1px dashed #aaa;
+    margin-bottom: 10px;
+}
+.checkbox-select div {
+    float:left;    
+}
+.checkbox-select div label{
+    float:left;
+    width: 250px;
+    display: block;
+    text-align: right;
+}
+.checkbox-select div input{
+    width: auto;
+    margin: 0px;
+    margin-left: 5px;
+    margin-top: 5px;
+    float:left;
+}
+label label.error {
+    padding:0px;
+}
+/* DIALOG ELEMENTS END */
+
+/* TABLE ELEMENTS START */
+table tbody tr td a.ui-button.add {
+    width:80px;
+}
+table tbody tr td a.ui-button.remove {
+    width:80px;
+}
+/* TABLE ELEMENTS END */
+
+/* GRAPHS START */
+.control-group {
+    border: 1px dashed #bbb;
+    padding:10px;
+    margin: 10px;
+    background-color: #eee;
+}
+.control-group div.control label {
+    text-align: right;
+    width: 150px;
+    float:left;
+    padding:7px;
+}
+.control-group div.control input {
+    float:left;
+    width:200px;
+    text-align: center;
+}
+.control-group div.control input.checkbox {
+    margin-top:7px;
+    width:15px;
+}
+.control-group div.control {
+    clear:both;
+}
+
+.control-group div.control div {
+    width: 500px;
+    float:left;
+}
+
+.control-group div.control.checkbox div {
+    width: 480px;
+    float:left;
+}
+
+#graph {   
+    background-color: #fafafa;
+    margin-bottom:10px;
+}
+
+#graphs {
+    margin-top:20px;
+    width:100%;
+    margin-bottom:50px;
+}
+#graphs h2 {
+    margin-top:50px;
+}
+#graphs ol{
+    margin-bottom:20px;
+    margin-left: 50px;
+    list-style-type: decimal;
+}
+#graphs img {
+    width:100%;
+    margin-bottom: 20px;
+}
+#graphs a.top-links {
+    font-size: 12pt;
+    margin-right: 50px;
+    float:right;
+}
+
+/* GRAPHS END */
+
+/* SUB LINK START */
+#sub-links ul {
+    margin-left :10px;
+}
+#sub-links ul li {
+    margin-bottom :2px;
+}
+#sub-links a {
+    width:  160px;
+}
+/* SUB LINK END */
+
+/* DIAGNOSTIC START */
+.statistic-group {
+    border: 1px dashed #bbb;
+    padding:10px;
+    margin: 10px;
+    background-color: #eee;
+}
+.statistic-group div.statistic label {
+    text-align: right;
+    width: 200px;
+    float:left;
+    padding:7px;
+}
+.statistic-group div.statistic input {
+    width: 180px;
+    float:left;
+    text-align: center;
+}
+.statistic-group div.statistic {
+    clear:both;
+}
+
+.statistic-group div.statistic div {
+    width: 400px;
+    float:left;
+}
+
+/* DIAGNOSTIC END */
+
+
+tr.status-ok {
+    background-color: #CCFFCC !important;
+}
+tr.status-information {
+    background-color: #CCCCFF !important;
+}
+tr.status-warning {
+    background-color: #FFFFCC !important;
+}
+tr.status-critical {
+    background-color: #FFCCCC !important;
+}
+
+/* Status indicator */
+
+td.status-reporting {
+    background-color: #CCFFCC !important;
+}
+
+td.status-degrading{
+    background-color: #FFFFCC !important;
+}
+
+td.status-silent{
+    background-color: #DDDDDD !important;
+}
+
+#broadcast-messages {
+    font-size: 0.9em;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #DDD;
+}
+
+#broadcast-messages div.message {
+    border-top: 1px solid #DDD;
+    border-bottom: 1px solid #FFFF91;
+    padding:10px;
+    background-color: #FFFFED;
+}
+
+#broadcast-messages div.message pre {
+    margin-left: 20px;
+    margin-right: 20px;    
+}
+
+pre {
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+#support-content {
+    margin-left: 25px;
+    margin-right: 50px;
+    margin-top: 20px;
+}
+#support-content h1 {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+div.contact-telephone {
+    margin-left: 15px;
+    margin-bottom:15px;
+    border-left: 20px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+div.contact-telephone h2 {
+    font-weight: bold;
+}
+div.contact-telephone p {
+    margin-left: 15px;
+}
+
+div.contact-email {
+    margin-left: 15px;
+    margin-bottom:15px;
+    border-left: 20px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+div.contact-email h2 {
+    font-weight: bold;
+}
+div.contact-email p {
+    margin-left: 15px;
+}
+
+#role-select {
+    overflow:auto;
+    height: 100px;
+}
+
+#logical-group-select {
+    overflow:auto;
+    height: 100px;
+}
+
+/*SCJS 023 START*/
+form.password label {
+    margin-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+form.password input {
+    margin-left: 15px;
+    width:300px;
+    margin-bottom: 10px;
+}
+form.password select {
+    width:300px;
+    margin-bottom: 10px;
+}
+form.password label.error {
+    display: inline-block;
+    color: #F00;
+    margin-left: 10px;
+}
+form.password input.error {
+    border-color: #F00;
+    background-color: #FFD6D3;
+}
+form.passworde select.error {
+    border-color: #F00;
+    background-color: #FFD6D3;
+}
+form.password textarea.error {
+    border-color: #F00;
+    background-color: #FFD6D3;
+}
+
+#update-password-button{
+    margin-left: 15px;
+}
+
+h1.error{
+    color: red
+}
+/*SCJS 023 END*/
+
+
+#register label{
+    margin-right:5px;
+}
+
+#register input {
+    padding:5px 7px;
+    border:1px solid #d5d9da;    
+    width:250px;
+    font-size:1em;
+    outline:0;
+}
+input {
+    box-shadow: 0 0 5px #e8e9eb inset;
+    border:1px solid #d5d9da;
+    outline:0;
+}
+
+textarea {
+    box-shadow: 0 0 5px #e8e9eb inset;
+    border:1px solid #d5d9da;
+    outline:0;
+}
+
+#result{
+    margin-left:5px;
+}
+
+#register .short{
+    color:#FF0000;
+}
+
+#register .weak{
+    color:#E66C2C;
+}
+
+#register .good{
+    color:#2D98F3;
+}
+
+#register .strong{
+    color:#006400;
+}
+
+#sign-in-form {
+    margin-bottom: 20px;
+}
+
+#forgotPassword {
+    margin-left:30px;
+}
+
+#wikibody p {
+    margin-left: 10px;
+}
+
+#wikibody p {
+    margin-left: 10px;
+}
+
+#wikibody p {
+    margin-left: 10px;
+}
+
+.some_selected {
+    opacity: 1;
+    filter: alpha(opacity=50);
+}
+
+#actionAll{
+    width: auto !important;
+}
+
+.label_all{
+    color: #000;
+}
