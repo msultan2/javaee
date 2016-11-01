@@ -31,8 +31,6 @@
     <module>WebServiceWebLogic4Client</module>
     <module>HelloX</module>
     <module>730_rmas</module>
-    <module>bigOne</module>
-    <module>Administration</module>
     </modules>
 
     <properties>
