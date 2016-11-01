@@ -1,0 +1,113 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet id="changelog-6.06.3" author="nchavan">
+        <comment>Added columns: detector_configuration.reportingTimeoutInMinutes and degradedTimeoutInMinutes</comment>
+        <addColumn catalogName="cat" schemaName="public" tableName="detector_configuration">
+            <column name="reportingTimeoutInMinutes" type="int" defaultValue="60">
+                <constraints nullable="false"/>
+            </column>
+            <column name="degradedTimeoutInMinutes" type="int" defaultValue="120">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="detector_configuration" schemaName="public" columnName="reportingTimeoutInMinutes"></dropColumn>
+            <dropColumn tableName="detector_configuration" schemaName="public" columnName="degradedTimeoutInMinutes"></dropColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-6.06.4" author="msultan">
+        <comment>Add new value for considering a detector silent and delete unneeded column</comment>
+        <addColumn catalogName="bluetruth"
+                   schemaName="public"
+                   tableName="detector_configuration">
+            <column name="silentTimeoutInMinutes" type="int" defaultValue="60">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropColumn catalogName="cat"
+                    schemaName="public"
+                    tableName="detector_configuration" columnName="degradedTimeoutInMinutes"/>
+
+
+        <rollback>
+            <addColumn catalogName="cat" schemaName="public" tableName="detector_configuration">
+                <column name="degradedTimeoutInMinutes" type="int" defaultValue="120">
+                    <constraints nullable="false"/>
+                </column>
+            </addColumn>
+            <dropColumn catalogName="bluetruth"
+                        schemaName="public"
+                        tableName="detector_configuration"
+                        columnName="silentTimeoutInMinutes"/>
+        </rollback>
+
+    </changeSet>
+
+    <changeSet id="changelog-6.06.5" author="msultan">
+        <comment>Create table that holds detector heartbeats based on trigger fired by detector_message</comment>
+        <createTable catalogName="bluetruth"
+                     schemaName="public"
+                     tableName="detector_heartbeat">
+            <column name="detector_id" type="varchar"/>
+            <column name="last_recorded_message_timestamp" type="timestamptz"/>
+        </createTable>
+        <addPrimaryKey catalogName="bluetruth"
+                       columnNames="detector_id"
+                       constraintName="pk_detector_id"
+                       schemaName="public"
+                       tableName="detector_heartbeat"/>
+        <addForeignKeyConstraint baseTableName="detector_heartbeat"
+                                 deferrable="true"
+                                 initiallyDeferred="true"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 baseColumnNames="detector_id"
+                                 constraintName="detector_id_fk"
+                                 referencedTableName="detector"
+                                 referencedColumnNames="detector_id"/>
+        <rollback>
+            <dropTable catalogName="bluetruth"
+                       schemaName="public"
+                       tableName="detector_heartbeat"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-6.06.6" author="msultan">
+        <comment>Add new trigger to detector_message to update detector_heartbeat with lastes update</comment>
+
+        <createProcedure>CREATE OR REPLACE FUNCTION public.after_insert_on_detector_message()
+            RETURNS trigger AS
+            $BODY$
+            BEGIN
+            UPDATE detector_heartbeat SET last_recorded_message_timestamp = NEW.recorded_timestamp WHERE detector_id = NEW.detector_id;
+            IF NOT FOUND THEN
+            INSERT INTO detector_heartbeat(detector_id,last_recorded_message_timestamp) values (NEW.detector_id, NEW.recorded_timestamp);
+            END IF;
+            return NEW;
+            END;
+            $BODY$
+            LANGUAGE plpgsql VOLATILE
+            COST 100;
+            ALTER FUNCTION public.after_insert_on_detector_message()
+            OWNER TO bluetruth;
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION public.after_insert_on_detector_message();
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-6.06.7" author="msultan">
+        <sql>
+            CREATE TRIGGER after_insert_on_detector_message AFTER INSERT ON detector_message FOR EACH ROW EXECUTE PROCEDURE after_insert_on_detector_message();
+        </sql>
+        <rollback>
+            DROP TRIGGER after_insert_on_detector_message ON detector_message;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
