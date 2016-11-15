@@ -1,3 +1,0 @@
----
-- name: reload httpd
-  shell: sudo systemctl reload httpd

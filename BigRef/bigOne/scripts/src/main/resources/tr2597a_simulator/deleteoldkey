@@ -1,7 +1,0 @@
-#!/bin/bash
-
-#At the current point of time, the script always exits with code 0
-#This script is for sunny day scenario 
-
-exit 0
-

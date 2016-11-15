@@ -1,9 +1,0 @@
----
-- name: Move RMAS DB script to server
-  copy:
-   src: "../../db/mongo.script.js"
-   dest: "/tmp/"
-
-- name: Run RMAS DB script on server
-  command: mongo --port {{ mongodb_port }} --authenticationDatabase {{ mongodb_user }} -u {{ mongodb_user_site }} -p {{ mongodb_user_site_pass }} {{ mongodb_db_name }} /tmp/mongo.script.js
-

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="" unloadDelay="10000">
-  <ResourceLink global="jdbc/bluetruth" name="jdbc/bluetruth" type="javax.sql.DataSource"/>
-  <ResourceLink global="mail/mailSession" name="mail/mailSession" type="javax.mail.Session"/>
-  <Realm className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/bluetruth" digest="MD5" roleNameCol="role_name" userCredCol="md5_password" userNameCol="username" userRoleTable="instation_user_role" userTable="instation_user"/>
-</Context>
