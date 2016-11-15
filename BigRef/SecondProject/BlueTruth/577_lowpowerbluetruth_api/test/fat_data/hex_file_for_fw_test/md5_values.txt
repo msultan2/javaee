@@ -1,0 +1,5 @@
+lpbt_application_hex_version_0_99.hex 	8f022d4c950686d99215ff785bfe35e9
+
+lpbt_application_hex_version_1_00.hex	bf935f045f1a2afef62289f81860ff82  
+
+lpbt_small_hex_file_md5_test.hex	95e7434d19419524040fd6c0e165937d  

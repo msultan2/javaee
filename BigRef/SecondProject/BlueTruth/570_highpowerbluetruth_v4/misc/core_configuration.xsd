@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.simulation-systems.co.uk/BlueTruth/coreConfigurationSchema"
+	xmlns:coreConfiguration="http://www.simulation-systems.co.uk/BlueTruth/coreConfigurationSchema">
+	<xs:simpleType name="BlueTruthVersionType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="4\.0\.0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="IdentityType">
+		<xs:sequence>
+			<xs:element name="SiteIdentifier" type="xs:string"/>
+			<xs:element name="SerialNumber" type="xs:string"/>
+		</xs:sequence>    
+	</xs:complexType>
+	<xs:complexType name="InStationSSHConnectionType">
+		<xs:sequence>
+			<xs:element name="Address" type="xs:string"/>
+			<xs:element name="Port" type="xs:unsignedShort" default="22" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="Login" type="xs:string"/>
+			<xs:element name="Password" type="xs:string"/>
+		</xs:sequence>    
+	</xs:complexType>
+	<xs:complexType name="IniConfigurationURLType">
+		<xs:sequence>
+			<xs:element name="Path" type="xs:string"/>
+			<xs:element name="File_Prefix" type="xs:string"/>
+			<xs:element name="File_Suffix" type="xs:string"/>
+		</xs:sequence>    
+	</xs:complexType>
+	<xs:complexType name="DriverType">
+		<xs:choice>
+			<xs:element name="WindowsBluetooth"/>
+			<xs:element name="WindowsWSA"/>
+			<xs:element name="Parani" type="coreConfiguration:ParaniType"/>
+			<xs:element name="NativeBluez"/>
+			<xs:element name="RawHCI"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="ParaniType">
+		<xs:attribute name="PortName" type="xs:string" default="/dev/ttyUSB0"/>
+		<xs:attribute name="BitRate" type="xs:unsignedInt" default="115200"/>
+	</xs:complexType>
+	<xs:complexType name="BlueToothDeviceType">
+		<xs:sequence>
+			<xs:element name="MAC_AddressOfDeviceToBeUsed" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="Driver" type="coreConfiguration:DriverType"/>
+		</xs:sequence>    
+	</xs:complexType>
+	<xs:complexType name="GSMModemConnectionType">
+		<xs:sequence>
+			<xs:element name="Type" type="xs:unsignedShort"/>
+			<xs:element name="Address" type="xs:string"/>
+			<xs:element name="Port" type="xs:unsignedShort" default="23" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="Login" type="xs:string"/>
+			<xs:element name="Password" type="xs:string"/>
+		</xs:sequence>    
+	</xs:complexType>
+	<xs:complexType name="LoggerType">
+		<xs:sequence>
+			<xs:element name="FileLogLevel" type="xs:unsignedInt"/>
+			<xs:element name="ConsoleLogLevel" type="xs:unsignedInt"/>
+			<xs:element name="MaxNumberOfEntriesPerFile" type="xs:unsignedInt"/>
+			<xs:element name="MaxNumberOfCharactersPerFile" type="xs:unsignedInt"/>
+			<xs:element name="MaxLogFileAgeInSeconds" type="xs:unsignedLong"/>
+		</xs:sequence>    
+	</xs:complexType>
+	<xs:complexType name="CoreConfigurationType">
+		<xs:sequence>
+			<xs:element name="Version" type="coreConfiguration:BlueTruthVersionType"/>
+			<xs:element name="Identity" type="coreConfiguration:IdentityType"/>
+			<xs:element name="InStationSSHConnection" type="coreConfiguration:InStationSSHConnectionType"/>
+			<xs:element name="IniConfigurationURL" type="coreConfiguration:IniConfigurationURLType"/>
+			<xs:element name="BlueToothDevice" type="coreConfiguration:BlueToothDeviceType"/>
+			<xs:element name="GSMModemConnection" type="coreConfiguration:GSMModemConnectionType"/>
+			<xs:element name="Logging" type="coreConfiguration:LoggerType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CoreConfiguration" type="coreConfiguration:CoreConfigurationType"/>
+</xs:schema>

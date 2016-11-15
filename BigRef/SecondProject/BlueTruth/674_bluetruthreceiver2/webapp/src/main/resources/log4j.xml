@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+          
+    <appender name="rollingFileAppender" class="org.apache.log4j.RollingFileAppender"> 
+        <param name="file" value="/logs/BluetruthReceiver2Common.log"/> 
+        <param name="MaxFileSize" value="50MB"/>    
+        <param name="MaxBackupIndex" value="1"/>               
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p [%t] %m (%c)%n"/>
+        </layout> 
+    </appender> 
+    
+    <appender name="asyncAppender" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="256"/>
+        <appender-ref ref="rollingFileAppender"/>
+    </appender>  
+  
+    <logger name="ssl" additivity="false">
+        <level value ="DEBUG"/>
+        <appender-ref ref="asyncAppender"/>
+    </logger>
+                        
+    <root additivity="false"> 
+        <level value ="DEBUG"/>
+        <appender-ref ref="asyncAppender"/>
+    </root>
+    
+</log4j:configuration>

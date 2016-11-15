@@ -1,0 +1,8 @@
+#!/bin/sh
+
+SCRIPT_LOCATION=/opt/brdf/bin/deleteoldestfile.sh
+EVENT_LOG_DIR=/var/log/brdf
+MAX_EVENT_DIR_SIZE_IN_KB=200000
+
+$SCRIPT_LOCATION $EVENT_LOG_DIR $MAX_EVENT_DIR_SIZE_IN_KB
+

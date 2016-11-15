@@ -1,0 +1,13 @@
+Source: bluetruth-outstation-gui
+Section: misc
+Priority: optional
+Maintainer: Radoslaw Golebiewski <radoslaw.golebiewski@simulation-systems.co.uk>
+Build-Depends: debhelper (>= 8), g++ (>= 4.6), make (>= 3.81), autotools-dev, libboost-all-dev (>= 1.48) | libboost1.48-all-dev, libbluetooth-dev
+Standards-Version: 3.9.3
+Homepage: http://www.simulation-systems.co.uk
+
+Package: bluetruth-outstation-gui
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libboost-all-dev (>= 1.48) | libboost1.48-all-dev, libbluetooth-dev
+Description: BlueTruth Outstation GUI
+ This is the main bluetruth outstation GUI application

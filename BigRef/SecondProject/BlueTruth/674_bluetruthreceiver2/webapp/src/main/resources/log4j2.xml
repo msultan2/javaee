@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<Configuration status="WARN"> 
+    <Properties> 
+        <Property name="log-path">/logs/</Property>
+    </Properties> 
+    <Appenders> 
+        <RollingFile name="RollingFile" fileName="${log-path}/BluetruthReceiver2.log" 
+                     filePattern="${log-path}/BluetruthReceiver2-%d{yyyy-MM-dd}.log" >
+            <PatternLayout> 
+                <pattern>%d{ABSOLUTE} %5p %c{1}:%L - %m%n</pattern>
+            </PatternLayout> 
+            <Policies> 
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/> 
+            </Policies> 
+            <DefaultRolloverStrategy max="31"/> 
+        </RollingFile> 
+    </Appenders>
+    <Loggers> 
+        <Logger name="org.springframework.web" level="DEBUG" additivity="false">
+            <appender-ref ref="RollingFile"/> 
+        </Logger> 
+        <Logger name="com.ssl" level="DEBUG" additivity="false">
+            <appender-ref ref="RollingFile"/> 
+        </Logger>
+        <Root level="DEBUG" additivity="false">
+            <appender-ref ref="RollingFile" />
+        </Root>  
+    </Loggers> 
+</Configuration>

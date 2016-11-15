@@ -1,0 +1,125 @@
+This project contains instructions how to install CentOS 6
+
+
+INSTRUCTIONS
+
+HOST PC ACTIONS
+1. On the host PC install Virtual Box package.
+2. Clone all 710-1_brdf_application files to a location. This can be done via
+the command:
+	git clone git@git.ssl.local:bluetruth/710-1_brdf_application.git
+from within a defined directory.
+
+3. Run
+    create_virtualbox_guest.sh install
+script from 710-1_brdf_application/setup
+directory to create a Virtual Box guest.
+
+4. Run
+    create_virtualbox_guest.sh run
+to run Virtual Box guest for the first time and install the operating
+system.
+
+
+GUEST PC ACTIONS
+Note: If installing the operating system from the remote location
+forward the port to your PC
+e.g. ssh -i ~/.ssh/private_ssl.key -L3389:virtualbox_host_ip_address:3389 username@82.109.252.42
+connect to this remote desktop via command (linux only):
+   create_virtualbox_guest.sh rdp
+If installing the operating system from the PC on LAN connect to this
+desktop via command (linux only):
+   create_virtualbox_guest.sh -n virtualbox_host_ip_address rdp
+
+1. CentOS 6.6
+When installing the operating system follow these instructions:
+- Press 'Skip' in 'Disc Found To begin testing the media before installation'
+press OK window
+- Press 'Next' in the right bottom corner (pressing Tab button may be required)
+- Select 'English (English)' and press 'Next' button
+- Select 'United Kingdom' keyboard and press 'Next' button
+- Choose 'Basic Storage Device' option and press 'Next' button
+- Press 'Yes, discard any data' button
+- Provide hostname e.g. centos-development and press 'Next' button
+- Select 'Europe/London' time zone and press 'Next' button
+- Provide password e.g. 'ssl1324' and press 'Next' button
+- Select 'Use All Space' and press 'Next' button
+- Press 'Write changes to disk' in 'Writing storage configuration to disk'
+window and press 'Next' button
+- Choose 'Minimal' software set to install and press 'Next' button
+- Long wait to install components. Get a coffee...
+- When requested to reboot press 'Reboot' button.
+
+After restarting the PC log in ("root"/<password>) and:
+1. login as root.
+2. Enable eth0 interface.
+    ifup eth0
+3. Copy the following files via sftp/scp commands:
+    setup/initialise_gest.sh
+    setup/install_virtualbox_guest_additions.sh
+4. Update guest, create engineer user and make OS configuration modification with
+command:
+    initialise_guest.sh
+and reboot system with command:
+    reboot
+5. If using VirtualBox install virtualbox guest additions for better integration
+with the host with the command:
+    install_virtualbox_guest_additions.sh
+Shutdown the system with command:
+    poweroff
+6. On the host PC dismount the DVD drive. To do it on the host PC run:
+    virtualbox_setup/host/create_virtualbox_guest.sh detach_dvd
+7. Restart the the Virtual Box guest with the command:
+    virtualbox_setup/host/create_virtualbox_guest.sh run
+and login as 'engineer'.
+
+Note: When accessing the Virtual Box guest in headless mode from a remote
+location over ssh it is necessary to know the IP address. To find that
+address run:
+    create_virtualbox_guest.sh get_ip_address
+
+
+BRDF PROGRAM COMPILATION AND INSTALLATION DETAILS
+1. Clone all 710-1 project files to the location ~/Projects/710-1_brdf_application.
+This can be done via the command:
+	mkdir -p ~/Projects
+	cd ~/Projects
+	git clone http://git.ssl.local/bluetruth/710-1_brdf_application.git
+    cd 710-1_brdf_application/setup
+    git checkout <branch name>
+where <branch name> is the branch name e.g. version_1_00_release_candidate.
+2. Install compilation packages, utilities and libraries with running a script
+from setup directory:
+    ./install_libs_and_tools.sh
+3. Compile brdf_client from setup directory
+    ./compile_application.sh
+    ./create_application_package.sh
+The resulting file brdf_setup.run is the binary installation program of the
+brdf client application.
+4. Install the brdf client application by running command from setup directory:
+    sudo ./brdf_setup.run
+
+
+DATABASE INSTALLATION
+1. Copy the following files via sftp/scp commands:
+    setup/deployment/install_mongodb.sh
+2. Login as root instal mongodb by executing the following script:
+    install_mongodb.sh
+and reboot system with command:
+    reboot
+
+
+DATABASE PREPARATION
+1. Create initial contents of "owners" and "detectors" collections. An example is
+contained in the script mongo/database.js. Lack of definition of "owners" and
+"detectors" collections will result in no data reported to BRDF server.
+
+INSTALATION OF SCRIPT TO PURGE OUTDATED DATA
+1. To periodically (on hourly basis) remove the outdated records a script needs
+to be deployed in /etc/cron.hourly directory. Copy the file 
+install_scripts_to_purge_outdated_records.sh to the deployment platform and run.
+
+GOOD LUCK!
+
+
+Author: Radoslaw Golebiewski

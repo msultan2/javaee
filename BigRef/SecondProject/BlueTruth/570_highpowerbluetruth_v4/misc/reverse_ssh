@@ -1,0 +1,174 @@
+#!/bin/bash
+# reverse-ssh Startup Service script by Radoslaw Golebiewski
+# USAGE: start|stop|status
+#
+
+#The $PID_FILE will store sshpass pid
+PID_FILE=/tmp/reverse_ssh.pid
+
+#The $PARAMETERS_FILE will contain the parameters of the connection
+#and must be of the following format:
+#ADDRESS REVERSE_PORT USER PASSWORD
+#e.g. localhost 10002 bt bt
+PARAMETERS_FILE=/tmp/reverse_ssh.conf
+
+case "$1" in
+start)
+    #Check if the $pid_file exists. If so, get pid from it and examine if a process
+    #with such a pid exists. If not, start it
+    SERVICE_IS_RUNNING=false
+    if [ -f $PID_FILE ]
+    then
+        PID=$(cat $PID_FILE)
+        PID_LINE=`head -n 1 $PID_FILE`
+        read PID ADDRESS REVERSE_PORT <<< $PID_LINE
+
+        PS_RESULT=`ps | awk '{ print $1 }' | grep $PID`
+        if [ ! -z "$PS_RESULT" ]
+        then
+            SERVICE_IS_RUNNING=true
+        fi
+    fi
+
+    if ! $SERVICE_IS_RUNNING
+    then
+        #Check if parameters file exists. If yes, read its contents into
+        #ADDRESS, REVERSE_PORT, USER AND PASSWORD parameters.
+        #Then start ssl connection
+       if [ -f $PARAMETERS_FILE ]
+       then
+           PARAMETERS=`head -n 1 $PARAMETERS_FILE`
+           read ADDRESS REVERSE_PORT USER PASSWORD <<< $PARAMETERS
+
+           #Check if pasword has been specified
+           if [[ -z "$PASSWORD" ]]; then
+               #No pasword - private key file will be used
+
+               #Derive the location of the private key file to be used for the connection
+               INSTATION_PRIVATE_KEY_FILE_NAME=/var/cache/bt/outstation_to_instation_key
+               GENERIC_PRIVATE_KEY_FILE_NAME=/opt/bt/etc/generic_outstation_to_instation_key
+               PRIVATE_KEY_FILE_NAME=
+               if [ -f $INSTATION_PRIVATE_KEY_FILE_NAME ]
+               then
+                   PRIVATE_KEY_FILE_NAME=$INSTATION_PRIVATE_KEY_FILE_NAME
+                   echo "Private OutStation to InStation private key found and will be used"
+               elif [ -f $GENERIC_PRIVATE_KEY_FILE_NAME ]
+               then
+                   PRIVATE_KEY_FILE_NAME=$GENERIC_PRIVATE_KEY_FILE_NAME
+                   echo "Generic OutStation to InStation private key found and will be used"
+               else
+                   echo "No private OutStation to InStation key found!"
+               fi
+
+               ssh -t -t -i $PRIVATE_KEY_FILE_NAME -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -R"$REVERSE_PORT":localhost:22 "$USER"@"$ADDRESS" > /dev/null &
+               echo $! $ADDRESS $REVERSE_PORT > $PID_FILE
+           else
+               #Password has been specified so use the password
+               sshpass -p "$PASSWORD" ssh -t -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -R"$REVERSE_PORT":localhost:22 "$USER"@"$ADDRESS" > /dev/null &
+               echo $! $ADDRESS $REVERSE_PORT > $PID_FILE
+           fi
+
+           #Now wait for the ssh connection to be established and check if the process is still alive
+           sleep 10
+
+           if [ -f $PID_FILE ]
+           then
+               PID_LINE=`head -n 1 $PID_FILE`
+               read PID ADDRESS REVERSE_PORT <<< $PID_LINE
+
+               PS_RESULT=`ps | awk '{ print $1 }' | grep $PID`
+               if [ ! -z "$PS_RESULT" ]
+               then
+                   echo "Reverse SSH connection has been started."
+               else
+                   echo "SSH connection could not be established"
+                   exit 4
+               fi
+           else
+               echo "File $PID_FILE could not be opened"
+               exit 5
+           fi
+
+       else
+           echo "File $PARAMETERS_FILE does not exist. Reverse SSH connection cannot be started."
+           exit 3
+       fi
+    else
+        echo "Reverse SSH is already running"
+        exit 2
+    fi
+;;
+
+
+stop)
+    #Check if the $pid_file exists. If so, get pid from it and examine if a process
+    #with such a pid exists. If yes kill it, otherwise report an error.
+    SERVICE_IS_RUNNING=false
+    if [ -f $PID_FILE ]
+    then
+        PID_LINE=`head -n 1 $PID_FILE`
+        read PID ADDRESS REVERSE_PORT <<< $PID_LINE
+
+        PS_RESULT=`ps | awk '{ print $1 }' | grep $PID`
+        if [ ! -z "$PS_RESULT" ]
+        then
+            SERVICE_IS_RUNNING=true
+        fi
+    fi
+
+    if $SERVICE_IS_RUNNING
+    then
+        echo "Stopping reverse SSH connection."
+        kill -9 $PID > /dev/null
+
+        #Check if the process is still running
+        PS_RESULT=`ps | awk '{ print $1 }' | grep $PID`
+        if [ ! -z "$PS_RESULT" ]
+        then
+            echo "Unable to kill Reverse SSH - it is still running."
+        else
+            rm -f $PID_FILE
+            exit 2
+        fi
+    else
+        echo "Cannot stop Reverse SSH - it is not running..."
+        rm -f $PID_FILE
+        exit 2
+    fi
+;;
+
+
+status)
+    # Check to see if the process is running
+    SERVICE_IS_RUNNING=false
+    if [ -f $PID_FILE ]
+    then
+        PID_LINE=`head -n 1 $PID_FILE`
+        read PID ADDRESS REVERSE_PORT <<< $PID_LINE
+
+        PS_RESULT=`ps | awk '{ print $1 }' | grep $PID`
+#       echo "PS_RESULT=\"ps | awk '{ print $1 }' | grep $PID\" (=PS_RESULT)"
+        if [ ! -z "$PS_RESULT" ]
+        then
+            SERVICE_IS_RUNNING=true
+        fi
+    fi
+
+    if $SERVICE_IS_RUNNING
+    then
+        echo "Reverse SSH is running"
+    else
+        echo "Reverse SSH is not running"
+#        rm -f $PID_FILE
+        exit 2
+    fi
+;;
+
+
+*)
+    echo "Reverse SSH - Create reverse tunnel to the InStation"
+    echo "Usage: $0 {start|stop|status}"
+    exit 1
+esac
+
+exit 0

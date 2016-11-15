@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>674_BlueTruthReceiver2-Parent</artifactId>
+    <version>1.05-SNAPSHOT</version>
+    <description>Bluetruth Receiver 2</description>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>com.ssl.bluetruth</groupId>
+        <artifactId>bluetruth-parent</artifactId>
+        <version>1.01</version>
+        <relativePath>../bluetruth-parent-pom/</relativePath>
+    </parent>
+    
+    <scm>
+        <url>http://git.ssl.local/bluetruth/674_bluetruthreceiver2</url>
+        <connection>scm:git:git@git.ssl.local:bluetruth/674_bluetruthreceiver2.git</connection>
+        <developerConnection>scm:git:git@git.ssl.local:bluetruth/674_bluetruthreceiver2.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <organization>
+        <name>Simulation Systems Ltd</name>
+        <url>http://www.simulation-systems.co.uk</url>
+    </organization>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <modules>
+        <module>mongodb-jndi</module>
+        <module>webapp</module>
+    </modules>
+</project>
+

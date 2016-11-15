@@ -1,0 +1,10 @@
+__APPLICATION_API_LOOKUP_TABLE_BASE = 0x3000;
+PROVIDE(_p_application__main           = __APPLICATION_API_LOOKUP_TABLE_BASE + 0x00);
+PROVIDE(_p_application__configure_pins = __APPLICATION_API_LOOKUP_TABLE_BASE + 0x04);
+PROVIDE(_p_application__initialise     = __APPLICATION_API_LOOKUP_TABLE_BASE + 0x08);
+PROVIDE(_p_populate_application_firmware_descriptor = __APPLICATION_API_LOOKUP_TABLE_BASE + 0x0E);
+
+PROVIDE(_p_set_application_sms_message = __APPLICATION_API_LOOKUP_TABLE_BASE + 0x20);
+PROVIDE(_p_rtcc_control__update_time_from_sms = __APPLICATION_API_LOOKUP_TABLE_BASE + 0x28);
+PROVIDE(_p_process_instation_command = __APPLICATION_API_LOOKUP_TABLE_BASE + 0x30);
+PROVIDE(_pGetProcessInstationCommandContext = __APPLICATION_API_LOOKUP_TABLE_BASE + 0x32);

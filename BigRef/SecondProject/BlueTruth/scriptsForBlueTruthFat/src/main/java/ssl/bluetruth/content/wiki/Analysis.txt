@@ -1,0 +1,32 @@
+[{TableOfContents }]
+
+!!!Description
+The analysis section allows users to view graph data of detectors, spans and routes.
+!!!Detectors
+This link takes you to a page displaying the a list of all detectors visible to the user. Selecting a detector will take you to a page displaying a graph of total detections per 5 minutes over a 24 hour period along with a table holding the data used to generate the graph. 
+!Graph Options
+The graph options allow the user to manipulate the graph in the following ways.
+* Start and end dates - Defines the period over which the data is retrieved.
+* Unique detections - Defines whether multiple detections are counted once or repeatedly in the total.
+!Table Options
+The table options allow the user to export the data used to create the graph in CSV format. 
+
+!!Spans
+This link takes you to a page displaying the a list of all spans visible to the user. Selecting a span speed graph will take you to a page displaying a graph of speeds recorded over time. Selecting a span duration graph will take you to a page displaying a graph of journey durations recorded over time. Both graphs include a table holding the data used to generate the graph. 
+!Graph Options
+The graph options allow the user to manipulate the graph in the following ways.
+* Start and end dates - Defines the period over which the data is retrieved.
+* Maximum duration/speed - Defines the largest duration/speed which can be displayed on the graph.
+* View detections/detection outliers - Defines whether detections and outliers are plotted on the graph along with the trend line.
+* Trend type - Defines what averaging system(Mean,Median,Mode) is used to display the trend.  
+!Table Options
+The table options allow the user to export the data used to create the graph in CSV format. 
+
+!!Routes
+This link takes you to a page displaying the a list of all routes visible to the user. Selecting a route speed graph will take you to a page displaying a graph of speeds for each span in the route recorded over time. Selecting a route duration graph will take you to a page displaying a graph of journey durations for each span in the route recorded over time. Both graphs include a table holding the data used to generate the graph. 
+!Graph Options
+The graph options allow the user to manipulate the graph in the following ways.
+* Start and end dates - Defines the period over which the data is retrieved.
+* Trend type - Defines what averaging system(Mean,Median,Mode) is used to display the trend.
+!Table Options
+The table options allow the user to export the data used to create the graph in CSV format.

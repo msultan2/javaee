@@ -1,0 +1,18 @@
+--- locks.hpp.orig	2014-11-24 00:31:23.000000000 +0000
++++ locks.hpp	2015-01-27 20:12:00.039762577 +0000
+@@ -809,13 +809,13 @@
+         upgrade_to_unique_lock& operator=(upgrade_to_unique_lock&);
+     public:
+         explicit upgrade_to_unique_lock(upgrade_lock<Mutex>& m_):
+-            source(&m_),exclusive(move(*source))
++            source(&m_),exclusive(move(detail::thread_move_t<upgrade_lock<Mutex> >(*source)))
+         {}
+         ~upgrade_to_unique_lock()
+         {
+             if(source)
+             {
+-                *source=move(exclusive);
++                *source=move(detail::thread_move_t<unique_lock<Mutex> >(exclusive));
+             }
+         }
+ 

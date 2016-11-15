@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/BlueTruthReceiver2">
+    <ResourceLink global="jdbc/bluetruth" name="jdbc/bluetruth" type="javax.sql.DataSource"/>
+    <ResourceLink global="mongoClientFactory" name="mongoClientFactory" type="com.ssl.mongodb.jndi.MongoClientObjectFactory"/>
+</Context>

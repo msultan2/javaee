@@ -1,0 +1,53 @@
+div.dataTables_wrapper {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+table.dataTable tr td {
+    border: 1px solid #aaa;
+}
+
+
+
+table.dataTable tr td a {
+    font-size: 0.8em;
+}
+
+table.dataTable tr td a span.ui-button-text {
+   margin-left:5px;
+}
+
+table.dataTable tr.removed td.sorting_1 {
+    background-color: transparent;
+}
+table.dataTable tr.added td.sorting_1 {
+    background-color: transparent;
+}
+table.dataTable tr.removed td.sorting_2 {
+    background-color: transparent;
+}
+table.dataTable tr.added td.sorting_2 {
+    background-color: transparent;
+}
+table.dataTable tr.removed td.sorting_3 {
+    background-color: transparent;
+}
+table.dataTable tr.added td.sorting_3 {
+    background-color: transparent;
+}
+
+
+table.dataTable tr.removed {
+    background-color: #FDD;
+}
+table.dataTable tr.added {
+    background-color: #DFD;
+}
+
+#journey-time-table tr.reporting-problem {
+    background-color: #FDD;
+}
+#journey-time-table tr.reporting-problem td.sorting_1 {
+    background-color: #FDD;
+}

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Categories=Development;X-SimulationSystems;
+Comment=
+Exec=outstation
+GenericName=BlueTruth Outstation
+Icon=
+Name=BlueTruth Outstation
+StartupNotify=true
+Terminal=false
+Type=Application
+Version=0.98

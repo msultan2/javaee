@@ -1,0 +1,54 @@
+__GSM_API_LOOKUP_TABLE_BASE = 0x1000;
+PROVIDE(_p_gsm__main             = __GSM_API_LOOKUP_TABLE_BASE + 0x00);
+PROVIDE(_p_gsm__configure_pins   = __GSM_API_LOOKUP_TABLE_BASE + 0x02);
+PROVIDE(_p_gsm__initialise       = __GSM_API_LOOKUP_TABLE_BASE + 0x04);
+PROVIDE(_p_gsm__process          = __GSM_API_LOOKUP_TABLE_BASE + 0x06);
+PROVIDE(_p_gsm_module__send_command_to_gsm_module = __GSM_API_LOOKUP_TABLE_BASE + 0x08);
+PROVIDE(_p_gsm__can_use_gsm_modem = __GSM_API_LOOKUP_TABLE_BASE + 0x0A);
+PROVIDE(_p_populate_gsm_firmware_descriptor = __GSM_API_LOOKUP_TABLE_BASE + 0x0E);
+
+PROVIDE(_p_gsm__signal_level_getContext = __GSM_API_LOOKUP_TABLE_BASE + 0x10);
+
+PROVIDE(_p_gsm_sms__send_message = __GSM_API_LOOKUP_TABLE_BASE + 0x40);
+PROVIDE(_p_gsm_sms__process_incoming_message_contents = __GSM_API_LOOKUP_TABLE_BASE + 0x42);
+PROVIDE(_p_gsm_sms_whitelist__get_context = __GSM_API_LOOKUP_TABLE_BASE + 0x44);
+
+PROVIDE( _p_gsm_gprs_control__open_connection_init = __GSM_API_LOOKUP_TABLE_BASE + 0x48);
+PROVIDE( _p_gsm_gprs_control__open_connection = __GSM_API_LOOKUP_TABLE_BASE + 0x4A);
+
+PROVIDE( _p_task_gprs_close_connection__init = __GSM_API_LOOKUP_TABLE_BASE + 0x4C);
+PROVIDE( _p_task_gprs_close_connection = __GSM_API_LOOKUP_TABLE_BASE + 0x4E);
+
+PROVIDE( _p_gsm_gprs_control__process_outgoing_data_init = __GSM_API_LOOKUP_TABLE_BASE + 0x58);
+PROVIDE( _p_gsm_gprs_control__process_outgoing_data = __GSM_API_LOOKUP_TABLE_BASE + 0x5A);
+
+PROVIDE( _p_gsm_gprs_control__getOutgoingGPRSDataContext = __GSM_API_LOOKUP_TABLE_BASE + 0x5C);
+
+PROVIDE( _p_gsm_gprs_control__initialise_GPRS_settings_init = __GSM_API_LOOKUP_TABLE_BASE + 0x60);
+PROVIDE( _p_gsm_gprs_control__initialise_GPRS_settings = __GSM_API_LOOKUP_TABLE_BASE + 0x62);
+
+PROVIDE( _p_task_gprs_download_file__init            = __GSM_API_LOOKUP_TABLE_BASE + 0x70);
+PROVIDE( _p_task_gprs_download_file                  = __GSM_API_LOOKUP_TABLE_BASE + 0x72);
+PROVIDE( _p_task_gprs_download_file__get_context     = __GSM_API_LOOKUP_TABLE_BASE + 0x74);
+PROVIDE( _p_task_gprs_post_data__init                = __GSM_API_LOOKUP_TABLE_BASE + 0x78);
+PROVIDE( _p_task_gprs_post_data                      = __GSM_API_LOOKUP_TABLE_BASE + 0x7A);
+PROVIDE( _p_task_gprs_post_data__get_context         = __GSM_API_LOOKUP_TABLE_BASE + 0x7C);
+PROVIDE( _p_task_gprs_exchange_raw_data__init        = __GSM_API_LOOKUP_TABLE_BASE + 0x80);
+PROVIDE( _p_task_gprs_exchange_raw_data              = __GSM_API_LOOKUP_TABLE_BASE + 0x82);
+PROVIDE( _p_task_gprs_exchange_raw_data__get_context = __GSM_API_LOOKUP_TABLE_BASE + 0x84);
+
+PROVIDE( _p_gsm_gprs_control__getContext = __GSM_API_LOOKUP_TABLE_BASE + 0x64);
+
+PROVIDE( _p_delay_nop_ms = __GSM_API_LOOKUP_TABLE_BASE + 0xC0);
+PROVIDE( _p_strlen = __GSM_API_LOOKUP_TABLE_BASE + 0xC2);
+PROVIDE( _p_strncmp = __GSM_API_LOOKUP_TABLE_BASE + 0xC4);
+
+PROVIDE( _p_gsm_menu__run = __GSM_API_LOOKUP_TABLE_BASE + 0xD0);
+
+PROVIDE( _p_gsm_sms_whitelist__remove_all_numbers = __GSM_API_LOOKUP_TABLE_BASE + 0xE0);
+PROVIDE( _p_gsm_sms_whitelist__show_all_numbers = __GSM_API_LOOKUP_TABLE_BASE + 0xE2);
+
+PROVIDE( _p_upgrade_firmware_task__init = __GSM_API_LOOKUP_TABLE_BASE + 0xF6);
+PROVIDE( _p_upgrade_firmware_task = __GSM_API_LOOKUP_TABLE_BASE + 0xF8);
+PROVIDE( _p_upgrade_firmware_task__getContext = __GSM_API_LOOKUP_TABLE_BASE + 0xFA);
+PROVIDE( _p_upgrade_firmware_task__progress_to_verify_state = __GSM_API_LOOKUP_TABLE_BASE + 0xFC);

@@ -1,0 +1,50 @@
+[{TableOfContents }]
+
+!!!Overview
+The configuration section allows users to configure detectors, spans and routes. 
+!!!Detectors
+The detector configuration page is made up of two tables;configured and un-configured detectors.
+
+!!Configured detector table
+||Heading|| Description
+||Detector| Free text user entered name of detector.
+||ID| Unique identifier for detector used to associate incoming detections with a detector.
+||Location| Free text user entered description of the location of the device.
+||Longitude| Longitude of the detector.
+||Latitude| Latitude of the detector.
+||MODE| The operating mode the device is currently in. This signifies the intended use for this detector.
+||Carriageway| This indicates the side of the road this device is placed on.
+||Logical Groups| This column lists the logical groups this detector and the current user have in common.
+||Configuration| A link to a page allowing key/value pairs to be defined for a configuration when it is created for the detector.
+||View Data| A link to a page allowing additional engineer information to be recorded for the detector.
+||Delete| A button allowing the associated detector along with all data for that detector to be deleted. 
+!Detector Configuration
+This page displays key/value pairs that can be edited and committed to the instation. These key/value pairs are used to create configuration files for the associated detector. 
+
+!!Un-configured detector table
+||Heading|| Description
+||ID| Unique identifier for detector used to associate incoming detections with a detector.
+||Last requested configuration| The time at which the un-configured detector requested a configuration dowload.
+||Last reported detection| The time at which the un-configured detector reported a detection.
+||Last reported traffic flow| The time at which the un-configured detector reported a traffic flow.
+||Last message report| The time at which the un-configured detector message report.
+||Last log upload| The time at which the un-configured detector log upload.
+||Add| A button allowing the associated detector to be added to the configured detector table. The user must specify missing data before the addition can take place.
+||Delete| A button allowing the associated detector along with all data for that detector to be deleted. 
+
+!!!Routes
+A journey time is displayed for each route configured in the instation. A route is made up of one or more spans and spans are a description of a one way link between two detectors. In order to create a route we will need create a new route and add spans to it that make up the route we are describing. If you navigate to the 'Routes' section of the configuration page you should be shown a page as below:
+[{Image src='/Wiki/attach/Configuration/Create%20New%20Route.png' width='900px' border='1' }]
+
+You can add a new route using the button in the bottom right corner of the page. A dialog will be displayed and will require you to give a name and description for the route. Once a new route has been created you will need to click the view button associated with the new route you've created. When you do this a page such as the one below should be displayed:
+[{Image src='/Wiki/attach/Configuration/Configure%20Route%20Page.png' width='900px'}]
+
+This new page will allow you to add and remove spans to the route you have created. Adding and removing is controlled by the buttons to the right of the row describing the span. If a span you would like to add is not available you may need to define a span. 
+
+!!!Spans
+In order to add a new span navigate to the configuration page and select 'Spans'. A page will be displayed like the one below:
+[{Image src='/Wiki/attach/Configuration/Configure%20Span%20Page.png' width='900px' }]
+
+
+On this page you will be able to create new spans and edit spans that already existing. The add new span button in the bottom right corner will allow you to create new spans. When a new span is added the system will try to calculate the distance by road between the two detectors. This will be used to calculate the average speed and display the route on the map. If the path that has been chosen is incorrect it can be edited on the map interface.
+It's possible that when adding a span you will be given an error that it already exists. If this happens check the list of spans already available as each span must have a unique start and end point combination.

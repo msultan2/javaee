@@ -1,0 +1,8 @@
+This project works with SingleSignOn shared with the administration project.
+
+This means that for deploying, administration also needs to be deployed and the 
+web server need to have activated the SingleSignOn.
+
+In tomcat 8 you just have to uncomment the next line in conf/server.xml: 
+
+<Valve className="org.apache.catalina.authenticator.SingleSignOn" />

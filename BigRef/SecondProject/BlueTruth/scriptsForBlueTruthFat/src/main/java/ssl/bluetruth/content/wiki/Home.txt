@@ -1,0 +1,23 @@
+[{TableOfContents }]
+
+!Overview
+The home page is the default page shown to the user when they first log in to the instation.
+!Broadcast Messages
+Messages can be displayed here that inform users of news relating to the instation. 
+!Links
+The home page gives a brief description of each of the areas of the instation along with a link to the associated section.
+* [Report] - View real time reports on journey time and traffic flow.
+* [Map] - View geographic layout of detectors and journey calculations.
+* [Analysis] - Analyse recorded data.
+* [Diagnostic] - Diagnose problems on Detectors, Spans and Routes.
+* [Configuration] - Configure Detectors, Spans and Routes.
+* [Administration] - Administrate user information.
+* [Support] - Contact support concerning any issues with system.
+ 
+\\
+\\
+\\
+\\
+\\
+\\
+\\

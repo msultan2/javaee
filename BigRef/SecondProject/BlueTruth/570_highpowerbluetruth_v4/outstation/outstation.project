@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="outstation" InternalType="Console">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="model">
+    <VirtualDirectory Name="communication">
+      <File Name="../src/model/communication/activeboostasiotcpclient.h"/>
+      <File Name="../src/model/communication/activeboostasiotcpclient.cpp"/>
+      <VirtualDirectory Name="bluetooth">
+        <File Name="../src/model/communication/bluetooth/acquiredevicestask.cpp"/>
+        <File Name="../src/model/communication/bluetooth/acquiredevicestask.h"/>
+        <File Name="../src/model/communication/bluetooth/devicediscoverer.cpp"/>
+        <File Name="../src/model/communication/bluetooth/devicediscoverer.h"/>
+        <File Name="../src/model/communication/bluetooth/configurationsaver.cpp"/>
+        <File Name="../src/model/communication/bluetooth/configurationsaver.h"/>
+        <File Name="../src/model/communication/bluetooth/bluetoothdriver_nativebluez.cpp"/>
+        <File Name="../src/model/communication/bluetooth/bluetoothdriver_nativebluez.h"/>
+        <File Name="../src/model/communication/bluetooth/bluetoothdriver_parani.cpp"/>
+        <File Name="../src/model/communication/bluetooth/bluetoothdriver_parani.h"/>
+        <File Name="../src/model/communication/bluetooth/bluetoothdriver_rawhci.cpp"/>
+        <File Name="../src/model/communication/bluetooth/bluetoothdriver_rawhci.h"/>
+        <File Name="../src/model/communication/bluetooth/bluetooth_utils.cpp"/>
+        <File Name="../src/model/communication/bluetooth/bluetooth_utils.h"/>
+        <File Name="../src/model/communication/bluetooth/periodicallyremovenonpresentdevicestask.cpp"/>
+        <File Name="../src/model/communication/bluetooth/periodicallyremovenonpresentdevicestask.h"/>
+        <File Name="../src/model/communication/bluetooth/periodicallyprocessbackgrounddevicestask.cpp"/>
+        <File Name="../src/model/communication/bluetooth/periodicallyprocessbackgrounddevicestask.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="instation">
+        <File Name="../src/model/communication/instation/iinstationdatacontainer.cpp"/>
+        <File Name="../src/model/communication/instation/iinstationdatacontainer.h"/>
+        <File Name="../src/model/communication/instation/instationhttpclient.cpp"/>
+        <File Name="../src/model/communication/instation/instationhttpclient.h"/>
+        <File Name="../src/model/communication/instation/instationreporter.cpp"/>
+        <File Name="../src/model/communication/instation/instationreporter.h"/>
+        <File Name="../src/model/communication/instation/retrieveconfigurationtask.cpp"/>
+        <File Name="../src/model/communication/instation/retrieveconfigurationtask.h"/>
+        <File Name="../src/model/communication/instation/ihttpclient.cpp"/>
+        <File Name="../src/model/communication/instation/ihttpclient.h"/>
+        <File Name="../src/model/communication/instation/isignaturegenerator.cpp"/>
+        <File Name="../src/model/communication/instation/isignaturegenerator.h"/>
+        <File Name="../src/model/communication/instation/signaturegenerator.cpp"/>
+        <File Name="../src/model/communication/instation/signaturegenerator.h"/>
+        <File Name="../src/model/communication/instation/periodicallysendcongestionreporttask.cpp"/>
+        <File Name="../src/model/communication/instation/periodicallysendcongestionreporttask.h"/>
+        <File Name="../src/model/communication/instation/periodicallysendstatisticsreporttask.cpp"/>
+        <File Name="../src/model/communication/instation/periodicallysendstatisticsreporttask.h"/>
+        <File Name="../src/model/communication/instation/periodicallysendstatusreporttask.cpp"/>
+        <File Name="../src/model/communication/instation/periodicallysendstatusreporttask.h"/>
+        <File Name="../src/model/communication/instation/iinstationreporter.cpp"/>
+        <File Name="../src/model/communication/instation/iinstationreporter.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="ssh">
+        <File Name="../src/model/communication/ssh/ireversesshconnector.cpp"/>
+        <File Name="../src/model/communication/ssh/ireversesshconnector.h"/>
+        <File Name="../src/model/communication/ssh/reversesshconnector.cpp"/>
+        <File Name="../src/model/communication/ssh/reversesshconnector.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="gsmmodem">
+        <File Name="../src/model/communication/gsmmodem/gsmmodemsignallevelprocessor.cpp"/>
+        <File Name="../src/model/communication/gsmmodem/gsmmodemsignallevelprocessor.h"/>
+        <File Name="../src/model/communication/gsmmodem/activegsmmodemmonitor.cpp"/>
+        <File Name="../src/model/communication/gsmmodem/activegsmmodemmonitor.h"/>
+      </VirtualDirectory>
+      <File Name="../src/model/communication/activeboostasio.cpp"/>
+      <File Name="../src/model/communication/activeboostasio.h"/>
+      <File Name="../src/model/communication/boostasio.cpp"/>
+      <File Name="../src/model/communication/boostasio.h"/>
+      <File Name="../src/model/communication/iconnectionconsumer.cpp"/>
+      <File Name="../src/model/communication/iconnectionconsumer.h"/>
+      <File Name="../src/model/communication/iconnectionproducerclient.cpp"/>
+      <File Name="../src/model/communication/iconnectionproducerclient.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="configuration">
+      <File Name="../src/model/configuration/iniconfiguration.cpp"/>
+      <File Name="../src/model/configuration/iniconfiguration.h"/>
+      <File Name="../src/model/configuration/icoreconfiguration.cpp"/>
+      <File Name="../src/model/configuration/icoreconfiguration.h"/>
+      <File Name="../src/model/configuration/iniparameter.cpp"/>
+      <File Name="../src/model/configuration/iniparameter.h"/>
+      <File Name="../src/model/configuration/coreconfiguration.cpp"/>
+      <File Name="../src/model/configuration/coreconfiguration.h"/>
+      <VirtualDirectory Name="tinyxml">
+        <File Name="../libs/tinyxml/tinystr.cpp"/>
+        <File Name="../libs/tinyxml/tinystr.h"/>
+        <File Name="../libs/tinyxml/tinyxml.cpp"/>
+        <File Name="../libs/tinyxml/tinyxml.h"/>
+        <File Name="../libs/tinyxml/tinyxmlerror.cpp"/>
+        <File Name="../libs/tinyxml/tinyxmlparser.cpp"/>
+      </VirtualDirectory>
+      <File Name="../src/model/configuration/iseedconfiguration.cpp"/>
+      <File Name="../src/model/configuration/iseedconfiguration.h"/>
+      <File Name="../src/model/configuration/seedconfiguration.cpp"/>
+      <File Name="../src/model/configuration/seedconfiguration.h"/>
+      <File Name="../src/model/configuration/xmlconfiguration.cpp"/>
+      <File Name="../src/model/configuration/xmlconfiguration.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="common">
+      <File Name="../src/model/common/fastdatapacket.h"/>
+      <File Name="../src/model/common/fastdatapacket.cpp"/>
+      <File Name="../src/model/common/activetask.cpp"/>
+      <File Name="../src/model/common/activetask.h"/>
+      <File Name="../src/model/common/datacontainer.cpp"/>
+      <File Name="../src/model/common/datacontainer.h"/>
+      <File Name="../src/model/common/itask.cpp"/>
+      <File Name="../src/model/common/itask.h"/>
+      <File Name="../src/model/common/losslessdatareporter.cpp"/>
+      <File Name="../src/model/common/losslessdatareporter.h"/>
+      <File Name="../src/model/common/queuedetector.cpp"/>
+      <File Name="../src/model/common/queuedetector.h"/>
+      <File Name="../src/model/common/uri.cpp"/>
+      <File Name="../src/model/common/uri.h"/>
+      <File Name="../src/model/common/fault.cpp"/>
+      <File Name="../src/model/common/fault.h"/>
+      <File Name="../src/model/common/circularbuffer.cpp"/>
+      <File Name="../src/model/common/circularbuffer.h"/>
+      <File Name="../src/model/common/remotedevicerecord.cpp"/>
+      <File Name="../src/model/common/remotedevicerecord.h"/>
+      <File Name="../src/model/common/localdeviceconfiguration.cpp"/>
+      <File Name="../src/model/common/localdeviceconfiguration.h"/>
+      <File Name="../src/model/common/localdevicerecord.cpp"/>
+      <File Name="../src/model/common/localdevicerecord.h"/>
+      <File Name="../src/model/common/md5_rfc1321.cpp"/>
+      <File Name="../src/model/common/md5_rfc1321.h"/>
+      <File Name="../test/src/model/common/circularbuffer_test.cpp"/>
+    </VirtualDirectory>
+    <File Name="src/model/model.cpp"/>
+    <File Name="src/model/model.h"/>
+    <VirtualDirectory Name="bluetooth">
+      <File Name="../src/model/bluetooth/lib/a2mp.h"/>
+      <File Name="../src/model/bluetooth/lib/amp.h"/>
+      <File Name="../src/model/bluetooth/lib/bluetooth.c"/>
+      <File Name="../src/model/bluetooth/lib/bluetooth.h"/>
+      <File Name="../src/model/bluetooth/lib/bnep.h"/>
+      <File Name="../src/model/bluetooth/lib/cmtp.h"/>
+      <File Name="../src/model/bluetooth/lib/hci.c"/>
+      <File Name="../src/model/bluetooth/lib/hci.h"/>
+      <File Name="../src/model/bluetooth/lib/hci_lib.h"/>
+      <File Name="../src/model/bluetooth/lib/hidp.h"/>
+      <File Name="../src/model/bluetooth/lib/l2cap.h"/>
+      <File Name="../src/model/bluetooth/lib/mgmt.h"/>
+      <File Name="../src/model/bluetooth/lib/rfcomm.h"/>
+      <File Name="../src/model/bluetooth/lib/sco.h"/>
+      <File Name="../src/model/bluetooth/lib/sdp.c"/>
+      <File Name="../src/model/bluetooth/lib/sdp.h"/>
+      <File Name="../src/model/bluetooth/lib/sdp_lib.h"/>
+      <File Name="../src/model/bluetooth/lib/uuid.c"/>
+      <File Name="../src/model/bluetooth/lib/uuid.h"/>
+      <File Name="../src/model/bluetooth/tools/hcidump.c"/>
+      <File Name="../src/model/bluetooth/tools/hcidump.h"/>
+      <File Name="../src/model/bluetooth/tools/parser/amp.c"/>
+      <File Name="../src/model/bluetooth/tools/parser/bpa.c"/>
+      <File Name="../src/model/bluetooth/tools/parser/csr.c"/>
+      <File Name="../src/model/bluetooth/tools/parser/ericsson.c"/>
+      <File Name="../src/model/bluetooth/tools/parser/hci_parser.c"/>
+      <File Name="../src/model/bluetooth/tools/parser/hci_parser.h"/>
+      <File Name="../src/model/bluetooth/tools/parser/lmp.c"/>
+      <File Name="../src/model/bluetooth/tools/parser/parser.c"/>
+      <File Name="../src/model/bluetooth/tools/parser/parser.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="outstation">
+    <File Name="Makefile.am"/>
+    <File Name="configure.ac"/>
+    <File Name="README"/>
+    <File Name="build/config.h"/>
+    <File Name="TODO"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="multithreading">
+    <File Name="../src/multithreading/activeobject.cpp"/>
+    <File Name="../src/multithreading/mutex.h"/>
+    <File Name="../src/multithreading/activeobject.h"/>
+    <File Name="../src/multithreading/semaphore_.h"/>
+    <File Name="../src/multithreading/criticalsection.h"/>
+    <File Name="../src/multithreading/eventhandler.cpp"/>
+    <File Name="../src/multithreading/event.h"/>
+    <File Name="../src/multithreading/lock.cpp"/>
+    <File Name="../src/multithreading/criticalsection.cpp"/>
+    <File Name="../src/multithreading/mutex.cpp"/>
+    <File Name="../src/multithreading/semaphore_.cpp"/>
+    <File Name="../src/multithreading/lock.h"/>
+    <File Name="../src/multithreading/event.cpp"/>
+    <File Name="../src/multithreading/eventhandler.h"/>
+    <File Name="../src/multithreading/atomicvariable.h"/>
+    <File Name="../src/multithreading/boostsemaphore.cpp"/>
+    <File Name="../src/multithreading/boostsemaphore.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="view">
+    <File Name="src/view/view.cpp"/>
+    <File Name="src/view/view.h"/>
+    <File Name="../src/view/viewlogsink.cpp"/>
+    <File Name="../src/view/viewlogsink.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="common">
+    <File Name="../src/common/definitions.h"/>
+    <File Name="../src/common/iobserver.cpp"/>
+    <File Name="../src/common/clock.cpp"/>
+    <File Name="../src/common/utils.h"/>
+    <File Name="../src/common/unicode_types.h"/>
+    <File Name="../src/common/types.cpp"/>
+    <File Name="../src/common/iobservable.cpp"/>
+    <File Name="../src/common/os_utilities.h"/>
+    <File Name="../src/common/targetver.h"/>
+    <File Name="../src/common/macros.h"/>
+    <File Name="../src/common/initialiser.cpp"/>
+    <File Name="../src/common/clock.h"/>
+    <File Name="../src/common/iobservable.h"/>
+    <File Name="../src/common/os_utilities.cpp"/>
+    <File Name="../src/common/types.h"/>
+    <File Name="../src/common/utils.cpp"/>
+    <File Name="../src/common/initialiser.h"/>
+    <File Name="../src/common/iobserver.h"/>
+    <File Name="src/common/app.cpp"/>
+    <File Name="src/common/app.h"/>
+    <File Name="src/common/applicationconfiguration.cpp"/>
+    <File Name="src/common/applicationconfiguration.h"/>
+    <File Name="src/common/stdafx.cpp"/>
+    <File Name="src/common/stdafx.h"/>
+    <File Name="src/common/version.cpp"/>
+    <File Name="src/common/version.h"/>
+    <File Name="../src/common/identifiable.h"/>
+    <File Name="../src/common/identifiable.hpp"/>
+    <File Name="../src/common/execute_command.cpp"/>
+    <File Name="../src/common/execute_command.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="logger">
+    <File Name="../src/logger/logger.cpp"/>
+    <File Name="../src/logger/logger.h"/>
+    <File Name="../src/logger/filelogger.cpp"/>
+    <File Name="../src/logger/ierrordialog.cpp"/>
+    <File Name="../src/logger/ilogsink.cpp"/>
+    <File Name="../src/logger/legacyconsolelogsink.cpp"/>
+    <File Name="../src/logger/legacyfilelogsink.cpp"/>
+    <File Name="../src/logger/loghandler.cpp"/>
+    <File Name="../src/logger/managedfilelogger.cpp"/>
+    <File Name="../src/logger/filelogger.h"/>
+    <File Name="../src/logger/ierrordialog.h"/>
+    <File Name="../src/logger/ilogsink.h"/>
+    <File Name="../src/logger/legacyconsolelogsink.h"/>
+    <File Name="../src/logger/legacyfilelogsink.h"/>
+    <File Name="../src/logger/loghandler.h"/>
+    <File Name="../src/logger/managedfilelogger.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="parsing">
+    <File Name="../src/parsing/parser_common.cpp"/>
+    <File Name="../src/parsing/configurationparser.cpp"/>
+    <File Name="../src/parsing/configurationparser.h"/>
+    <File Name="../src/parsing/parser_common.h"/>
+    <File Name="../src/parsing/configuration_parser.yy"/>
+    <File Name="../src/parsing/configuration_scanner.ll"/>
+    <File Name="../src/parsing/http_response_parser.yy"/>
+    <File Name="../src/parsing/http_response_scanner.ll"/>
+    <File Name="../src/parsing/http_response.cpp"/>
+    <File Name="../src/parsing/http_response.h"/>
+    <File Name="../src/parsing/httpresponseparser.cpp"/>
+    <File Name="../src/parsing/httpresponseparser.h"/>
+    <File Name="../src/parsing/paranioutputparser.cpp"/>
+    <File Name="../src/parsing/paranioutputparser.h"/>
+    <File Name="../src/parsing/parani_output_parser.yy"/>
+    <File Name="../src/parsing/parani_output_scanner.ll"/>
+    <File Name="../src/parsing/responsebodyparser.cpp"/>
+    <File Name="../src/parsing/responsebodyparser.h"/>
+    <File Name="../src/parsing/response_body_parser.yy"/>
+    <File Name="../src/parsing/response_body_scanner.ll"/>
+    <File Name="../src/parsing/backgrounddevices_parser.yy"/>
+    <File Name="../src/parsing/backgrounddevices_scanner.ll"/>
+    <File Name="../src/parsing/backgrounddevicesparser.cpp"/>
+    <File Name="../src/parsing/backgrounddevicesparser.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="controller">
+    <File Name="src/controller/controller.cpp"/>
+    <File Name="src/controller/controller.h"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <VirtualDirectory Name="mock">
+    <File Name="../test/mock/instation_simulator.py"/>
+  </VirtualDirectory>
+  <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-O0;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="" Command="build/outstation" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand>make clean &amp;&amp; make -j`grep -c ^processor /proc/cpuinfo`</RebuildCommand>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make -j`grep -c ^processor /proc/cpuinfo`</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(ProjectPath)/build</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="yes" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="" Command="build/outstation" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand>make clean &amp;&amp; make -j`grep -c ^processor /proc/cpuinfo`</RebuildCommand>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make -j`grep -c ^processor /proc/cpuinfo`</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(ProjectPath)/build</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

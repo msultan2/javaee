@@ -1,0 +1,26 @@
+!!Bluetooth Detector Cloud Instation 2
+
+The Bluetooth Detector Cloud Instation System is a non intrusive above ground traffic flow detector system. This system allows information on journey times, traffic speed, flow characteristics and road occupancy can be calculated and displayed using data derived from Bluetooth signals emanating from passing traffic.
+----
+
+\\
+;Report:View real time reports on journey time and traffic flow
+\\
+;Map:View geographic layout of detectors and journey calculations
+\\
+;Analysis:Analyse recorded data
+\\
+;Diagnostic:Diagnose problems on Detectors, Spans and Routes
+\\
+;Configuration:Configure Detectors, Spans and Routes
+\\
+;Administration:Administrate user information
+\\
+;Support:Contact support concerning any issues with system
+\\
+\\
+\\
+\\
+\\
+\\
+\\

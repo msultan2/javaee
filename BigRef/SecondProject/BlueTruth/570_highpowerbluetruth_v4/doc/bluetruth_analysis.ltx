@@ -1,0 +1,682 @@
+\documentclass[10pt,a4paper,twocolumn,twoside,notitlepage]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{ucs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage[makeroom]{cancel}
+\usepackage{graphicx}
+
+\usepackage{booktabs}
+
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1} }
+
+\raggedbottom
+
+\author{Radoslaw Golebiewski, Simulation Systems Ltd.}
+\title{BlueTruth Analysis}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document presents analysis of calculation of vehicle velocity when 
+using BlueTruth Traffic Flow Monitoring System.
+\end{abstract}
+
+\section{Introduction}
+The BlueTruth Traffic Flow Monitoring System is a system collecting unique 
+bluetooth signatures and derives information about the traffic flow. 
+This information includes journey time and queue detection.
+The system consists of the following components:
+\begin{itemize}
+\item OutStation; located on the roadside or wherever the user wishes to 
+obtain the bluetooth ID's from,
+\item InStation; located in the central location (e.g. office) which analyses 
+the collected bluetooth ID's and derives information.
+\end{itemize}
+
+The OutStation sends periodic inquiries to the surrounding bluetooth devices
+and devices which, if configured to do so, respond to this inquiry, providing its 
+unique bluetooth ID's (BD\_ADDR, which is equivalent to the network MAC address).
+
+There are three modes of inquiry which differ by the response format
+(\cite{bluetooth2.1}, part E, sec.6.5 Inquiry Mode):
+\begin{itemize}
+\item Standard Inquiry Result event format,
+\item Inquiry Result format with RSSI (Received Singal Strength Indication),
+\item Inquiry Result with RSSI format or Extended Inquiry Result format.
+\end{itemize}
+For Standard Inquiry Result format the responses are cached and returned at 
+the completion of inquiry. That means that having relatively long inquiry time
+the time of response is provided with limited resolution.
+In the case of formats with RSSI (to be called RSSI mode) the responses may be 
+reported as they are received
+giving better time accuracy. Also in this format a device may respond multiple times
+and together with RSSI may provide additional information about its location 
+relative to the requesting OutStation.
+
+The process of device discovery has been described in detail in 
+\cite{bluetooth2.1}, part B, sec.2.5 and 8.4.
+RSSI has been described in
+\cite{bluetooth2.1}, part A, sec.4.1.6. 
+Some other parts of \cite{bluetooth2.1} may require reading too.
+
+In this article the general time error will be calculated in sec. \ref{sec:inquiry_time_error}.
+After that an effect of inquiry time resolution will be examined in sec. \ref{sec:speed_banding}.
+Additionally the relationship between the antenna range and time accuracy (Standard Inquiry Mode) 
+will be checked in sec. \ref{sec:antenna_range}. 
+The visibility during inquiry depends from the vehicle speend and this issue 
+will be addresses in sec. \ref{sec:visibility_during_inquiry}.
+Some experiments about RSSI have been performed and described in sec. \ref{sec:rssi_experiments}.
+In sec. \ref{sec:standard_mode_speed_error} and \ref{sec:rssi_mode_speed_error}
+error analysis for standard and RSSI modes have been presented. 
+In \ref{sec:queue_detection} we present some initial thoughts about queue detection algorithms.
+
+The following variable names will be used:
+\begin{flalign*}
+	&r - \text{distance between two adjacent OutStations} &\\
+	&\Delta r - \text{omni-directional antenna radius / range} \\
+	&t - \text{time} \\
+	&v - \text{velocity / spped}\\
+\epsilon& - \text{error}
+\end{flalign*}
+
+
+\section{Inquiry Time Error}
+\label{sec:inquiry_time_error}
+Fig. \ref{fig:outstation_taking_measurements} and \ref{fig:two_outstations} 
+show the process of taking the measurement for speed calculation.
+The inquiry time error is a general timing error being a difference between 
+the response time at the virtual middle of scanned area
+and the response from the actual device location.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.48\textwidth]{outstation_taking_measurements.png}
+	\caption{
+	OutStation taking measurements. A car is moving to the left at speed $v$. 
+	During its journey through the OutStation visibility range $2\,\Delta r$ 
+	a few measurements may be taken at time $t$ (in the picture $t_A$, $t_B$, $t_C$)
+	}
+	\label{fig:outstation_taking_measurements}
+\end{figure}
+
+\begin{figure*}
+	\centering
+	\includegraphics[width=0.85\textwidth]{two_outstations.png}
+	\caption{
+	Two OutStations taking measurements. A car is moving to the left at speed $v$. 
+	During its journey through the OutStation's visibility range $2\,\Delta r_0$ and $2\,\Delta r_1$
+	a few measurements may be taken at times $t_0$ and $t_1$ (in the picture 
+	$t_{A0}$, $t_{B0}$, $t_{C0}$ and $t_{A1}$, $t_{B1}$, $t_{C1}$). 
+	Each route and time measurement contains an error component resulting from either
+	antenna range ($\epsilon_{r0}$ and $\epsilon_{r1}$) or 
+	discrete time values, latency in response or other factors ($\epsilon_{t0}$, $\epsilon_{t1}$).
+	The total error of route calculation for both OutStations is $\epsilon_r = \epsilon_{r0} + \epsilon_{r1}$. 
+	The total error of time for both OutStations is $\epsilon_t = \epsilon_{t0} + \epsilon_{t1}$.
+	}
+	\label{fig:two_outstations}
+\end{figure*}
+
+This inaccuracy can be caused by:
+\begin{itemize}
+	\item discrete time values (Standard Inquiry Mode),
+	\item latency in response from bluetooth devices (e.g. resulting from device being in Sleep or Connected mode),
+	\item big antenna range and lack of additional means to specify the best time estimate.
+\end{itemize}
+When calculating vehicle speed this inaccuracy is increased by
+\begin{itemize}
+	\item lack or poor time synchronisation between the OutStations (in other words the time on each OutStation is different),
+	\item lack of synchronisation of inquiry start between the OutStations.
+\end{itemize}
+
+Let's calculate the impact of time measuring error on the value of velocity:
+\begin{equation}
+	v \pm \epsilon_v = \frac{r \pm \epsilon_r}{t \pm \epsilon_t}
+\end{equation}
+\[ ( v \pm \epsilon_v) \, (t \pm \epsilon_t ) = r + \epsilon_r\]
+\[ \cancel{v t} \pm \epsilon_v t \pm v\epsilon_t \pm \cancelto{0}{\epsilon_v\epsilon_t} = \cancel{r} \pm \epsilon_r \]
+\[ \epsilon_v t = \pm \epsilon_r \pm v \epsilon_t \]
+\[ \epsilon_v = \pm \frac{\epsilon_r +  v \epsilon_t}{t} \]
+\begin{equation}\label{eq:v_error}
+	\epsilon_v = \pm \frac{v \epsilon_r + v^2 \epsilon_t}{r}
+\end{equation}
+
+From this equation we can see that the error of speed calculation will be much higher 
+(grows with square) for routes with higher average speed (or higher speed restriction), and also may be too 
+big if the distance between the two OutStations is too small.
+
+Example: For two OutStations running in Standard Mode located \mbox{$r=$ 1mile} from each other 
+with antenna range of $\Delta r$ = 100m for each OutStation ($\epsilon_r=2\Delta r=$ 200m = $200/1609$mile) and reporting 
+vehicles with time accuracy of \mbox{$\epsilon_{t0}=\epsilon_{t1}=$ 5s} 
+(\mbox{$\epsilon_t =\epsilon_{t0} + \epsilon_{t1} = 10s = 10/3600$h})
+the error of velocity $\epsilon_v$ for a vehicle moving at speed \mbox{$v$ = 60mph} is
+\begin{align*}
+	\epsilon_v &= 
+	\frac{60\cdot 200/1609 + 60^2\cdot 10/3600}{1} = \\
+	&= 7.45 + 10 = 17.45\,\text{mph}
+\end{align*}
+The values of velocity error $\epsilon_v$ for other speeds are:
+\begin{flalign*}
+	70\,\text{mph}& \rightarrow \epsilon_{v} = 13.61 + 8.70 = 22.31\,\text{mph} &\\
+	50\,\text{mph}& \rightarrow \epsilon_{v} = 6.21 + 6.94 = 13.15\,\text{mph} &\\
+	40\,\text{mph}& \rightarrow \epsilon_{v} = 4.97 + 4.44 =  9.41\,\text{mph} &\\
+	30\,\text{mph}& \rightarrow \epsilon_{v} = 3.73 + 2.50 =  6.23\,\text{mph} &\\
+	20\,\text{mph}& \rightarrow \epsilon_{v} = 2.49 + 1.11 =  3.60\,\text{mph}
+\end{flalign*}
+Velocity error for other values of speed, distance and antenna range have been 
+calculated in Tab. \ref{tab:inquiry_time_error}.
+
+\begin{table}[htbp]
+\begin{tabular}{c|d{1}|d{1}|d{1}|d{1}} 
+\toprule
+$v$ [mph] & \multicolumn{4}{c}{$r=1/2$ mile} \\ \cline{2-5}
+    & \multicolumn{4}{c}{$\Delta r$ [m]} \\ 
+    & 100 & 200 & 300 & 600 \\ \midrule
+70  & 44.62 & 62.03 & -     & - \\
+60  & 34.92 & 49.83 & -     & - \\
+50  & 26.32 & 38.75 &  -    & - \\
+40  & 18.83 & 28.78 & 38.72 & - \\
+30  & 12.46 & 19.92 & 27.37 & - \\
+20  &  7.19 & 12.17 & 17.14 & - \\ \midrule
+    & \multicolumn{4}{c}{$r=1$ mile} \\ \cline{2-5}
+    & \multicolumn{4}{c}{$\Delta r$ [m]} \\ 
+    & 100 & 200 & 300 & 600 \\ \midrule
+70  &  22.31 & 31.01 & 39.71 & 62.81 \\
+60  &  17.45 & 24.92 & 32.37 & 54.75 \\
+50  &  13.15 & 19.37 & 25.59 & 44.23 \\
+40  &   9.41 & 14.39 & 19.36 & 34.27 \\
+30  &   6.23 &  9.96 & 13.89 & 24.87 \\
+20  &   3.60 &  6.08 &  8.57 & 16.03 \\ \midrule
+    & \multicolumn{4}{c}{$r=2$ mile} \\ \cline{2-5}
+    & \multicolumn{4}{c}{$\Delta r$ [m]} \\ 
+    & 100 & 200 & 300 & 600 \\ \midrule
+70  & 11.16 & 15.51 & 19.86 & 32.90 \\
+60  &  8.73 & 12.46 & 16.19 & 27.37 \\
+50  &  6.58 &  9.69 & 12.79 & 22.12 \\
+40  &  4.71 &  7.19 &  9.68 & 17.14 \\
+30  &  3.11 &  4.97 &  6.84 & 12.43 \\
+20  &  1.80 &  3.04 &  4.28 &  8.01 \\ \midrule
+    & \multicolumn{4}{c}{$r=4$ mile} \\ \cline{2-5}
+    & \multicolumn{4}{c}{$\Delta r$ [m]} \\ 
+    & 100 & 200 & 300 & 600 \\ \hline
+70  &  5.58 &  7.75 &  9.92 & 16.45 \\
+60  &  4.36 &  6.23 &  8.09 & 13.69 \\
+50  &  3.29 &  4.84 &  6.39 & 11.06 \\
+40  &  2.35 &  3.59 &  4.84 &  8.57 \\
+30  &  1.56 &  2.48 &  3.42 &  6.21 \\
+20  &  0.90 &  1.52 &  2.14 &  4.01 \\ 
+\bottomrule
+\end{tabular}
+	\caption{
+    A value of Inquiry Time Error $\epsilon_{v}$ for various speeds $v$, distances $r$ 
+    and antenna ranges $\Delta r$ when $\epsilon_t=10$s.}
+	\label{tab:inquiry_time_error}
+\end{table}
+
+\section{Speed Banding}
+\label{sec:speed_banding}
+In the Standard Inquiry Mode (legacy BlueTruth) the main inquiry time error 
+component results from reporting the inquiry results after the inquiry is completed.
+During inquiry the BD\_ADDR (equivalent to network MAC address) of each 
+responding device is cached and reported at the end of inquiry.
+When calculating the velocity this caching of results affects the time 
+resolution of observations and contributes to velocity accuracy.
+
+When time is reported with discrete values speed banding appears. 
+The set of velocity values is determined by the set of time differences
+and defined with the following equation:
+\begin{multline}
+	\{ t_n: \;t_n = \Delta t + n \cdot \epsilon_t, \; n \in \mathbb{N} \} \;\; 
+	\Rightarrow \\
+	\;\; \{ v_n: v_n = \frac{r}{t_n} = \frac{r}{\Delta t + n \cdot \epsilon_t} \}
+\end{multline}
+where $\Delta t$ is time shift between subsequent device inquiries 
+between the adjacent OutStations, $n$ is an integer, $\epsilon_n$ is time resolution.
+
+Example: For two OutStations located 1 mile from each other 
+starting inquiry at exactly the same time and of the same duration 
+and detecting vehicles with time resolution of 
+$\Delta t = 10\,\text{s}\;(\epsilon_t=10\,\text{s}$)
+the following speeds can be reported:
+\begin{multline*}
+	v \in \lbrace 
+	\dotsc
+	\frac{1\text{[mile]}}{50 [\text{s}]}, \;
+	\frac{1}{60}, \;
+	\frac{1}{70}, \;
+	\frac{1}{80}, \;
+	\frac{1}{90}, \;
+	\frac{1}{100}, \;
+	\frac{1}{110}, \;
+	\dotsc
+	\rbrace \\
+=
+	\lbrace 
+	\dotsc
+	72\text{[mph]},\;
+	60,\;
+	51.4,\;
+	45,\;
+	40,\;
+	36,\;
+	\dotsc \rbrace
+\end{multline*}
+Example: For two OutStations located 1 mile from each other 
+starting inquiry of the same duration but separated by $\Delta t / 2$
+and detecting vehicles with time resolution of 
+$\Delta t = 10\,\text{s}$ ($\epsilon_t=10\,\text{s}$)
+the following speeds can be reported:
+\begin{multline*}
+	v \in \lbrace 
+	\dotsc
+	\frac{1\text{[mile]}}{55 [\text{s}]}, \;
+	\frac{1}{65}, \;
+	\frac{1}{75}, \;
+	\frac{1}{85}, \;
+	\frac{1}{95}, \;
+	\frac{1}{105}, \;
+	\dotsc
+	\rbrace \\
+=
+	\lbrace 65.5\text{[mph]},\;
+	55.38,\;
+	48,\;
+	42.35,\;
+	37.9,\;
+	34.3,\;
+	\dotsc \rbrace
+\end{multline*}
+
+\section{Antenna Range}
+\label{sec:antenna_range}
+During inquiry vehicles move through the scanned area. 
+In Standard Inquiry Mode this fact introduces uncertainty of device location 
+and contributes to velocity accuracy. This is a special case of (\ref{eq:v_error})
+when $\epsilon_t=0$.
+\begin{equation}
+	\epsilon_v = v\,\frac{\epsilon_r}{r}
+\end{equation}
+Example: For two OutStations located 1 mile from each other with antenna range of radius 100m for each OutStation
+($\epsilon_r=2\Delta r=$ 200m = $200/1609$mile) the error of speed calculation $\epsilon_{v}$ (in the lack of other errors) for vehicles moving with \mbox{$v=$ 60mph} is:
+\begin{align*}
+	\epsilon_v &= 
+	\frac{60\cdot 200/1609}{1} = \\
+	&= 7.45\,\text{mph}
+\end{align*}
+The values of velocity error $\epsilon_v$ for other speeds are:
+\begin{flalign*}
+	70\,\text{mph}& \rightarrow \epsilon_v = 8.7\,\text{mph} &\\
+	50\,\text{mph}& \rightarrow \epsilon_v = 6.2\,\text{mph} &\\
+	40\,\text{mph}& \rightarrow \epsilon_v = 5.0\,\text{mph} &\\
+	30\,\text{mph}& \rightarrow \epsilon_v = 3.7\,\text{mph} &\\
+	20\,\text{mph}& \rightarrow \epsilon_v = 2.5\,\text{mph}
+\end{flalign*}
+Velocity error for other values of speed, distance and antenna range have been 
+calculated in Tab. \ref{tab:antenna_range_error}.
+
+\begin{table}[htbp]
+\begin{tabular}{c|d{1}|d{1}|d{1}|d{1}} 
+\toprule
+$v$ [mph] & \multicolumn{4}{c}{$r=1/2$ mile} \\ \cline{2-5}
+& \multicolumn{4}{c}{$\Delta r$ [m]} \\ 
+& 100 & 200 & 300 & 600 \\ \midrule
+70  & 17.40 & 34.80  & 52.21 & - \\
+60  & 14.92 & 29.83  & 44.75  & - \\
+50  & 12.43 & 24.86  & 37.29  & - \\
+40  &  9.94 & 19.88  & 29.83  & - \\
+30  &  7.46 & 14.92  & 22.37  & - \\
+20  &  4.97 &  9.94  & 14.92  & - \\ \midrule
+& \multicolumn{4}{c}{$r=1$ mile} \\ \cline{2-5}
+& \multicolumn{4}{c}{$\Delta r$ [m]} \\ 
+& 100 & 200 & 300 & 600 \\ \midrule
+70  & 8.70  & 17.40  & 26.10  & 52.21 \\
+60  & 7.46  & 14.92  & 22.37  & 44.74 \\
+50  & 6.21  & 12.43  & 18.64  & 37.29 \\
+40  & 4.97  &  9.94  & 14.92  & 29.83 \\
+30  & 3.73  &  7.46  & 11.19  & 22.37 \\
+20  & 2.49  &  4.97  &  7.46  & 14.97 \\ \midrule
+& \multicolumn{4}{c}{$r=2$ mile} \\ \cline{2-5}
+& \multicolumn{4}{c}{$\Delta r$ [m]} \\ 
+& 100 & 200 & 300 & 600 \\ \midrule
+70  &  4.35 &  8.70 & 13.05 & 26.10 \\
+60  &  3.73 &  7.46 & 11.19 & 22.37 \\
+50  &  3.11 &  6.21 &  9.32 & 18.64 \\
+40  &  2.48 &  4.97 &  7.46 & 14.92 \\
+30  &  1.86 &  3.73 &  5.59 & 11.19 \\
+20  &  1.24 &  2.48 &  3.72 &  7.46 \\ \midrule
+& \multicolumn{4}{c}{$r=4$ mile} \\ \cline{2-5}
+& \multicolumn{4}{c}{$\Delta r$ [m]} \\ 
+& 100 & 200 & 300 & 600 \\ \midrule
+70  &  2.17 &  4.35 &  6.52 & 13.05 \\
+60  &  1.86 &  3.73 &  5.59 & 11.19 \\
+50  &  1.55 &  3.11 &  4.66 &  9.32 \\
+40  &  1.24 &  2.49 &  3.73 &  7.46 \\
+30  &  0.93 &  1.86 &  2.80 &  5.59 \\
+20  &  0.62 &  1.24 &  1.86 &  3.73 \\
+\bottomrule
+\end{tabular}
+\caption{
+A value of Antenna Range error contributing to speed error $\epsilon_{v}$ for various speeds $v$, distances $r$ and antenna ranges $\Delta r$. In the case of RSSI Mode the antenna range should be replaced by error of device location estimation.}
+\label{tab:antenna_range_error}
+\end{table}
+
+\textit{Conclusion is missing: what is the impact of antenna range on detection speed or speed error.}
+
+The antenna range depends on antenna directional pattern and the phones themselves. 
+The directional antenna may increase the visibility range. 
+Also depending on model type different sensitivity and response signal is observed.
+Fig. \ref{fig:rssi_antenna} presents results of an experiment where two antennas were used, 
+one omnidirectional and the other one was of "can" type.
+Using four models of mobile phones average value of RSSI was calculated and drawn for each phone and antenna.
+\begin{figure*}[htbp]
+	\centering
+	\includegraphics[width=0.9\textwidth]{rssi_antenna.png}
+	\caption{
+	Dependency of RSSI vs distance taken with 4 different phones and two types of antenna (omnidirectional and "can" type).
+	Each measurement was performed for 120s or more and averaged.}
+	\label{fig:rssi_antenna}
+\end{figure*}
+
+\section{Visibility During Inquiry}
+\label{sec:visibility_during_inquiry}
+During inquiry vehicles move through the scanned area. 
+The time when a vehicle is visible in the scanned area 
+or can hear and respond to inquiry is limited by it speed.
+For a vehicle moving with speed $v$ in the BlueTruth device 
+omni-directional scanning area of radius $\Delta r$ the time 
+when it is visible is defined:
+\begin{equation}
+	t_{vis} = \frac{2\Delta r}{v}
+\end{equation} 
+Example: The $t_{vis}$ for the OutStation with radius $r=100\,$m 
+for vehicles moving with \mbox{$v=$ 60mph} is:
+\begin{align*}
+	\epsilon_v &= 
+	\frac{200/1609}{60} = \\
+	&= 0.00207\,\text{h} = 7.45\,\text{s}
+\end{align*}
+The values of velocity error $\epsilon_v$ for other speeds are:
+\begin{flalign*}
+	70\,\text{mph}& \rightarrow t_{vis} =  6.39\,\text{s} &\\
+	50\,\text{mph}& \rightarrow t_{vis} =  8.95\,\text{s} &\\
+	40\,\text{mph}& \rightarrow t_{vis} = 11.19\,\text{s} &\\
+	30\,\text{mph}& \rightarrow t_{vis} = 14.92\,\text{s} &\\
+	20\,\text{mph}& \rightarrow t_{vis} = 22.37\,\text{s}
+\end{flalign*}
+The visibility time does not affect accuracy of speed but 
+reduces the number of taken measurements thus degrading the 
+quality of calculations. In the extreme cases where there is a limited
+number of cars on the road this fact may lead to lack of measurements at all.
+
+\section{RSSI Experiments}
+\label{sec:rssi_experiments}
+A few experiments have been conducted to measure RSSI values. The experiment have been made
+using some Nokia phones and Industrial Bluetooth USB2.0 device 
+(the legacy BlueTruth USB device, range upto 100m) 
+connected to the OutStation.
+\begin{enumerate}
+	\item In the first experiment we measured direct relationship between RSSI 
+		and distance from the outstation. The results have been shown 
+		in Fig. \ref{fig:rssi_vs_distance}.
+	\item In the second experiment we measured relationship between RSSI and
+		location of a telephone in a car. The results have been put in 
+		Table \ref{tab:rssi_measurements}.
+	\item In the third experiment we measured RSSI patterns on the road with 
+		free traffic flow and speed restriction of 40mph. The results have been 
+		presented in Fig. \ref{fig:rssi_pattern} and \ref{fig:rssi_busy_roundabout_pattern}.
+\end{enumerate}
+
+\begin{figure*}
+	\centering
+	\includegraphics[width=0.90\textwidth]{rssi_vs_distance.png}
+	\caption{
+	Dependency of RSSI vs distance taken with 4 different phones.
+	Each measurement was performed for 120s or more and averaged.}
+	\label{fig:rssi_vs_distance}
+\end{figure*}
+
+\begin{table}[htbp]
+\begin{tabular}{p{4.4cm}p{1cm}p{1cm}}
+	\toprule
+	\textbf{Description} & \textbf{E [RSSI]} & \textbf{$\sigma$ [RSSI]} \\
+	\midrule
+	Open area & -60.60 & 3.30 \\ 
+	Car, boot & -61.38 & 4.38 \\ 
+	Car, driver door pocket & -61.96 & 5.79 \\ 
+	Car, driver, inner pocket in trousers & -65.94 & 2.85 \\ 
+	Car, driver, outer pocket in trousers & -78.57 & 3.41 \\ 
+	Car, driver seat & -64.62 & 5.80 \\ 
+	Car, passenger door pocket & -66.63 & 4.48 \\ 
+	Car, passenger seat & -67.26 & 5.38 \\ 
+	Car, passenger, inner pocket in trousers & -68.88 & 8.33 \\ 
+	Car, passenger seat, open windows & -66.29 & 3.52 \\ 
+	\bottomrule
+\end{tabular}
+	\caption{
+	RSSI measurement in various conditions. r=5m - distance form the car or device, E[RSSI] - average RSSI value, $\sigma$[RSSI] - RSSI measurement standard deviation}
+	\label{tab:rssi_measurements}
+\end{table}
+
+\begin{figure*}
+	\centering
+	\includegraphics[width=.85\textwidth]{rssi_pattern_short.png}
+	
+	\includegraphics[width=.85\textwidth]{rssi_pattern_long.png}
+	\caption{
+	Example of RSSI patterns for free flow on the road with speed restriction of 40mph (short and long pattern)}
+	\label{fig:rssi_pattern}
+\end{figure*}
+
+\begin{figure*}
+	\centering
+	\includegraphics[width=.85\textwidth]{rssi_pattern_busy_roundabout_short.png}
+
+	\includegraphics[width=.85\textwidth]{rssi_pattern_busy_roundabout_long.png}
+	\caption{
+	Example of RSSI patterns for a busy roundabout flow 
+	(a few measurements for cars observed in range 5-15 and 15-30 seconds have been selected)}
+	\label{fig:rssi_busy_roundabout_pattern}
+\end{figure*}
+
+\textit{Conclusion missing what the results show...}
+
+The experiments show that the RSSI drops with a distance and 
+depends on bluetooth device location in the car. 
+An RSSI eye pattern should be expected for the moving cars
+but the measurement noise is significantly obscuring the measurement.
+The simplest estimator of time at the virtual middle of scanned area could be
+the maximum RSSI value
+\begin{equation}
+	t = \{t\;:\;\max(\text{RSSI})\} 
+\end{equation}
+but other estimators can be proposed and tested in the future.
+
+\section{Standard Mode Speed Error - Legacy BlueTruth}
+\label{sec:standard_mode_speed_error}
+In Standard Mode the following factors will contribute to speed error:
+\begin{itemize}
+	\item discrete time values reported to the OutStation $\epsilon_{tD}$,
+	\item latency in response from the bluetooth device $\epsilon_{tL}$,
+	\item antenna range and lack of RSSI information $\epsilon_{rA}$,
+	\item time synchronisation between the OutStations error $\epsilon_{tS}$,
+	\item time synchronisation between inquiry start $\epsilon_{tI}$.
+\end{itemize}
+
+We will assume that 
+\begin{itemize}
+	\item there is no contention between devices responding to inquiry and 
+	the device response latency is 0 ($\epsilon_{tL} = 0$,
+	\item the time at the OutStations is fully synchronised 
+	by means of Network Time Protocol (NTP) or others and hence this factor 
+	will not be included in calculations ($\epsilon_{tS} = 0$),
+	\item there is no time synchronisation between inquiry Start across 
+	the network. \textit{The resulting error is to be calculated and is currently ignored.}
+\end{itemize}
+
+We will use equation (\ref{eq:v_error}) with 
+$\epsilon_r = \epsilon_{rA}$ and $\epsilon_{t} = \epsilon_{tD}$ 
+so that it takes the form:
+\begin{equation}
+	\epsilon_v = \frac{v\epsilon_r \pm v^2 \epsilon_{tD}}{r}
+\end{equation}
+
+Example: For two OutStations located $r=$ 1mile from each other 
+with antenna range of radius \mbox{$\Delta r=$ 100m} 
+($\epsilon_r=2\Delta r=$ 200m = $200/1609$mile),
+starting inquiry at exactly the same time and of the same duration 
+and detecting and reporting vehicles with time accuracy of 
+$\epsilon_{t0} = \epsilon_{t1} = 5\,\text{s}$ 
+(\mbox{$\epsilon_t =\epsilon_{t0} + \epsilon_{t1} = 10s = 10/3600$h})
+the speed calculation error is:
+\begin{flalign*}
+	70\,\text{mph}& \rightarrow \epsilon_{v} = 22.31\,\text{mph} &\\
+	60\,\text{mph}& \rightarrow \epsilon_{v} = 17.45\,\text{mph} &\\
+	50\,\text{mph}& \rightarrow \epsilon_{v} = 13.15\,\text{mph} &\\
+	40\,\text{mph}& \rightarrow \epsilon_{v} = 9.41\,\text{mph} &\\
+	30\,\text{mph}& \rightarrow \epsilon_{v} = 6.23\,\text{mph} &\\
+	20\,\text{mph}& \rightarrow \epsilon_{v} = 3.60\,\text{mph}
+\end{flalign*}
+
+
+
+\section{RSSI Mode Speed Error}
+\label{sec:rssi_mode_speed_error}
+In RSSI Mode the following factors will contribute to speed error:
+\begin{itemize}
+	\item latency in response from the bluetooth device $\epsilon_{tL}$,
+	\item antenna range and middle position time estimation error $\epsilon_{rA}$,
+	\item time synchronisation between the OutStations error $\epsilon_{tS}$,
+	\item time synchronisation between inquiry start $\epsilon_{tI}$.
+\end{itemize}
+
+We will assume that 
+\begin{itemize}
+	\item there is no contention between devices responding to inquiry and 
+	the device response latency is 0 ($\epsilon_{tL} = 0$,
+	\item the time on the OutStations is fully synchronised 
+	by means of Network Time Protocol (NTP) or others and this factor will 
+	not be included in calculations ($\epsilon_{tS} = 0$,
+	\item the is no time synchronisation between inquiry Start across 
+the network. \textit{The resulting error is to be calculated and is currently ignored.}
+\end{itemize}
+We will use equation (\ref{eq:v_error}) with $\epsilon_r = \epsilon_{rA}$ 
+and $\epsilon_{t} = 0$ so that takes the form:
+\begin{equation}
+\epsilon_v = \frac{v\epsilon_r}{r}
+\end{equation}
+
+\section{Queue Detection}
+\label{sec:queue_detection}
+The following aspects will have to be considered in queue detection:
+\begin{enumerate}
+\item Number of visible lanes,
+\item Speed restriction (either permanent or temporary, in the case of road works). 
+Speed restriction may be different in each direction, and on motorways may be different
+for each lane,
+\item Presence of special lanes, e.g. for buses, taxis or "2+" (2 or more 
+passengers travelling in the same vehicle),
+\item Presence of stationary bluetooth transmitters, e.g. no parking/parking allowed, 
+presence of special buildings / services like bus/train/tram/fuel stations or shops,
+\item Proximity of traffic lights, 
+\item Probability of bluetooth detection $p_E$ which depends on antenna range, 
+speed restriction, how many people have bluetooth enabled, etc
+\item Maximum car capacity on the monitored road $C_p$ 
+($=\text{number of lanes} \times \frac{\text{antenna range}}{\text{average car length}})$.
+\end{enumerate}
+
+All these factors will contribute to success or the opposite of device queue detection.
+There are four possible variants of queue detection result presented in Tab. \ref{tab:queue_detection_success}.
+\begin{table}
+	\begin{tabular}{|c|c|}
+	\hline
+	no queue & no queue \\
+	/ & / \\
+	no queue reported &	queue reported \\
+	(OK) &	\textbf{(error, false positive)}\\ \hline
+	queue & queue \\
+	/ & / \\
+	no queue reported & queue reported \\ 
+	\textbf{(error)} & (OK)\\ \hline
+	\end{tabular}
+	\caption{Queue detection algorithm possible outcome.}
+	\label{tab:queue_detection_success}
+\end{table}
+
+The following factors can be calculated / are known and available for queue detection assessment.
+\begin{enumerate}
+\item how many cars/pedestrians are in the monitored area,
+\item for each car/pedestrian how long it is/was in the monitored area,
+\item how many cars/pedestrians have recently left the area,
+\item \textit{other factors to be added...}
+\end{enumerate}
+
+\newcounter{counter:scenario}
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: A road in the town, number of lanes 1, 
+speed restriction 40mph, no special lanes, no special objects, no traffic lights.
+Queue if more than $C_p\cdot p_E$ detected and 
+less than $n_\%$ (percent) leaving the monitored area and 
+average car visibility time $> 3 t_{vis}$. 
+A delay (and hysteresis) is required for reliable implementation.
+
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: Motorway, number of lanes 3, 
+speed restriction 70mph, no special lanes, no special objects, no traffic lights.
+Queue if ???.
+
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: A roundabout in the town, number of lanes 1, 
+speed restriction 40mph, no special lanes, no special objects, no traffic lights.
+Queue if ???.
+
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: A road in the town, number of lanes 2, 
+speed restriction 40mph, no special lanes, no special objects, no traffic lights.
+Queue if ???.
+
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: A road outside a the town (like from Backwell to Bristol), number of lanes 2, 
+speed restriction 60mph, \textbf{middle lane for buses and "2+" in selected hours}, no special objects, no traffic lights.
+Queue if ???.
+
+
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: A cross-roads in the town, number of lanes 1, 
+speed restriction 40mph, no special lanes, no special objects, \textbf{traffic lights}.
+Queue if ???.
+
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: A cross-roads in the town, number of lanes 1, 
+speed restriction 40mph, no special lanes, \textbf{fuel station}, \textbf{traffic lights}.
+Queue if ???.
+
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: A cross-roads in the town, number of lanes 1, 
+speed restriction 40mph, no special lanes, \textbf{2 bus stations}, \textbf{traffic lights}.
+Queue if ???.
+
+\stepcounter{counter:scenario}
+Scenario \arabic{counter:scenario}: A roundabout in the town, \textbf{number of lanes 3}, 
+speed restriction 40mph, no special lanes, \textbf{two fuel stations}, \textbf{traffic lights in each direction}.
+Queue if ???.
+
+\textit{Other scenarios to be added and analysed...}
+
+\section{Conclusions}
+\label{sec:conclusions}
+To be added...
+
+\begin{thebibliography}{9}
+
+\bibitem{bluetooth2.1}
+  \emph{Specification of the Bluetooth System}.
+  Wireless Connections Made Easy,
+  Bluetooth SIG
+  Core V2.1 + EDR,
+  2007.
+
+\end{thebibliography}
+
+\end{document}

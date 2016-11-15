@@ -1,0 +1,25 @@
+table.dataTable form.jeditable {
+    text-align: right;
+}
+
+table.dataTable form.jeditable label.error {
+    float:left;
+    color: red;
+    padding: 5px;
+}
+
+table.dataTable form.jeditable input {    
+    display:block;
+}
+table.dataTable form.jeditable input.error {
+    border: 1px solid red;
+    background-color: #FFD6D3;
+}
+table.dataTable form.jeditable select {    
+    display:block;
+}
+
+table.dataTable td.center form.jeditable input {
+    text-align: center;
+}
+

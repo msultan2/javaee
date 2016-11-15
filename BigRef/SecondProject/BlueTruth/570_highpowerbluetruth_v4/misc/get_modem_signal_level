@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#This script connects to modem and retrieves signal level
+#The script requires parameters: <ip address> <login> <password> <optional output file name>
+
+
+if [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; then
+
+    if [ "$#" -eq 4 ]; then
+        expect -f `dirname "$0"`/get_modem_status.exp $@| grep "Signal Level" | tr -s ' ' | cut -d ' ' -f 4 > $4
+    else
+        expect -f `dirname "$0"`/get_modem_status.exp $@| grep "Signal Level" | tr -s ' ' | cut -d ' ' -f 4
+    fi
+
+else
+    echo "This script connects to modem and retrieves signal level"
+    echo "The script requires parameters: <ip address> <login> <password> <optional output file name>"
+    exit 1
+fi

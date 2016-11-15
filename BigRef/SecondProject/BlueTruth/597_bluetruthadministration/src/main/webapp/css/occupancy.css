@@ -1,0 +1,20 @@
+.occupancy-free {
+    background-color: #CCFFCC;
+    font-weight: bold;
+}
+.occupancy-moderate {
+    background-color: #CCCCFF;
+    font-weight: bold;
+}
+.occupancy-slow {
+    background-color: #FFFFCC;
+    font-weight: bold;
+}
+.occupancy-very-slow {
+    background-color: #FFE7CC;
+    font-weight: bold;
+}
+.occupancy-stationary {
+    background-color: #FFCCCC;
+    font-weight: bold;
+}

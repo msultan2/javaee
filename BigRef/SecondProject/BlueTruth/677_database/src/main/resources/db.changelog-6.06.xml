@@ -1,0 +1,776 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet id="changelog-6.06.00" author="msultan">
+        <comment>Update congestion view to unify the reporting detectors</comment>
+        <createView catalogName="cat"
+                    replaceIfExists="true"
+                    schemaName="public"
+                    viewName="most_recent_occupancy_view">
+            SELECT DISTINCT detector.detector_id,
+	            detector.detector_name,
+	            occupancy.reported_timestamp,
+	            occupancy.stationary,
+	            occupancy.very_slow,
+	            occupancy.slow,
+	            occupancy.moderate,
+	            occupancy.free,
+	            CASE
+	            WHEN occupancy.queue_present = 9 THEN 'QUEUEING'::text
+	            WHEN occupancy.queue_present = 0 THEN 'NO QUEUE'::text
+	            ELSE 'CALCULATING'::text
+	            END AS queue
+            FROM detector
+            LEFT JOIN occupancy ON detector.detector_id::text = occupancy.detector_id::text
+            JOIN ( SELECT occupancy_1.detector_id,
+            			max(occupancy_1.reported_timestamp) AS reported_timestamp
+            		FROM occupancy occupancy_1
+            		GROUP BY occupancy_1.detector_id) most_recent_occupancy
+            ON detector.detector_id::text = most_recent_occupancy.detector_id::text
+            AND occupancy.reported_timestamp = most_recent_occupancy.reported_timestamp
+            AND occupancy.reported_timestamp > (now() - '00:05:00'::interval);
+        </createView>
+
+        <rollback>
+            <createView catalogName="cat"
+                            replaceIfExists="true"
+                            schemaName="public"
+                        viewName="most_recent_occupancy_view">
+                SELECT detector.detector_id,
+	                detector.detector_name,
+		            occupancy.reported_timestamp,
+	                occupancy.stationary,
+	                occupancy.very_slow,
+	                occupancy.slow,
+	                occupancy.moderate,
+	                occupancy.free,
+	                CASE
+	                WHEN occupancy.queue_present = 9 THEN 'QUEUEING'::text
+	                WHEN occupancy.queue_present = 0 THEN 'NO QUEUE'::text
+	                ELSE 'CALCULATING'::text
+	                END AS queue
+                FROM detector
+                LEFT JOIN occupancy ON detector.detector_id::text = occupancy.detector_id::text
+                JOIN ( SELECT occupancy_1.detector_id,
+                			max(occupancy_1.reported_timestamp) AS reported_timestamp
+                		FROM occupancy occupancy_1
+                		GROUP BY occupancy_1.detector_id) most_recent_occupancy
+                ON detector.detector_id::text = most_recent_occupancy.detector_id::text
+                AND occupancy.reported_timestamp = most_recent_occupancy.reported_timestamp
+                AND occupancy.reported_timestamp > (now() - '00:05:00'::interval);
+            </createView>
+        </rollback>
+
+    </changeSet>
+
+
+    <!--ADDITIONAL DEFAULT CONFIGRATION CHANGES-->
+    <changeSet id="changelog-6.06.1" author="nchavan">
+        <comment>Updating default values in detector configration table</comment>
+       
+            <addDefaultValue tableName="detector_configuration" 
+                             columnDataType="int" 
+                             schemaName="public" 
+                             columnName="settingsCollectionInterval2" 
+                             defaultValue="5"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             columnDataType="varchar" 
+                             schemaName="public" 
+                             columnName="urlCongestionReporting" 
+                             defaultValue="http://www.bluetruth.co.uk/BlueTruthReceiver2/Congestion"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             columnDataType="varchar" 
+                             schemaName="public" 
+                             columnName="urlCongestionReports" 
+                             defaultValue="http://www.bluetruth.co.uk/BlueTruthReceiver2/Congestion"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             columnDataType="varchar" 
+                             schemaName="public" 
+                             columnName="urlJourneyTimesReporting" 
+                             defaultValue="http://www.bluetruth.co.uk/BlueTruthReceiver1_50/DeviceDetection/Europe/London"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public" 
+                             columnDataType="varchar" 
+                             columnName="urlAlertAndStatusReports" 
+                             defaultValue=""/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public" 
+                             columnDataType="varchar" 
+                             columnName="urlStatusReports" 
+                             defaultValue="http://www.bluetruth.co.uk/BlueTruthReceiver2/Status"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public" 
+                             columnDataType="varchar" 
+                             columnName="urlFaultReports" 
+                             defaultValue="http://www.bluetruth.co.uk/BlueTruthReceiver2/Fault"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public" 
+                             columnDataType="varchar" 
+                             columnName="urlStatisticsReports" 
+                             defaultValue="http://www.bluetruth.co.uk/BlueTruthReceiver2/Statistics"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public" 
+                             columnDataType="varchar" 
+                             columnName="urlIniFileDownload" 
+                             defaultValue="http://www.bluetruth.co.uk/DetectorConfigurationDownload/2_00/"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public" 
+                             columnDataType="int"
+                             columnName="backgroundLatchTimeThresholdInSeconds" 
+                             defaultValue="60"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public" 
+                             columnDataType="int"
+                             columnName="backgroundClearanceTimeThresholdInSeconds" 
+                             defaultValue="345600"/>
+            
+            <!-- freeFlowBinThresholdInSeconds is marked as speedBinFree-->
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public"
+                             columnDataType="int"  
+                             columnName="speedBinFree"
+                             defaultValue="10"/>
+            
+            <!--moderateFlowBinThresholdInSeconds is marked as speedBinMod -->
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public"
+                             columnDataType="int"  
+                             columnName="speedBinMod"
+                             defaultValue="10"/>
+            
+            <!-- slowFlowBinThresholdInSeconds is marked as speedBinSlow -->
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public"
+                             columnDataType="int"  
+                             columnName="speedBinSlow"
+                             defaultValue="10"/>
+            
+            <!-- normalFlowBinThresholdInSeconds is marked as speedBinNrStat -->
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public"
+                             columnDataType="int"  
+                             columnName="speedBinNrStat"
+                             defaultValue="10"/>
+            
+            <!-- verySlowFlowBinThresholdInSeconds is marked as speedBinVSlow -->
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public"
+                             columnDataType="int"  
+                             columnName="speedBinVSlow"
+                             defaultValue="10"/>
+            
+            <!-- btMACBinDropOutScanCycle is also called absenceThresholdInSeconds -->
+            <!--queueClearanceThresholdDetectionNumber(v3) or absenceThresholdInSeconds (v4)-->
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public"
+                             columnDataType="int"  
+                             columnName="absenceThresholdInSeconds"
+                             defaultValue="60"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public"
+                             columnDataType="int"  
+                             columnName="queueAlertThresholdBin"
+                             defaultValue="4"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                             schemaName="public"
+                             columnDataType="int"  
+                             columnName="queueClearanceThreshold"
+                             defaultValue="3"/>
+            
+            <addDefaultValue tableName="detector_configuration" 
+                            schemaName="public"
+                            columnDataType="int"  
+                            columnName="queueDetectionStartupIntervalInSeconds"
+                            defaultValue="60"/>                 
+                
+            <rollback>
+                <addDefaultValue tableName="detector_configuration" 
+                                  columnDataType="int" 
+                                  schemaName="public" 
+                                  columnName="settingsCollectionInterval2" 
+                                  defaultValue="5"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="urlCongestionReporting"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="urlCongestionReports"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="urlJourneyTimesReporting"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="urlAlertAndStatusReports"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="urlStatusReports"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="urlFaultReports"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="urlStatisticsReports"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="backgroundLatchTimeThresholdInSeconds"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="backgroundClearanceTimeThresholdInSeconds"/>
+                
+                <addDefaultValue tableName="detector_configuration" 
+                                  columnDataType="int" 
+                                  schemaName="public" 
+                                  columnName="speedBinFree" 
+                                  defaultValue="0"/>
+                
+                <addDefaultValue tableName="detector_configuration" 
+                                  columnDataType="int" 
+                                  schemaName="public" 
+                                  columnName="speedBinMod" 
+                                  defaultValue="0"/>
+            
+                <addDefaultValue tableName="detector_configuration" 
+                                  columnDataType="int" 
+                                  schemaName="public" 
+                                  columnName="speedBinSlow" 
+                                  defaultValue="0"/>
+                        
+                <addDefaultValue tableName="detector_configuration" 
+                                  columnDataType="int" 
+                                  schemaName="public" 
+                                  columnName="speedBinNrStat" 
+                                  defaultValue="0"/>
+                
+                <addDefaultValue tableName="detector_configuration" 
+                                  columnDataType="int" 
+                                  schemaName="public" 
+                                  columnName="speedBinVSlow" 
+                                 defaultValue="0"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="absenceThresholdInSeconds"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="queueAlertThresholdBin"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="queueClearanceThreshold"/>
+                
+                <dropDefaultValue catalogName="cat"
+                                  schemaName="public" 
+                                  tableName="detector_configuration" 
+                                  columnName="queueDetectionStartupIntervalInSeconds"/>
+                                
+            </rollback>                                        
+    </changeSet>  
+    
+    <!--ADDING NEW COLUMNS TO DETECTOR CONFIGURATION-->        
+    <changeSet author="nchavan" id="changelog-6.06.2">
+        <comment>Inserting new columns in detector configration table</comment>
+        <addColumn catalogName="cat"
+            schemaName="public"
+            tableName="detector_configuration">
+                <column name="statisticsReportContents" type="varchar(255)" defaultValue="full"/>
+                <column name="reportStorageCapacity" type="int" defaultValue="1000"/>
+                <column name="initialStartupDelayInSeconds" type="int" defaultValue="30"/>    
+        </addColumn>
+        <rollback>
+              <dropColumn catalogName="cat" 
+                          schemaName="public" 
+                          tableName="detector_configuration" columnName="statisticsReportContents"/>
+              <dropColumn catalogName="cat" 
+                          schemaName="public" 
+                          tableName="detector_configuration" columnName="reportStorageCapacity"/>
+              <dropColumn catalogName="cat" 
+                          schemaName="public" 
+                          tableName="detector_configuration" columnName="initialStartupDelayInSeconds"/>
+        </rollback>
+    </changeSet>       
+    
+    <changeSet id="changelog-6.06.3" author="nchavan">
+        <comment>Added columns: detector_configuration.detectorReportingStatusInMinutes and detectorDegradedStatusInMinutes</comment>
+        <addColumn catalogName="cat" schemaName="public" tableName="detector_configuration">
+            <column name="detectorReportingStatusInMinutes" type="int" defaultValue="60">
+                <constraints nullable="false"/>
+            </column>
+            <column name="detectorDegradedStatusInMinutes" type="int" defaultValue="120">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="detector_configuration" schemaName="public" columnName="detectorReportingStatusInMinutes"></dropColumn>
+            <dropColumn tableName="detector_configuration" schemaName="public" columnName="detectorDegradedStatusInMinutes"></dropColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-6.06.4" author="msultan">
+        <comment>Add new value for considering a detector silent and delete unneeded column</comment>
+        <addColumn catalogName="bluetruth"
+                   schemaName="public"
+                   tableName="detector_configuration">
+            <column name="silentThresholdDelayInSeconds" type="int" defaultValue="60">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropColumn catalogName="cat"
+                    schemaName="public"
+                    tableName="detector_configuration" columnName="detectorDegradedStatusInMinutes"/>
+
+
+        <rollback>
+            <addColumn catalogName="cat" schemaName="public" tableName="detector_configuration">
+                <column name="detectorDegradedStatusInMinutes" type="int" defaultValue="120">
+                    <constraints nullable="false"/>
+                </column>
+            </addColumn>
+            <dropColumn catalogName="bluetruth"
+                        schemaName="public"
+                        tableName="detector_configuration"
+                        columnName="silentThresholdDelayInSeconds"/>
+        </rollback>
+
+    </changeSet>
+
+    <changeSet id="changelog-6.06.5" author="msultan">
+        <comment>Create table that holds detector heartbeats based on trigger fired by detector_message</comment>
+        <createTable catalogName="bluetruth"
+                     schemaName="public"
+                     tableName="detector_heartbeat">
+            <column name="detector_id" type="varchar"/>
+            <column name="last_recorded_message_timestamp" type="timestamptz"/>
+        </createTable>
+        <addPrimaryKey catalogName="bluetruth"
+                       columnNames="detector_id"
+                       constraintName="pk_detector_id"
+                       schemaName="public"
+                       tableName="detector_heartbeat"/>
+        <addForeignKeyConstraint baseTableName="detector_heartbeat"
+                                 deferrable="true"
+                                 initiallyDeferred="true"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 baseColumnNames="detector_id"
+                                 constraintName="detector_id_fk"
+                                 referencedTableName="detector"
+                                 referencedColumnNames="detector_id"/>
+        <rollback>
+            <dropTable catalogName="bluetruth"
+                       schemaName="public"
+                       tableName="detector_heartbeat"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-6.06.6" author="msultan">
+        <comment>Add new trigger to detector_message to update detector_heartbeat with lastes update</comment>
+
+        <createProcedure>CREATE OR REPLACE FUNCTION public.after_insert_on_detector_message()
+            RETURNS trigger AS
+            $BODY$
+            BEGIN
+            UPDATE detector_heartbeat SET last_recorded_message_timestamp = NEW.recorded_timestamp WHERE detector_id = NEW.detector_id;
+            IF NOT FOUND THEN
+            INSERT INTO detector_heartbeat(detector_id,last_recorded_message_timestamp) values (NEW.detector_id, NEW.recorded_timestamp);
+            END IF;
+            return NEW;
+            END;
+            $BODY$
+            LANGUAGE plpgsql VOLATILE
+            COST 100;
+            ALTER FUNCTION public.after_insert_on_detector_message()
+            OWNER TO bluetruth;
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION public.after_insert_on_detector_message();
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-6.06.7" author="msultan">
+        <sql>
+            CREATE TRIGGER after_insert_on_detector_message AFTER INSERT ON detector_message FOR EACH ROW EXECUTE PROCEDURE after_insert_on_detector_message();
+        </sql>
+        <rollback>
+            DROP TRIGGER after_insert_on_detector_message ON detector_message;
+        </rollback>
+    </changeSet>
+
+        <changeSet id="changelog-6.06.8" author="mkhan">
+        <comment>Added column: span.journey_limit</comment>
+        <addColumn tableName="span">
+            <column name="journey_limit" type="int" defaultValue="60">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="journey_limit"
+            schemaName="public"
+            tableName="span"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-6.06.9" author="nchavan" runOnChange="true">
+        <comment>find_journey</comment>
+        <createProcedure procedureName="find_journey"
+            schemaName="public">
+
+            CREATE OR REPLACE FUNCTION find_journey()
+              RETURNS trigger AS
+            $BODY$
+                BEGIN
+
+                    INSERT INTO span_journey_detection_cache (			
+                        duration,
+                        span_name,
+                        completed_timestamp
+                     )
+
+                    SELECT
+                        NEW.detection_timestamp-device_detection.detection_timestamp journey_time,   
+                        span_name,
+                        NEW.detection_timestamp
+                    FROM span found_span
+                        left outer join (
+                                        SELECT detection_timestamp 
+                                                FROM device_detection  
+                                                WHERE device_id = NEW.device_id 
+                                                        AND detector_id = NEW.detector_id 
+                                                ORDER BY detection_timestamp DESC NULLS FIRST 
+                                                LIMIT 1) last_found_at_end_detector on true
+                        join ( 
+                                SELECT max(detection_timestamp) detection_timestamp, detector_id 
+                                        FROM device_detection
+                                        WHERE device_detection.device_id = NEW.device_id 
+                                GROUP BY detector_id) device_detection 
+                        on device_detection.detector_id = found_span.start_detector_id
+                    WHERE end_detector_id = NEW.detector_id
+                        AND device_detection.detection_timestamp IS NOT NULL
+                        AND NEW.detection_timestamp &gt; device_detection.detection_timestamp
+                        AND (last_found_at_end_detector.detection_timestamp IS NULL
+                        OR (NEW.detection_timestamp &gt; last_found_at_end_detector.detection_timestamp 
+                        AND device_detection.detection_timestamp &gt; last_found_at_end_detector.detection_timestamp))
+                        AND NEW.detection_timestamp-device_detection.detection_timestamp &lt; journey_limit * '1 minutes'::interval 
+                    order by device_detection.detection_timestamp desc;
+
+                    INSERT INTO span_journey_detection (			
+                        duration,
+                        span_name,
+                        completed_timestamp
+                    )
+
+                    SELECT duration, span_name, completed_timestamp 
+                        FROM span_journey_detection_cache 
+                        WHERE completed_timestamp = NEW.detection_timestamp;
+
+                    UPDATE detector_statistic
+                        SET last_detection_timestamp = NEW.detection_timestamp
+                        WHERE detector_id = NEW.detector_id
+                        AND (select last_detection_timestamp FROM detector_statistic WHERE detector_id = NEW.detector_id ) IS NULL 
+                        OR (select last_detection_timestamp FROM detector_statistic WHERE detector_id = NEW.detector_id ) &lt; NEW.detection_timestamp;
+
+                    RETURN NEW;
+
+                END;
+            $BODY$
+              LANGUAGE plpgsql VOLATILE
+              COST 100;
+                ALTER FUNCTION find_journey()
+                  OWNER TO bluetruth;
+
+        </createProcedure>
+       <rollback>
+           <createProcedure procedureName="find_journey"  
+                            schemaName="public">
+                CREATE OR REPLACE FUNCTION find_journey()
+                  RETURNS trigger AS
+                $BODY$
+                    DECLARE 
+                            found_span record;
+                            last_found_at_start_detector timestamp;
+                            last_found_at_end_detector timestamp;
+                            journey_time interval;
+                            detector_stat_update timestamp;
+                    BEGIN
+
+                            last_found_at_end_detector := detection_timestamp 
+                            FROM device_detection 
+                            WHERE device_id = NEW.device_id
+                            AND detector_id = NEW.detector_id
+                            ORDER BY detection_timestamp DESC NULLS FIRST LIMIT 1;
+
+                            FOR found_span IN SELECT 
+                                span.span_name,
+                                span.start_detector_id	
+                                FROM span 
+                                WHERE		
+                                span.end_detector_id = NEW.detector_id
+
+                            LOOP    
+
+                                last_found_at_start_detector := detection_timestamp 
+                                FROM device_detection 
+                                WHERE device_id = NEW.device_id
+                                AND detector_id = found_span.start_detector_id
+                                ORDER BY detection_timestamp DESC NULLS FIRST LIMIT 1;
+
+                                IF(last_found_at_start_detector IS NOT NULL 
+                                  AND NEW.detection_timestamp > last_found_at_start_detector 
+                                AND (last_found_at_end_detector IS NULL OR 
+                                  (NEW.detection_timestamp > last_found_at_end_detector AND last_found_at_start_detector &gt; last_found_at_end_detector))) THEN
+
+                                        journey_time := NEW.detection_timestamp - last_found_at_start_detector;
+
+                                          IF(journey_time &lt; '01:00:00'::interval) THEN		
+                                                INSERT INTO span_journey_detection_cache (			
+                                                        duration,
+                                                        span_name,
+                                                        completed_timestamp
+                                                )
+                                                VALUES
+                                                (
+                                                        journey_time,
+                                                        found_span.span_name,
+                                                        NEW.detection_timestamp
+                                                ); 
+                                                INSERT INTO span_journey_detection (			
+                                                        duration,
+                                                        span_name,
+                                                        completed_timestamp
+                                                )
+                                                VALUES
+                                                (
+                                                        journey_time,
+                                                        found_span.span_name,
+                                                        NEW.detection_timestamp
+                                                ); 			
+                                        END IF;
+                                END IF;  
+                            END LOOP;
+
+                            detector_stat_update := last_detection_timestamp FROM detector_statistic WHERE detector_id = NEW.detector_id;
+
+                                IF (detector_stat_update IS NULL OR detector_stat_update &lt; NEW.detection_timestamp) THEN
+                                    UPDATE detector_statistic
+                                    SET last_detection_timestamp = NEW.detection_timestamp
+                                    WHERE detector_id = NEW.detector_id;
+                                END IF;
+
+                            RETURN NEW;
+                    END;
+                    $BODY$
+                    LANGUAGE plpgsql VOLATILE
+                      COST 100;
+                        ALTER FUNCTION find_journey()
+                          OWNER TO bluetruth;
+            </createProcedure>
+       </rollback>
+    </changeSet>
+    
+    <changeSet id="changelog-6.06.10" author="nchavan" runOnChange="true">
+        <comment>find_journey_2_00</comment>
+        <createProcedure procedureName="find_journey_2_00"
+            schemaName="public">
+                    CREATE OR REPLACE FUNCTION find_journey_2_00()
+                      RETURNS trigger AS
+                        $BODY$
+                            BEGIN
+
+                                INSERT INTO span_journey_detection_cache (			
+                                              duration,
+                                              span_name,
+                                              completed_timestamp
+                                 )
+
+                                SELECT
+                                        NEW.first_seen-last_seen_at_start_detector.last_seen journey_time,   
+                                        span_name,
+                                        NEW.first_seen
+                                FROM span found_span
+                                        left outer join (
+                                                        SELECT first_seen 
+                                                            FROM statistics_device, statistics_report  
+                                                            WHERE addr = NEW.addr
+                                                            AND statistics_report.report_id = statistics_device.report_id       
+                                                        AND statistics_report.detector_id = NEW.detector_id
+                                                    ORDER BY first_seen DESC NULLS FIRST LIMIT 1)
+                                                first_seen_at_end_detector on true
+                                        join ( 
+                                                SELECT max(last_seen) last_seen, statistics_report.detector_id 
+                                                        FROM statistics_device, statistics_report  
+                                                        WHERE addr = NEW.addr
+                                                    AND statistics_report.report_id = statistics_device.report_id       
+                                                GROUP BY statistics_report.detector_id) last_seen_at_start_detector 
+                                        on last_seen_at_start_detector.detector_id = found_span.start_detector_id
+                                WHERE end_detector_id = NEW.detector_id
+                                        AND last_seen_at_start_detector.last_seen IS NOT NULL
+                                        AND NEW.first_seen &gt; last_seen_at_start_detector.last_seen
+                                        AND (first_seen_at_end_detector.first_seen IS NULL
+                                        OR (NEW.first_seen &gt; first_seen_at_end_detector.first_seen 
+                                        AND last_seen_at_start_detector.last_seen &gt; first_seen_at_end_detector.first_seen))
+                                        AND NEW.first_seen-last_seen_at_start_detector.last_seen &lt; journey_limit * '1 minutes'::interval 
+                                order by last_seen_at_start_detector.last_seen desc;
+
+                                INSERT INTO span_journey_detection (			
+                                         duration,
+                                         span_name,
+                                         completed_timestamp
+                                )
+                                SELECT duration, span_name, completed_timestamp 
+                                        FROM span_journey_detection_cache 
+                                        WHERE completed_timestamp = NEW.first_seen;
+
+                                UPDATE detector_statistic
+                                        SET last_detection_timestamp = NEW.last_seen
+                                        WHERE detector_id = NEW.detector_id
+                                        AND (select last_detection_timestamp FROM detector_statistic WHERE detector_id = NEW.detector_id ) IS NULL 
+                                        OR (select last_detection_timestamp FROM detector_statistic WHERE detector_id = NEW.detector_id ) &lt; NEW.last_seen;
+
+                                RETURN NEW;
+                            END;
+                $BODY$
+                  LANGUAGE plpgsql VOLATILE
+                  COST 100;
+                ALTER FUNCTION find_journey_2_00()
+                  OWNER TO bluetruth;
+       </createProcedure>
+       <rollback>
+           <createProcedure procedureName="find_journey_2_00"  
+                            schemaName="public">
+                    CREATE OR REPLACE FUNCTION find_journey_2_00()
+                      RETURNS trigger AS
+                    $BODY$
+                        DECLARE 
+                                found_span record;
+                                last_seen_at_start_detector timestamp;
+                                first_seen_at_end_detector timestamp;
+                                journey_time interval;
+                                detector_stat_update timestamp;
+                        BEGIN
+
+                            first_seen_at_end_detector := first_seen 
+                            FROM statistics_device 
+                            WHERE addr = NEW.addr
+                            AND detector_id = NEW.detector_id
+                            ORDER BY first_seen DESC NULLS FIRST LIMIT 1;
+
+                            FOR found_span IN SELECT 
+                                    span.span_name,
+                                    span.start_detector_id	
+                                    FROM span 
+                                    WHERE		
+                                    span.end_detector_id = NEW.detector_id
+                            LOOP    
+                                    last_seen_at_start_detector := last_seen 
+                                    FROM statistics_device 
+                                    WHERE addr = NEW.addr
+                                    AND detector_id = found_span.start_detector_id
+                                    ORDER BY last_seen DESC NULLS FIRST LIMIT 1;
+
+                                    IF(last_seen_at_start_detector IS NOT NULL 
+                                    AND NEW.first_seen &gt; last_seen_at_start_detector 
+                                    AND (first_seen_at_end_detector IS NULL OR 
+                                    (NEW.first_seen &gt; first_seen_at_end_detector AND last_seen_at_start_detector &gt; first_seen_at_end_detector))) THEN
+
+                                            journey_time := NEW.first_seen - last_seen_at_start_detector;
+
+                                            IF (journey_time &lt; '01:00:00'::interval) THEN		
+                                                    INSERT INTO span_journey_detection_cache (			
+                                                            duration,
+                                                            span_name,
+                                                            completed_timestamp
+                                                    )
+                                                    VALUES
+                                                    (
+                                                            journey_time,
+                                                            found_span.span_name,
+                                                            NEW.first_seen
+                                                    ); 
+                                                    INSERT INTO span_journey_detection (			
+                                                            duration,
+                                                            span_name,
+                                                            completed_timestamp
+                                                    )
+                                                    VALUES
+                                                    (
+                                                            journey_time,
+                                                            found_span.span_name,
+                                                            NEW.first_seen
+                                                    ); 			
+                                            END IF;
+
+                                    END IF;  
+                            END LOOP;
+
+                            detector_stat_update := last_detection_timestamp FROM detector_statistic WHERE detector_id = NEW.detector_id;
+
+                                    IF (detector_stat_update IS NULL OR detector_stat_update &lt; NEW.last_seen) THEN
+                                        UPDATE detector_statistic
+                                        SET last_detection_timestamp = NEW.last_seen
+                                        WHERE detector_id = NEW.detector_id;
+                                    END IF;
+
+                            RETURN NEW;
+
+                        END;
+
+                    $BODY$
+                      LANGUAGE plpgsql VOLATILE
+                      COST 100;
+                    ALTER FUNCTION find_journey_2_00()
+                      OWNER TO bluetruth;
+            </createProcedure>
+       </rollback>
+    </changeSet>
+    <changeSet id="changelog-6.06.11" author="mkhan">
+        <comment>Added column: detector_status.mv</comment>
+        <addColumn tableName="detector_status">
+            <column name="mv" type="double" defaultValue="0.0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="mv"
+            schemaName="public"
+            tableName="detector_status"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

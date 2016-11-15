@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <servlet>
+        <servlet-name>Occupancy</servlet-name>
+        <servlet-class>com.ssl.bluetruth.servlet.receiver.OccupancyReceiver</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeviceDetection</servlet-name>
+        <servlet-class>com.ssl.bluetruth.servlet.receiver.DeviceDetectionReceiver</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Message</servlet-name>
+        <servlet-class>com.ssl.bluetruth.servlet.receiver.MessageReceiver</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Log</servlet-name>
+        <servlet-class>com.ssl.bluetruth.servlet.receiver.LogReceiver</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Occupancy</servlet-name>
+        <url-pattern>/Occupancy</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeviceDetection</servlet-name>
+        <url-pattern>/DeviceDetection</url-pattern>
+        <url-pattern>/DeviceDetection/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Message</servlet-name>
+        <url-pattern>/Message</url-pattern>
+        <url-pattern>/Message/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Log</servlet-name>
+        <url-pattern>/Log/*</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    <security-constraint>
+        <display-name>ReceiverConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>JourneyTimeReceiver</web-resource-name>
+            <description/>
+            <url-pattern>/JourneyTimeReceiver</url-pattern>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>OccupancyReceiver</web-resource-name>
+            <description/>
+            <url-pattern>/OccupancyReceiver</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+    </login-config>
+    <resource-ref>
+        <description>Bluetruth Database</description>
+        <res-ref-name>jdbc/bluetruth</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+    
+        
+    <listener>
+        <listener-class>com.ssl.bluetruth.emitter2converter.listeners.BlueTruthServletContextListener</listener-class>
+    </listener>
+</web-app>

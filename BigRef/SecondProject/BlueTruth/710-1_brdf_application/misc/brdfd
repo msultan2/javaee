@@ -1,0 +1,111 @@
+#!/bin/bash
+
+# brdfd - Startup script for brdf client
+
+# chkconfig: 35 85 15
+# description: BRDF - BlueTruth Raw Data Feed
+# processname: brdfd
+# pidfile: /var/run/brdf.pid
+
+. /etc/rc.d/init.d/functions
+
+
+brdf=/opt/brdf/bin/brdf
+
+PIDDIR=/var/run
+PIDFILEPATH=$PIDDIR/brdfd.pid
+
+BRDF_USER=engineer
+BRDF_GROUP=engineer
+
+
+start()
+{
+  __pids_var_run $brdf $PIDFILEPATH
+
+  if [ -n "$pid" ]; then
+    echo "brdf is already running. Exitting..."
+    return
+  fi
+
+  echo -n $"Starting brdfd: "
+  runuser -s /bin/bash $BRDF_USER -c "$brdf >/dev/null 2>&1 & echo \$!" > $PIDFILEPATH
+  PID=`cat $PIDFILEPATH`
+  if [ -n $PID ]; then
+    success
+    touch /var/lock/subsys/brdfd
+  else
+    failure
+  fi
+  echo
+}
+
+stop()
+{
+  echo -n $"Stopping brdfd: "
+  brdf_killproc "$PIDFILEPATH" $brdf
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/brdfd
+}
+
+restart () {
+  stop
+  start
+}
+
+# Send TERM signal to process and wait up to 300 seconds for process to go away.
+# If process is still alive after 300 seconds, send KILL signal.
+# Built-in killproc() (found in /etc/init.d/functions) is on certain versions of Linux
+# where it sleeps for the full $delay seconds if process does not respond fast enough to
+# the initial TERM signal.
+brdf_killproc()
+{
+  local pid_file=$1
+  local procname=$2
+  local -i delay=300
+  local -i duration=1
+  local pid=`pidofproc -p "${pid_file}" ${procname}`
+
+  kill -TERM $pid >/dev/null 2>&1
+  usleep 100000
+  local -i x=0
+  while [ $x -le $delay ] && checkpid $pid; do
+    sleep $duration
+    x=$(( $x + $duration))
+  done
+
+  kill -KILL $pid >/dev/null 2>&1
+  usleep 100000
+
+  rm -f "${pid_file}"
+
+  checkpid $pid
+  local RC=$?
+  [ "$RC" -eq 0 ] && failure "${procname} shutdown" || success "${procname} shutdown"
+  RC=$((! $RC))
+  return $RC
+}
+
+RETVAL=0
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload)
+    restart
+    ;;
+  status)
+    status $brdf
+    RETVAL=$?
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status|restart|reload}"
+    RETVAL=1
+esac
+
+exit $RETVAL

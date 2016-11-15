@@ -1,0 +1,41 @@
+Linux:
+To compile the project on the development PC execute:
+1) autoreconf -i
+2) cd build
+3) ../configure
+4) make
+
+To compile the project for the cross compiler execute:
+1) autoreconf -i
+2) cd build
+3) CC=x86_32-target-linux-gnu-gcc CXX=x86_32-target-linux-gnu-g++ ../configure --prefix=/opt/bt --localstatedir=/var
+4) make
+
+To copy the compressed image to the board do:
+sshpass -p 'root' scp bt.tgz root@172.16.98.98:/boot/bt/bt.tgz
+
+To run the project execute:
+build/outstation
+
+To build debian package:
+1) Install devscripts and debhelper packages:
+sudo aptitude install devscripts debhelper
+2) Create distribution package
+cd build
+make dist
+3) Copy generated distribution file to a directory (e.g. ~/tmp) and unzip
+mkdir -p ~/tmp
+cp bluetruth-outstation*.tar.gz ~/tmp
+cd ~/tmp
+tar zxvf bluetruth-outstation*.tar.gz
+4) Change directory to bluetruth-outstation*
+5) Create debian package
+debuild -us -uc
+6) The created package can be found in ~/tmp directory
+
+To debug use codelite (outstation.project).
+
+
+Windows:
+To compile the project open outstation.vcproject with Visual Studio 2008.
+To create installation file open windows/outstation.iss with Inno Setup Compiler.

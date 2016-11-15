@@ -1,0 +1,10 @@
+!Sections
+%%quote 
+[Home]\\
+[Report]\\
+[Map]\\
+[Analysis]\\
+[Configuration]\\
+[Administration]\\
+[Support]\\
+/%

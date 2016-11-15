@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<brdfConfiguration:BrdfConfiguration xmlns:brdfConfiguration="http://www.simulation-systems.co.uk/Brdf/brdfConfigurationSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.simulation-systems.co.uk/Brdf/brdfConfigurationSchema configuration.xsd">
+    <version>1.0</version>
+    <detectorOwner>cv</detectorOwner>
+    <databaseConnection>
+        <host>localhost</host>
+        <port>27017</port>
+        <user>brdf_client</user>
+        <password>ssl1324</password>
+    </databaseConnection>
+    <logging>
+        <fileLogLevel>1</fileLogLevel>
+        <consoleLogLevel>1</consoleLogLevel>
+        <maxNumberOfEntriesPerFile>5000</maxNumberOfEntriesPerFile>
+        <maxNumberOfCharactersPerFile>2000000</maxNumberOfCharactersPerFile>
+    </logging>
+</brdfConfiguration:BrdfConfiguration>

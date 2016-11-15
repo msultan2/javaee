@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/BlueTruthReceiver1_50">
+    <!-- Production Connection -->
+    <ResourceLink global="jdbc/bluetruth" name="jdbc/bluetruth" type="javax.sql.DataSource"/>
+    <!-- Development Connection -->
+    <!--
+    <Resource auth="Container" driverClassName="org.postgresql.Driver"
+    logAbandoned="true" name="jdbc/bluetruth" password="ssl1324" removeAbandoned="true" removeAbandonedTimeout="20" type="javax.sql.DataSource" url="jdbc:postgresql://192.168.99.202:5432/bluetruth_live" username="pgadmin"/>
+    <Realm className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/bluetruth" digest="MD5" localDataSource="true" roleNameCol="role_name" userCredCol="md5_password" userNameCol="username" userRoleTable="instation_user_role" userTable="instation_user"/>
+    -->
+</Context>

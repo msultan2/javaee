@@ -1,0 +1,58 @@
+#!/usr/bin/expect -f
+
+set server [lindex $argv 0];
+set login [lindex $argv 1];
+set password [lindex $argv 2];
+
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+proc abort {} {
+    puts "Timeout or error"
+    exit 1
+}
+
+
+set timeout 5
+
+spawn $env(SHELL)
+match_max 100000
+
+send -- "telnet $server\r"
+expect {
+    "login:" { send -- "$login\r" }
+    default abort
+}
+
+expect {
+    "Password:" { send -- "$password\r" }
+    default abort
+}
+
+sleep .1
+
+expect {
+    "> " { send -- "show modem\r" }
+    default abort
+}
+
+
+expect {
+    "> " { send -- "exit\r"; sleep .1; send -- "Y\r" }
+    default abort
+}
+
+expect {
+    "Connection closed by foreign host." { send -- "exit\r" }
+    default abort
+}
+
+expect eof

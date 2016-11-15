@@ -1,0 +1,36 @@
+# Handle line endings automatically for files detected as text
+# and leave all files detected as binary untouched.
+*		text=auto
+
+#
+# The above will handle all files NOT found below
+#
+# These files are text and should be normalized (Convert crlf => lf)
+*.css           text
+*.df            text
+*.htm           text
+*.html          text
+*.java          text
+*.js            text
+*.json          text
+*.jsp           text
+*.jspf          text
+*.properties    text
+*.sh            text
+*.svg           text
+*.tld           text
+*.txt           text
+*.xml           text
+.gitignore	text
+.gitattributes	text
+
+# These files are binary and should be left untouched
+# (binary is a macro for -text -diff) #
+*.jpg		binary
+*.png		binary
+*.gif		binary
+
+# These files are text but require explicit line endings always
+# *.vcproj	eol=crlf
+# *.bat		eol=crlf
+# *.sh		eol=lf

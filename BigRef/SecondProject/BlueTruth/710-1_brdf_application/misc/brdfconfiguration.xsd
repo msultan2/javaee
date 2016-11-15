@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.simulation-systems.co.uk/Brdf/brdfConfigurationSchema"
+    xmlns:brdfConfiguration="http://www.simulation-systems.co.uk/Brdf/brdfConfigurationSchema">
+    <xs:simpleType name="BrdfVersionType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="1\.0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="DatabaseConnectionType">
+        <xs:sequence>
+            <xs:element name="host" type="xs:string"/>
+            <xs:element name="port" default="27017" minOccurs="0" maxOccurs="1">
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedShort">
+                        <xs:minInclusive value="1"/>
+                        <xs:maxInclusive value="65535"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="user" type="xs:string"/>
+            <xs:element name="password" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="LoggerType">
+        <xs:sequence>
+            <xs:element name="fileLogLevel" type="xs:unsignedInt"/>
+            <xs:element name="consoleLogLevel" type="xs:unsignedInt"/>
+            <xs:element name="maxNumberOfEntriesPerFile" type="xs:unsignedInt"/>
+            <xs:element name="maxNumberOfCharactersPerFile" type="xs:unsignedInt"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="BrdfConfigurationType">
+        <xs:sequence>
+            <xs:element name="version" type="brdfConfiguration:BrdfVersionType"/>
+            <xs:element name="detectorOwner" type="xs:string"/>
+            <xs:element name="databaseConnection" type="brdfConfiguration:DatabaseConnectionType"/>
+            <xs:element name="brdfServerConnection" type="brdfConfiguration:BrdfServerConnectionType"/>
+            <xs:element name="logging" type="brdfConfiguration:LoggerType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="BrdfConfiguration" type="brdfConfiguration:BrdfConfigurationType"/>
+</xs:schema>

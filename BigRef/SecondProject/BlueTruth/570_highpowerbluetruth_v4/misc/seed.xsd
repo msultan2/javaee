@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="SeedType">
+        <xs:sequence>
+            <xs:element name="ID" type="xs:unsignedInt"/>
+            <xs:element name="Value" type="xs:unsignedInt"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Seed" type="SeedType"/>
+</xs:schema>

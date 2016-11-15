@@ -1,0 +1,37 @@
+!!Description
+The report section allows users to view the most recent journey time and traffic flow information.
+!!Journey Times
+This link takes you to a page displaying the most recent journey times calculated for each route available in the instation. The journey time table displays the following information:
+
+||Field 	||Description
+| Route		| Route name
+| Journey Time	| Average journey time over the last 5 minutes.
+| Average Speed	| (Sum of all span distances within route) / (Sum of all average span journey times) in MPH
+| Strength Count| 	The number of journey detections used to calculate journey time.
+| Status	| __Reporting__ (Green, journeys detected in the last 5 minutes on all spans), __Degraded__ (Amber, journeys detected in the last 10 minutes on all spans), __Silent__ (Red, No journeys detected in the last 10 minutes on all spans)
+| Calculated Timestamp	| The time which this information was calculated.
+
+
+
+!!Traffic Flow
+This link takes you to a page displaying the most recent traffic flow reports for each detector in queue detection mode. The traffic flow table displays the following information: 
+
+||Field 	||Description
+|Detector	|The name of the detector reporting the data.
+|Reported Timestamp	|The time of the report.
+|Stationary	|The number of device detections that were reported as stationary.
+|Very Slow	|The number of device detections that were reported as moving in a very slow flow.
+|Slow	|The number of device detections that were reported as moving in a slow flow.
+|Moderate 	|The number of device detections that were reported as moving in a moderate flow.
+|Free 	|The number of device detections that were reported as moving in a free flow.
+|Queue Status	|Traffic flow status. __Free__, __Moderate__, __Slow__, __Very Slow__, __Stationary__
+|Select 		|Button to display graphs of traffic flow over time.
+
+
+\\
+\\
+\\
+\\
+\\
+\\
+\\

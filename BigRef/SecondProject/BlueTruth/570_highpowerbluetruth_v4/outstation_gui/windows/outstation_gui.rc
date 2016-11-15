@@ -1,0 +1,13 @@
+/*
+The name of the icon should start with multiple aaa because
+icons are used in alphabetical order
+nameID ICON filename
+where:
+nameID
+    Unique name or a 16-bit unsigned integer value identifying the resource.
+filename
+    Name of the file that contains the resource. The name must be a valid file name; it must be a full path if the file is not in the current working directory. The path should be a quoted string.
+*/
+aaaaoutstation_gui_icon ICON "outstation_gui.ico"
+
+#include <wx/msw/wx.rc>

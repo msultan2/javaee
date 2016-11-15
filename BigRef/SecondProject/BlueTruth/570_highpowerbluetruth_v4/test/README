@@ -1,0 +1,23 @@
+To compile the project execute:
+1) autoreconf -i
+2) ./configure
+3) make
+
+To run the project execute:
+src/ipt_dsp_message_test
+
+
+To generate coverage reports execute:
+1) autoreconf -i
+2) ./configure --enable-coverage
+3) make
+
+Then run the project to (incrementally) gather coverage
+statistics and then, to generate a coverage report, execute:
+
+4) make coverage-report
+
+Alternatively, in lieu of step 3) and 4), to generate a coverage
+report in which the test suite is executed once, you can execute:
+
+5) make run

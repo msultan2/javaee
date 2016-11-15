@@ -1,0 +1,52 @@
+__BOOTLOADER_API_LOOKUP_TABLE_BASE = 0x200;
+PROVIDE(_p_bootloader__initialise =                 __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x00);
+PROVIDE(_p_bootloader__process =                    __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x02);
+PROVIDE(_p_version__read_firmware_descriptor =      __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x04);
+PROVIDE(_p_production_data__populate =              __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x06);
+PROVIDE(_p_populate_bootloader_firmware_descriptor = __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x0E);
+
+PROVIDE(_p_timer1__get_context =                    __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x20);
+PROVIDE(_p_report_error =                           __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x22);
+PROVIDE(_p_timer1__get_context_copy =               __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x24);
+
+PROVIDE(_p_print =                                  __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x40);
+PROVIDE(_p_printc =                                 __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x42);
+PROVIDE(_p_flush_print =                            __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x44);
+
+PROVIDE(_p_uint8_aray_to_char_array =               __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x5A);
+PROVIDE(_p_char_array_to_uint8_array =              __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x5C);
+PROVIDE(_p_string_to_base64 =                       __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x5E);
+PROVIDE(_p_uint32_to_string =                       __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x60);
+PROVIDE(_p_int32_to_string =                        __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x62);
+PROVIDE(_p_uint8_to_string =                        __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x64);
+PROVIDE(_p_string_to_uint64 =                       __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x66);
+PROVIDE(_p_string_to_int64 =                        __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x68);
+PROVIDE(_p_string_to_uint32 =                       __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x6A);
+PROVIDE(_p_string_to_int32 =                        __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x6C);
+PROVIDE(_p_string_to_Md5 =                           __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x6E);
+PROVIDE(_p_hexChar_to_nibble =                      __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x70);
+PROVIDE(_p_strncpy_safe =                           __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x72);
+PROVIDE(_p_strcpy_returning_offset =                __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x74);
+
+
+
+PROVIDE(_p_spi_flash__read =                         __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x80);
+PROVIDE(_p_spi_flash__write_page =                   __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x82);
+PROVIDE(_p_spi_flash__erase =                        __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x84);
+PROVIDE(_p_spi_flash__put_into_deep_power_down =     __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x86);
+PROVIDE(_p_spi_flash__release_from_deep_power_down = __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x88);
+PROVIDE(_p_spi_flash__check_if_write_is_in_progress = __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x8A);
+
+PROVIDE(_p_program_memory__read_data               = __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0x90);
+
+PROVIDE(_p_upgrade_firmware__initialise =            __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xA0);
+PROVIDE(_p_upgrade_firmware__prepare1 =              __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xA2);
+PROVIDE(_p_upgrade_firmware__prepare2 =              __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xA4);
+PROVIDE(_p_upgrade_firmware__writec =                __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xA6);
+PROVIDE(_p_upgrade_firmware__finalise =              __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xA8);
+PROVIDE(_p_upgrade_firmware__calculate_checksum =    __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xAA);
+PROVIDE(_p_upgrade_firmware__burn_prepare =          __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xAC);
+PROVIDE(_p_upgrade_firmware__burn =                  __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xAE);
+PROVIDE(_p_upgrade_firmware__abort =                 __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xB0);
+PROVIDE(_p_upgrade_firmware__restart =               __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xB2);
+PROVIDE(_p_upgrade_firmware__get_context =           __BOOTLOADER_API_LOOKUP_TABLE_BASE + 0xB4);

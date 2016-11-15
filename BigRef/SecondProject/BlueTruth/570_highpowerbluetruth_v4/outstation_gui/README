@@ -1,0 +1,8 @@
+To compile the project execute:
+1) autoreconf -i
+2) cd build
+3) ../configure
+4) make
+
+To run the project execute:
+build/outstation_gui

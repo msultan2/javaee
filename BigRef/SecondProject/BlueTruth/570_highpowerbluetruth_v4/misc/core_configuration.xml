@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coreConfiguration:CoreConfiguration xmlns:coreConfiguration="http://www.simulation-systems.co.uk/BlueTruth/coreConfigurationSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.simulation-systems.co.uk/BlueTruth/coreConfigurationSchema misc/core_configurationSchema.xsd">
+	<Version>4.0.6</Version>
+	<Identity>
+	<SiteIdentifier>-</SiteIdentifier>
+	<SerialNumber>0</SerialNumber>
+	</Identity>
+	<InStationSSHConnection>
+		<Address>service.bluetruth.co.uk</Address>
+		<Login>bt</Login>
+		<Password></Password>
+	</InStationSSHConnection>
+	<IniConfigurationURL>
+		<Path>http://bluetruth.co.uk/DetectorConfigurationDownload/2_00/</Path>
+		<File_Prefix></File_Prefix>
+		<File_Suffix>_ini.txt</File_Suffix>
+	</IniConfigurationURL>
+	<BlueToothDevice>
+		<Driver><RawHCI/></Driver>
+	</BlueToothDevice>
+	<GSMModemConnection>
+		<Type>1</Type>
+		<Address>192.168.2.1</Address>
+		<Login>adm</Login>
+		<Password>123456</Password>
+	</GSMModemConnection>
+	<Logging>
+		<FileLogLevel>2</FileLogLevel>
+		<ConsoleLogLevel>2</ConsoleLogLevel>
+		<MaxNumberOfEntriesPerFile>5000</MaxNumberOfEntriesPerFile>
+		<MaxNumberOfCharactersPerFile>2000000</MaxNumberOfCharactersPerFile>
+		<MaxLogFileAgeInSeconds>345600</MaxLogFileAgeInSeconds>
+	</Logging>
+</coreConfiguration:CoreConfiguration>
