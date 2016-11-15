@@ -1,4 +1,0 @@
-!!Description
-This is the description
-!!Feature of page
-This is a feature of the page
