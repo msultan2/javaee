@@ -1,0 +1,21 @@
+!!Bluetooth Detector Cloud Instation
+
+The Bluetooth Detector Cloud Instation System is a non intrusive above ground traffic flow detector system. This system allows information on journey times, traffic speed, flow characteristics and road occupancy can be calculated and displayed using data derived from Bluetooth signals emanating from passing traffic.
+
+!Overview
+
+Bluetooth technology is embedded in billions of electronic devices world-wide.  Many devices (e.g. mobile phones, tablet computers, laptop computers etc) are carried by vehicle drivers or are embedded within a vehicle’s system.  Each Bluetooth device emits a unique signature that can be harvested and time stamped by an SSL BlueTruth Outstation.  These signatures can then be made available to an Instation.
+
+Analysing the passed signature information on an Instation enables the creation of origin and destination information for each detected Bluetooth signature including the time taken (i.e. journey times) between Outstations.
+
+[{Image src='Overview.png' style='margin-bottom:50px;' align='center'}]
+
+The instation receiver provides a gateway to which outstations can upload data. This data is processed and stored in the database. The processed information can be viewed through the instation administration interface. 
+
+The instation administration interface is responsible for the following:
+*Managing the configuration of outstations.
+*Managing how the data received from outstations is processed.
+*Managing instation users.
+*Analysis of data collected.
+
+
