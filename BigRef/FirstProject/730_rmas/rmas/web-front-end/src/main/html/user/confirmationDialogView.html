@@ -1,0 +1,14 @@
+<form role="form">
+    <div class="container-fluid">
+        <div class="modal-header">
+            <p class="modal-title">{{confirmationModalData.dialogTitle}}</p>
+        </div>
+        <div class="modal-body">
+            <p>{{confirmationModalData.dialogQuestion}}</p>
+        </div>
+        <div class="modal-footer pull-right">
+            <button class="btn btn-primary" type="button" ng-click="accept()">Accept</button>
+            <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </div>
+</form>

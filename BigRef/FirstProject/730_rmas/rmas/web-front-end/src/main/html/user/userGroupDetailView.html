@@ -1,0 +1,28 @@
+<div class="form-horizontal">
+    <div class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userGroupDetailForm.name)}">
+        <label for="name" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="name" name="name" ng-model="userGroup.groupName" placeholder="Group name" required>
+        </div>
+    </div>
+    <div class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userGroupDetailForm.accountClassification.name)}">
+        <label for="accountClassification" class="col-sm-2 control-label">Account classification</label>
+        <div class="col-sm-10">
+            <select ng-model="userGroup.accountClassification"
+                    ng-options="accountClassification as accountClassification.name for accountClassification in accountClassifications.list track by accountClassification.id" class="form-control" required>
+                <option value="">Select Account classification</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="form-group"  ng-class="{'has-error has-feedback' : isInvalidUserInput(userGroupDetailForm.deviceFilter)}">
+    <device-filter filters="deviceFilterList"></device-filter>
+</div>
+<button class="btn btn-primary" ng-click="save()" ng-disabled="userGroupDetailForm.$invalid || !userGroupDetailForm.modified">Save</button>
+<button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+<div class="pull-right">
+    <button class="btn btn-primary" ng-click="suspendUserGroup()" ng-disabled="userGroupDetailForm.modified" ng-hide="isSuspended(userGroup) || isInserting()">Suspend</button>
+    <button class="btn btn-primary" ng-click="enableUserGroup()" ng-disabled="userGroupDetailForm.modified" ng-hide="!isSuspended(userGroup) || isInserting()">Re-enable</button>
+    <button class="btn btn-primary" ng-click="deleteUserGroup()" ng-disabled="userGroupDetailForm.modified" ng-hide="isInserting()">Delete</button>
+</div>
+

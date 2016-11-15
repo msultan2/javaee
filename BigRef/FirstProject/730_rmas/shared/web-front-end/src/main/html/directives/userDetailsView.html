@@ -1,0 +1,89 @@
+<div>
+    <form id="user-details-form" name="userDetailsForm" novalidate class="form-horizontal">
+
+    <div ng-show="showParameter('name')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.name)}">
+        <label for="name" class="col-sm-3 control-label">Name</label>
+        <div class="col-sm-9">
+            <input ng-disabled="disabledParameter('name')" type="text" class="form-control" id="name" name="name" ng-model="user.name" placeholder="{{config.showPlaceHolders ? 'Jane Doe' : ''}}" required>
+        </div>
+    </div>
+    <div ng-show="showParameter('employer')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.employer)}">
+        <label for="employer" class="col-sm-3 control-label">Organisation</label>
+        <div class="col-sm-9">
+            <input ng-disabled="disabledParameter('employer')" type="text" class="form-control" id="employer" name="employer" ng-model="user.employer" required>
+        </div>
+    </div>
+    <div ng-show="showParameter('mcr')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.mcr)}">
+        <label for="mcr" class="col-sm-3 control-label">Maintenance region</label>
+        <div class="col-sm-9">
+            <input ng-disabled="disabledParameter('mcr')" type="text" class="form-control" id="mcr" name="mcr" ng-model="user.mcr" required>
+        </div>
+    </div>
+    <div ng-show="showParameter('rcc')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.rcc)}">
+        <label for="rcc" class="col-sm-3 control-label">RCC</label>
+        <div class="col-sm-9">
+            <select ng-disabled="disabledParameter('rcc')" ng-model="user.rcc" ng-options="rcc.name as  rcc.name for rcc in config.rccs" id="rcc" name="rcc" class="form-control" required>
+                <option value="">Select RCC</option>
+            </select>
+        </div>
+    </div>
+    <div ng-show="showParameter('address')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.address)}">
+        <label for="address" class="col-sm-3 control-label">Address</label>
+        <div class="col-sm-9">
+            <textArea ng-disabled="disabledParameter('address')" class="form-control" msd-elastic id="address" name="address" ng-model="user.address" placeholder="{{config.showPlaceHolders ? 'Street, City, Postcode' : ''}}" required></textArea>
+        </div>
+    </div>
+    <div ng-show="showParameter('email')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.email)}">
+        <label for="email" class="col-sm-3 control-label">Email</label>
+        <div class="col-sm-9">
+            <input ng-disabled="disabledParameter('email')" type="email" class="form-control" id="email" name="email" ng-model="user.email" placeholder="{{config.showPlaceHolders ? 'jane.doe@example.com' : ''}}" required>
+        </div>
+    </div>
+    <div ng-show="showParameter('phone')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.phone)}">
+        <label for="phone" class="col-sm-3 control-label">Telephone number</label>
+        <div class="col-sm-4">
+            <input ng-disabled="disabledParameter('phone')" type="tel" class="form-control" id="phone" name="phone" ng-model="user.primaryPhone" placeholder="{{config.showPlaceHolders ? '01179 123321' : ''}}" required>
+        </div>
+    </div>
+    <div ng-show="showParameter('mobile')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.mobile)}">
+        <label for="mobile" class="col-sm-3 control-label">Mobile number</label>
+        <div class="col-sm-4">
+            <input ng-disabled="disabledParameter('mobile')" type="tel" class="form-control" id="mobile" name="mobile" ng-model="user.mobile" placeholder="{{config.showPlaceHolders ? '07574 023420' : ''}}" required>
+        </div>
+    </div>
+    <div ng-if="showParameter('projectSponsor')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.projectSponsor)}">
+        <label for="projectSponsor" class="col-sm-3 control-label">Project sponsor</label>
+        <div class="col-sm-9">
+            <select ng-disabled="disabledParameter('projectSponsor')" ng-model="user.projectSponsor" ng-options="user.id as  user.name for user in config.projectSponsors" id="projectSponsor" name="projectSponsor" class="form-control" required>
+                <option value="">Select Sponsor</option>
+            </select>
+        </div>
+    </div>
+    <div ng-if="showParameter('accessRequestReason')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.accessRequestReason)}">
+        <label for="accessRequestReason" class="col-sm-3 control-label">Reason for access request</label>
+        <div class="col-sm-9">
+            <textArea ng-disabled="disabledParameter('accessRequestReason')" class="form-control" msd-elastic id="accessRequestReason" name="accessRequestReason" ng-model="user.accessRequestReason" placeholder="{{config.showPlaceHolders ? 'What functions the potential RMAS User will undertake' : ''}}" required></textArea>
+        </div>
+    </div>
+    <div ng-if="showParameter('accessRequired')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.accessRequired)}">
+        <label for="accessRequired" class="col-sm-3 control-label">Details of access required</label>
+        <div class="col-sm-9">
+            <textArea ng-disabled="disabledParameter('accessRequired')" class="form-control" msd-elastic id="accessRequired" name="accessRequired" ng-model="user.accessRequired" placeholder="{{config.showPlaceHolders ? 'For example; which Roadside Devices, what manufacturers, which Maintenance Contract Region etc' : ''}}" required></textArea>
+        </div>
+    </div>
+    <div ng-if="showParameter('tandcAccepted')" class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userDetailsForm.tandcAccepted)}">
+        <div class="col-sm-9">
+            <label>
+                <input ng-disabled="disabledParameter('tandcAccepted')" type="checkbox" ng-model="user.tandcAccepted" required> I confirm that I have read and accepted the <a href="Terms of Use Agreement.pdf" target="_blank">Terms of Use Agreement</a>
+            </label>
+        </div>
+    </div>
+    <button ng-show="showSubmitClearButtons()" class="btn btn-primary" type="submit" ng-click="config.submit()" ng-disabled="userDetailsForm.$invalid">Submit</button>
+    <button ng-show="showSubmitClearButtons()" class="btn btn-primary" type="reset" ng-click="clear()">Clear</button>    
+    <button ng-show="showSaveButton()" class="btn btn-primary" ng-click="acceptEdit()" ng-disabled="state.saving || userDetailsForm.$pristine || userDetailsForm.$invalid">
+        <span ng-hide="state.saving">Save</span>
+        <span ng-show="state.saving">Saving...<i class="glyphicon glyphicon-refresh glyphicon-spin"></i></span>
+    </button>    
+    <button ng-show="showCancelButton() " class="btn btn-primary" ng-click="cancelEdit()">Cancel</button>
+    </form>
+</div>

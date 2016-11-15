@@ -1,0 +1,43 @@
+<div class="container-fluid">
+    <div class="page-header" >
+        <h1>User Groups</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary pull-right" ng-click="expandNewUserGroupPanel()"  ng-show="isNewUserGroupPanelCollapsed">&nbsp;+&nbsp;</button>
+            <br>
+            <div uib-collapse="isNewUserGroupPanelCollapsed">
+                <div>
+                    <form id="user-group-detail-form" name="userGroupDetailForm" novalidate class="form">
+                        <div class="well well-lg" ng-include="'user/userGroupDetailView.html'"></div>
+                    </form>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Account classification</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody data-ng-repeat="group in userGroups.list" data-ng-switch on="groupDataCollapse[$index]">
+                    <tr data-ng-click="selectTableRow($index)" ng-class-odd="'table-striped-odd-row'">
+                        <td><a href  oncontextmenu="return false;">{{group.groupName}}</a></td>
+                        <td>{{group.accountClassification.name}}</td>
+                        <td>{{group.status}}</td>
+                    </tr>
+                    <tr data-ng-switch-when="true">
+                        <td colspan="3">
+                            <div>
+                                <form id="user-group-detail-form" name="userGroupDetailForm" novalidate class="form">
+                                    <div class="well well-lg" ng-include="'user/userGroupDetailView.html'"></div>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

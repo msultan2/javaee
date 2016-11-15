@@ -1,0 +1,17 @@
+{
+	"globals": {
+		"angular": false
+	},
+	"globalstrict": true,
+	"bitwise": true,
+	"curly": true,
+	"eqeqeq": true,
+	"latedef": true,
+	"lastsemic": true,
+	"nocomma": true,
+	"nonew": true,
+	"strict": true,
+	"undef": true,
+	"unused": "strict",
+	"validthis": true
+}

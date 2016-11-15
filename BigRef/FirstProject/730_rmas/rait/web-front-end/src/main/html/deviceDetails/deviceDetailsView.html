@@ -1,0 +1,43 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-10 col-md-8 col-lg-7 col-centered">
+            <div class="panel panel-default">
+                <div class="panel-heading" >
+                    <h3>Device Details</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" id="deviceDetailsForm" name="deviceDetailsForm" novalidate>
+                         <div class="form-group" ng-class="{'has-error' : isInvalidUserInput(deviceDetailsForm.deviceIp)}">
+                            <label class="col-sm-4 control-label">Device IP</label>
+                            <div class="col-sm-8">
+                                <input type="text" ng-pattern="ipPattern" id="deviceIp" name="deviceIp" class="form-control" ng-model="deviceDetailsFormData.ipAddress" required/>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{'has-error' : isInvalidUserInput(deviceDetailsForm.bandwidthLimit)}">
+                            <label class="col-sm-4 control-label">Bandwidth limit (Kbps)</label>
+                            <div class="col-sm-5">
+                                <input type="number" min="0" max="9999" class="form-control" id="bandwidthLimit" name="bandwidthLimit" class="form-control" ng-model="deviceDetailsFormData.bandwidthLimit" required/>
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary" ng-click="setBandwidthLimit(128)">Copper</button>
+                                <button class="btn btn-primary" ng-click="setBandwidthLimit(1024)">Fibre</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Private key</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="file" on-read-file="loadContent($fileContent)" />
+                            </div>
+                        </div>
+                        <div class="form-group text-center">
+                            <div class="btn-toolbar">
+                                <button class="btn btn-primary" ng-disabled="deviceDetailsForm.$invalid ||  !deviceDetailsFormData.privateKey" ng-click="next()">Next</button>
+                                <button class="btn btn-primary" type="reset" ng-click="clear()">Clear</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

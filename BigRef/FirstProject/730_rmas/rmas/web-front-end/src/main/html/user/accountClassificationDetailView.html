@@ -1,0 +1,18 @@
+<div class="form-horizontal">
+    <div class="form-group">
+        <div ng-class="{'has-error has-feedback' : isInvalidUserInput(accountClassificationDetailForm.name)}">
+            <label for="name" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="name" name="name" ng-model="accountClassification.name" placeholder="Name" ng-disabled="notAllowedModified" required>
+            </div>
+        </div>
+        <label class="control-label" ng-show="accountClassification.display2fa" >Two Factor Authentication is required</label>
+    </div>
+    <div class="form-group checkbox">
+        <div class="col-sm-{{accountClassification.colSize}}" data-ng-repeat="permission in accountClassification.permissionSelected.list">
+            <label><input type="checkbox" ng-click="checkFor2fa()" ng-model="permission.value" ng-disabled="notAllowedModified">{{permission.name}}</input></label>
+        </div>
+    </div>
+</div>
+<button class="btn btn-primary" ng-click="save()" ng-show="!notAllowedModified" ng-disabled="accountClassificationDetailForm.$invalid || !accountClassificationDetailForm.modified">Save</button>
+<button class="btn btn-primary" ng-click="cancel()" ng-show="!notAllowedModified">Cancel</button>

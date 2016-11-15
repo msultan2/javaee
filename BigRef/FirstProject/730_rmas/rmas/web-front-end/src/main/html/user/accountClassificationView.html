@@ -1,0 +1,39 @@
+<div class="container-fluid">
+    <div class="page-header" >
+        <h1>Account Classifications</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary pull-right" ng-click="expandNewAccountClassificationPanel()"  ng-show="isNewAccountClassificationPanelCollapsed">&nbsp;+&nbsp;</button>
+            <br>
+            <div uib-collapse="isNewAccountClassificationPanelCollapsed">
+                <div>
+                    <form id="account-classification-detail-form" name="accountClassificationDetailForm" novalidate class="form">
+                        <div class="well well-lg" ng-include="'user/accountClassificationDetailView.html'"></div>
+                    </form>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                <tbody data-ng-repeat="account in accountClassifications.list" data-ng-switch on="accountClassificationDataCollapse[$index]">
+                <tr data-ng-click="selectTableRow($index)" ng-class-odd="'table-striped-odd-row'">
+                    <td><a href  oncontextmenu="return false;">{{account.name}}</a></td>
+                </tr>
+                <tr data-ng-switch-when="true">
+                    <td colspan="2">
+                        <div>
+                            <form id="account-classification-detail-form" name="nol" novalidate class="form">
+                                <div class="well well-lg" ng-include="'user/accountClassificationDetailView.html'"></div>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

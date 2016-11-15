@@ -1,0 +1,10 @@
+<div  class="list-group" ng-show="results && results.status !== 'SUCCESS'">
+    <div ng-if="results.status === 'UPDATED' || results.status === 'PARTIAL_SUCCESS'" class ="list-group-item list-group-item-success"
+         ng-repeat="errorMessage in results.errorMessages">
+        {{errorMessage| errorMessageFilter}}
+    </div>
+    <div  ng-if="results.status !== 'UPDATED' && results.status !== 'PARTIAL_SUCCESS'" class ="list-group-item list-group-item-warning"
+         ng-repeat="errorMessage in results.errorMessages">
+        {{errorMessage| errorMessageFilter}}
+    </div>
+</div>

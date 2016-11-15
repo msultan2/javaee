@@ -1,0 +1,7 @@
+[appservers]
+${server-1}
+${server-2}
+
+[dbservers]
+${server-1}
+${server-2}

@@ -1,0 +1,51 @@
+<div class="container-fluid full-width">
+    <div ng-show="messageLevel === 'success'" class="alert alert-success">{{message}}</div>
+    <div ng-show="messageLevel === 'error'" class="alert alert-danger">{{message}}</div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-9 col-md-7 col-lg-7 col-centered">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1>Device Enrolment</h1>
+                </div>
+                <div class="panel-body">
+                    <form id="device-enrolment-form" name="deviceEnrolmentForm" novalidate class="form-horizontal">
+                        <div class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(deviceEnrolmentForm.ipAddress)}">
+                            <label for="ipAddress" class="col-sm-3 control-label">IP address</label>
+                            <div class="col-sm-9">
+                                <input type="text" ng-pattern="ipPattern" class="form-control" id="ipAddress" name="ipAddress" ng-model="device.ipAddress" placeholder="192.168.0.12" required>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(deviceEnrolmentForm.maintenanceContractRegion)}">
+                            <label for="mcr" class="col-sm-3 control-label">Maintenance region</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="mcr" name="mcr" ng-model="device.maintenanceContractRegion">
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(deviceEnrolmentForm.rccRegion)}">
+                            <label for="rcc" class="col-sm-3 control-label">RCC</label>
+                            <div class="col-sm-9">
+                                <select ng-model="device.rccRegion" ng-options="rcc.name as  rcc.name for rcc in rccs" id="rcc" name="rcc" class="form-control" required>
+                                    <option value="">Select RCC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(deviceEnrolmentForm.bandwidthLimit)}">
+                            <label for="bandwidthLimit" class="col-sm-3 control-label">Bandwidth limit (Kbps)</label>
+                            <div class="col-sm-9">
+                                <input type="text" ng-pattern="numbersPattern" class="form-control" id="bandwidthLimit" name="bandwidthLimit" ng-model="device.bandwidthLimit" placeholder="256" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="enrolmentDate" class="col-sm-3 control-label">Enrolment date</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="enrolmentDate" name="enrolmentDate" ng-disabled="true" ng-value="device.enrolmentDate | date : 'dd-MMMM-yyyy'" required>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit" ng-click="submit()" ng-disabled="deviceEnrolmentForm.$invalid">Submit</button>
+                        <button class="btn btn-primary" type="reset" ng-click="clear()">Clear</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

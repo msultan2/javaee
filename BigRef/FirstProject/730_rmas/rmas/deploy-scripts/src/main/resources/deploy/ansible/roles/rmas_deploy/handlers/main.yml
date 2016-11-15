@@ -1,0 +1,9 @@
+---
+- name: enable rmas
+  shell: sudo systemctl enable rmas
+
+- name: reload rmas
+  shell: sudo systemctl daemon-reload
+
+- name: restart rmas
+  shell: sudo systemctl restart rmas

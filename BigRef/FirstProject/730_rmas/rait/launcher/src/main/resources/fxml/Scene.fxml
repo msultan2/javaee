@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="222.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+      <ImageView fitHeight="111.0" fitWidth="130.0" layoutX="14.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../logo/Highways_England_Logo.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="136.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Starting RAIT">
+         <font>
+            <Font size="48.0" />
+         </font>
+      </Text>
+      <ProgressIndicator layoutX="435.0" layoutY="73.0" />
+      <Text layoutX="19.0" layoutY="176.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The Remote Access Interface Tester (RAIT) allows TR2597 compliant devices to be tested for compatibility with the RMAS system. The RAIT is compatible with Microsoft Windows 7. Limited functionality may be available on other platforms." textAlignment="CENTER" wrappingWidth="484.4062492996454">
+        <font>
+            <Font size="12.0" />
+        </font>
+      </Text>
+    </children>
+</AnchorPane>

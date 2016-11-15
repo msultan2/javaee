@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#At the current point of time, the script always returns "yes"
+#This script is for sunny day scenario 
+
+echo "yes"
+exit 0
