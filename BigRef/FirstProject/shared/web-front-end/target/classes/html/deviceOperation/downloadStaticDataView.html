@@ -1,0 +1,20 @@
+<form role="form" ng-submit="ok()">
+    <div class="container-fluid">
+        <div class="modal-header">
+            <h1 class="modal-title">Refresh Device Data</h1>
+        </div>
+        <div class="modal-body" ng-show="message.level !== 'error'">
+            <div class="row">
+                <label>Status:&nbsp;</label> {{results.status || "Downloading.."}}
+            </div>
+            <div error-message-directive></div>
+            <div class="row" ng-show="results.result && results.errorMessages.length === 0">
+                <label>File:&nbsp;</label>{{results.result}}
+            </div>
+        </div>
+        <div ng-show="message.level === 'error'" class="alert alert-danger">{{message.text| errorMessageFilter}}</div>
+        <div class="modal-footer">
+            <div ng-include="'shared/resultFooterView.html'" ></div>
+        </div>
+    </div>
+</form>

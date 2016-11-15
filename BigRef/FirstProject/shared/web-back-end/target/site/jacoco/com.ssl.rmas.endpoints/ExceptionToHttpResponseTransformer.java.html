@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ExceptionToHttpResponseTransformer.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">730_RMAS - Shared - Web Back-End</a> &gt; <a href="index.source.html" class="el_package">com.ssl.rmas.endpoints</a> &gt; <span class="el_source">ExceptionToHttpResponseTransformer.java</span></div><h1>ExceptionToHttpResponseTransformer.java</h1><pre class="source lang-java linenums">/*
+ * THIS SOFTWARE IS PROVIDED BY SIMULATION SYSTEMS LTD ``AS IS'' AND
+ * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SIMULATION
+ * SYSTEMS LTD BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Copyright 2016 (C) Simulation Systems Ltd. All Rights Reserved. *
+ */
+package com.ssl.rmas.endpoints;
+
+import com.ssl.rmas.entities.HeaderKeys;
+import com.ssl.rmas.managers.ResultsManager;
+import com.ssl.rmas.utils.ErrorMessage;
+import java.util.Set;
+import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.integration.annotation.Transformer;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.security.core.Authentication;
+import com.ssl.rmas.exceptionhandler.ExceptionToHttpResponseMapper;
+
+<span class="fc" id="L34">public class ExceptionToHttpResponseTransformer {</span>
+
+<span class="fc" id="L36">    private final Logger logger = LoggerFactory.getLogger(ExceptionToHttpResponseTransformer.class);</span>
+
+<span class="fc" id="L38">    private final String contentTypeValue = &quot;application/json&quot;;</span>
+
+    private ExceptionToHttpResponseMapper exceptionToHttpResponseMapper;
+    private ResultsManager resultsManager;
+
+    @Autowired
+    public void setExceptionToHttpResponseMapper(ExceptionToHttpResponseMapper exceptionToHttpResponseMapper) {
+<span class="fc" id="L45">        this.exceptionToHttpResponseMapper = exceptionToHttpResponseMapper;</span>
+<span class="fc" id="L46">    }</span>
+
+   @Autowired
+   public void setResultsManager(ResultsManager resultsManager) {
+<span class="nc" id="L50">       this.resultsManager = resultsManager;</span>
+<span class="nc" id="L51">    }</span>
+
+    @Transformer
+    public Message&lt;Set&lt;ErrorMessage&gt;&gt; updateMessage(Message&lt;Throwable&gt; throwableMessage) {
+<span class="fc" id="L55">        Throwable throwable = throwableMessage.getPayload();</span>
+<span class="fc" id="L56">        Set&lt;ErrorMessage&gt; errorMessages = exceptionToHttpResponseMapper.getErrorMessages(throwable);</span>
+<span class="fc" id="L57">        storeFailureIfOperationResultPresent(throwableMessage.getHeaders(), errorMessages);</span>
+<span class="fc" id="L58">        int statusCode = exceptionToHttpResponseMapper.getStatusCode(throwable);</span>
+<span class="fc" id="L59">        logger.warn(&quot;Unhandled exception '{}' caught. Response returned with status code: '{}' and body: '{}'&quot;,</span>
+<span class="fc" id="L60">                throwable.getLocalizedMessage(), statusCode, errorMessages, throwable);</span>
+<span class="fc" id="L61">        return MessageBuilder</span>
+<span class="fc" id="L62">                .withPayload(errorMessages)</span>
+<span class="fc" id="L63">                .copyHeaders(throwableMessage.getHeaders())</span>
+<span class="fc" id="L64">                .setHeader(HeaderKeys.CONTENT_TYPE.toString(), contentTypeValue)</span>
+<span class="fc" id="L65">                .setHeader(HeaderKeys.HTTP_STATUS_CODE.toString(), statusCode)</span>
+<span class="fc" id="L66">                .build();</span>
+    }
+
+    private void storeFailureIfOperationResultPresent(MessageHeaders messageHeaders, Set&lt;ErrorMessage&gt; errorMessages) {
+<span class="fc" id="L70">        Authentication currentUser = messageHeaders.get(HeaderKeys.CURRENT_USER.toString(), Authentication.class);</span>
+<span class="fc" id="L71">        UUID uuid = messageHeaders.get(HeaderKeys.ACTIVITY_ID.toString(), UUID.class);</span>
+<span class="pc bpc" id="L72" title="3 of 4 branches missed.">        if (currentUser != null &amp;&amp; uuid != null) {</span>
+<span class="nc" id="L73">            resultsManager.updateResult(currentUser, uuid, errorMessages);</span>
+        }
+<span class="fc" id="L75">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

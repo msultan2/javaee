@@ -1,0 +1,15 @@
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/User.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/ActivityIdEntity.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/DownloadLogDates.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/utils/ErrorMessage.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/OperationResult.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/validation/UserRegistrationValidator.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/DeviceFilter.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/BaseUser.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/UserRegistration.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/SshKeyPaths.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/HeaderKeys.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/PublicKey.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/RMASKey.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/RequestStatus.java
+/home/mohamed/git-repos/730_rmas/shared/entities/src/main/java/com/ssl/rmas/entities/Device.java

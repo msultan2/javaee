@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ResetDeviceEndpoint.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">730_RMAS - Shared - Web Back-End</a> &gt; <a href="index.source.html" class="el_package">com.ssl.rmas.endpoints</a> &gt; <span class="el_source">ResetDeviceEndpoint.java</span></div><h1>ResetDeviceEndpoint.java</h1><pre class="source lang-java linenums">/*
+ * THIS SOFTWARE IS PROVIDED BY SIMULATION SYSTEMS LTD ``AS IS'' AND
+ * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SIMULATION
+ * SYSTEMS LTD BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Copyright 2016 (C) Simulation Systems Ltd. All Rights Reserved.
+ *
+ */
+package com.ssl.rmas.endpoints;
+
+import com.ssl.rmas.managers.ResultsManager;
+import com.ssl.rmas.entities.HeaderKeys;
+import com.ssl.rmas.entities.OperationResult;
+import com.ssl.rmas.managers.DeviceManager;
+import com.ssl.rmas.ssh.manager.ConnectionParams;
+import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+
+<span class="fc" id="L33">public class ResetDeviceEndpoint {</span>
+    private ResultsManager resultsManager;
+    private DeviceManager deviceManager;
+<span class="fc" id="L36">    private final Logger LOGGER = LoggerFactory.getLogger(ResetDeviceEndpoint.class);</span>
+
+    @Autowired
+    public void setResultsManager(ResultsManager resultsManager) {
+<span class="fc" id="L40">        this.resultsManager = resultsManager;</span>
+<span class="fc" id="L41">    }</span>
+    
+    @Autowired
+    public void setDeviceManager(DeviceManager deviceManager) {
+<span class="fc" id="L45">        this.deviceManager = deviceManager;</span>
+<span class="fc" id="L46">    }</span>
+
+    @Async
+    public void resetDevice(Message&lt;?&gt; message) {
+<span class="fc" id="L50">        ConnectionParams connectionParams = message.getHeaders().get(HeaderKeys.CONNECTION_PARAMS.toString(), ConnectionParams.class);</span>
+<span class="fc" id="L51">        Authentication currentUser = message.getHeaders().get(HeaderKeys.CURRENT_USER.toString(), Authentication.class);</span>
+<span class="fc" id="L52">        UUID activityId = message.getHeaders().get(HeaderKeys.ACTIVITY_ID.toString(), UUID.class);</span>
+<span class="fc" id="L53">        OperationResult operationResult = deviceManager.lockDeviceAndExecute(deviceManager.resetDevice(), currentUser, activityId, connectionParams);</span>
+<span class="fc" id="L54">        LOGGER.debug(&quot;Reset Device, operation result: {}&quot;, operationResult);</span>
+<span class="fc" id="L55">        resultsManager.storeResult(currentUser, operationResult);</span>
+<span class="fc" id="L56">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

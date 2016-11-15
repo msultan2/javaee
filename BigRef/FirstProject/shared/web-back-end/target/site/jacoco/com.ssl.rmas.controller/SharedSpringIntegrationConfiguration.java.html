@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SharedSpringIntegrationConfiguration.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">730_RMAS - Shared - Web Back-End</a> &gt; <a href="index.source.html" class="el_package">com.ssl.rmas.controller</a> &gt; <span class="el_source">SharedSpringIntegrationConfiguration.java</span></div><h1>SharedSpringIntegrationConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * THIS SOFTWARE IS PROVIDED BY SIMULATION SYSTEMS LTD ``AS IS'' AND
+  * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+  * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SIMULATION
+  * SYSTEMS LTD BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+  * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+  * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  * POSSIBILITY OF SUCH DAMAGE.
+  *
+  * Copyright 2016 (C) Simulation Systems Ltd. All Rights Reserved.
+ */
+package com.ssl.rmas.controller;
+
+import static com.ssl.rmas.utils.ActivityEnum.DOWNLOAD_LOGS;
+import static com.ssl.rmas.utils.ActivityEnum.UPDATE_KEY;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.http.HttpMethod;
+import org.springframework.integration.annotation.Filter;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.config.EnableIntegration;
+import org.springframework.integration.http.inbound.HttpRequestHandlingMessagingGateway;
+import org.springframework.integration.http.inbound.RequestMapping;
+import org.springframework.integration.http.support.DefaultHttpHeaderMapper;
+import org.springframework.integration.router.HeaderValueRouter;
+import org.springframework.integration.router.RecipientListRouter;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.oxm.Unmarshaller;
+
+import com.ssl.rmas.endpoints.AddConnectionParamsToHeaderTransformer;
+import com.ssl.rmas.endpoints.AddSecurityContextHeaderTransformer;
+import com.ssl.rmas.endpoints.DowngradeFirmwareEndpoint;
+import com.ssl.rmas.endpoints.DownloadLogsEndpoint;
+import com.ssl.rmas.endpoints.ExceptionToHttpResponseTransformer;
+import com.ssl.rmas.endpoints.ExtractActivityIdTransformer;
+import com.ssl.rmas.endpoints.IdGeneratorTransformer;
+import com.ssl.rmas.endpoints.LowercaseHeaderTransformer;
+import com.ssl.rmas.endpoints.RemoveOldSshPublicKeysEndpoint;
+import com.ssl.rmas.endpoints.ResetDeviceEndpoint;
+import com.ssl.rmas.endpoints.StaticDataEndpoint;
+import com.ssl.rmas.endpoints.TemporaryFileStorageTransformer;
+import com.ssl.rmas.endpoints.UpdateKeyEndpoint;
+import com.ssl.rmas.endpoints.UpgradeFirmwareEndpoint;
+import com.ssl.rmas.endpoints.UploadFirmwareEnpoint;
+import com.ssl.rmas.endpoints.ValidationFilter;
+import com.ssl.rmas.endpoints.VerifyEndpoint;
+import com.ssl.rmas.entities.DownloadLogDates;
+import com.ssl.rmas.entities.HeaderKeys;
+import com.ssl.rmas.entities.PublicKey;
+import com.ssl.rmas.utils.ActivityEnum;
+import com.ssl.rmas.utils.AdviceConfiguration;
+import com.ssl.rmas.utils.FileActivityEnum;
+import com.ssl.rmas.utils.LoggingChannelConfiguration;
+import com.ssl.rmas.utils.StaticDeviceDataXMLToDeviceUnmarshaller;
+
+@Configuration
+@EnableIntegration
+@PropertySource(&quot;classpath:config/application.properties&quot;)
+@Import(AdviceConfiguration.class)
+<span class="nc" id="L78">public class SharedSpringIntegrationConfiguration {</span>
+
+<span class="nc" id="L80">    private final String activityIdChannelName = &quot;activityIdChannel&quot;;</span>
+<span class="nc" id="L81">    private final String connectionParamsChannelName = &quot;connectionParamsChannel&quot;;</span>
+<span class="nc" id="L82">    private final String duplicatorChannelName = &quot;duplicatorChannel&quot;;</span>
+<span class="nc" id="L83">    private final String uploadingFirmwareFileChannelName = &quot;uploadingFirmwareFileChannel&quot;;</span>
+<span class="nc" id="L84">    private final String httpResponseDataChannelName = &quot;httpResponseDataChannel&quot;;</span>
+<span class="nc" id="L85">    private final String connectionParamsInHeaderChannelName = &quot;connectionParamsInHeaderChannel&quot;;</span>
+<span class="nc" id="L86">    private final String staticDataChannelName = &quot;staticDataChannel&quot;;</span>
+<span class="nc" id="L87">    private final String updateKeyChannelName = &quot;updateKeyChannel&quot;;</span>
+<span class="nc" id="L88">    private final String uploadFirmwareChannelName = &quot;uploadFirmwareChannel&quot;;</span>
+<span class="nc" id="L89">    private final String downloadLogsChannelName = &quot;downloadLogsChannel&quot;;</span>
+<span class="nc" id="L90">    private final String upgradeFirmwareChannelName = &quot;upgradeFirmwareChannel&quot;;</span>
+<span class="nc" id="L91">    private final String downgradeFirmwareChannelName = &quot;downgradeFirmwareChannel&quot;;</span>
+<span class="nc" id="L92">    private final String connectionParamsValidationChannelName = &quot;connectionParamsValidationChannel&quot;;</span>
+<span class="nc" id="L93">    private final String validationFilterChannelName = &quot;validationFilterChannel&quot;;</span>
+<span class="nc" id="L94">    private final String resetDeviceChannelName = &quot;resetDeviceChannel&quot;;</span>
+<span class="nc" id="L95">    private final String verifyChannelName = &quot;verifyChannel&quot;;</span>
+<span class="nc" id="L96">    private final String lowercaseHeadersChannelName = &quot;lowerCaseHeadersChannel&quot;;</span>
+<span class="nc" id="L97">    private final String addSecurityContextHeaderChannelName = &quot;addSecurityContextHeaderChannel&quot;;</span>
+<span class="nc" id="L98">    private final String connectionDetailsChannelName = &quot;connectionDetailsChannel&quot;;</span>
+<span class="nc" id="L99">    private final String removeOldSshPublicKeysChannelName = &quot;removeOldSshPublicKeysChannel&quot;;</span>
+<span class="nc" id="L100">    private final SpelExpressionParser spelParser = new SpelExpressionParser();</span>
+
+    @Bean(name = activityIdChannelName)
+    MessageChannel activityIdChannel() {
+<span class="nc" id="L104">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = uploadingFirmwareFileChannelName)
+    MessageChannel uploadingFirmwareFileChannel() {
+<span class="nc" id="L109">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = httpResponseDataChannelName)
+    MessageChannel httpResponseDataChannel() {
+<span class="nc" id="L114">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = connectionParamsChannelName)
+    MessageChannel connectionParamsChannel() {
+<span class="nc" id="L119">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = duplicatorChannelName)
+    MessageChannel duplicatorChannel() {
+<span class="nc" id="L124">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = staticDataChannelName)
+    MessageChannel staticDataCahnnel() {
+<span class="nc" id="L129">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = updateKeyChannelName)
+    MessageChannel updateKeyChannel() {
+<span class="nc" id="L134">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = downloadLogsChannelName)
+    MessageChannel downloadLogsChannel() {
+<span class="nc" id="L139">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = uploadFirmwareChannelName)
+    MessageChannel uploadFirmwareChannel() {
+<span class="nc" id="L144">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = downgradeFirmwareChannelName)
+    MessageChannel downgradeFirmwareChannel() {
+<span class="nc" id="L149">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = upgradeFirmwareChannelName)
+    MessageChannel upgradeFirmwareChannel() {
+<span class="nc" id="L154">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = resetDeviceChannelName)
+    MessageChannel resetDeviceChannel() {
+<span class="nc" id="L159">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = verifyChannelName)
+    MessageChannel verifyChannel() {
+<span class="nc" id="L164">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = removeOldSshPublicKeysChannelName)
+    MessageChannel removeOldSshPublicKeysChannel() {
+<span class="nc" id="L169">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = connectionParamsValidationChannelName)
+    MessageChannel connectionParamsValidationChannel() {
+<span class="nc" id="L174">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = validationFilterChannelName)
+    MessageChannel validationFilterChannel() {
+<span class="nc" id="L179">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = connectionParamsInHeaderChannelName)
+    MessageChannel connectionParamsInHeaderChannel() {
+<span class="nc" id="L184">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = lowercaseHeadersChannelName)
+    MessageChannel lowercaseHeadersChannel() {
+<span class="nc" id="L189">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = addSecurityContextHeaderChannelName)
+    MessageChannel addSecurityContextHeaderChannel() {
+<span class="nc" id="L194">        return new DirectChannel();</span>
+    }
+
+    @Bean(name = connectionDetailsChannelName)
+    MessageChannel connectionDetailsChannel() {
+<span class="nc" id="L199">        return new DirectChannel();</span>
+    }
+
+    @Bean
+    @Autowired
+    public HttpRequestHandlingMessagingGateway updateKeyGateway(@Qualifier(value = lowercaseHeadersChannelName) MessageChannel requestChannel,
+            @Qualifier(value = httpResponseDataChannelName) MessageChannel responseChannel,
+            DefaultHttpHeaderMapper defaultHeaderMapper) {
+<span class="nc" id="L207">        HttpRequestHandlingMessagingGateway gateway = getDefaultGateway(requestChannel, responseChannel, &quot;/activity/&quot; + UPDATE_KEY, defaultHeaderMapper);</span>
+<span class="nc" id="L208">        gateway.setRequestPayloadType(PublicKey.class);</span>
+<span class="nc" id="L209">        Map&lt;String, Expression&gt; headerExpressions = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L210">        headerExpressions.put(&quot;currentActivity&quot;, spelParser.parseExpression(&quot;'&quot; + UPDATE_KEY.toString() + &quot;'&quot;));</span>
+<span class="nc" id="L211">        gateway.setHeaderExpressions(headerExpressions );</span>
+<span class="nc" id="L212">        return gateway;</span>
+    }
+
+    @Bean
+    @Autowired
+    public HttpRequestHandlingMessagingGateway downloadLogsGateway(@Qualifier(value = lowercaseHeadersChannelName) MessageChannel requestChannel,
+            @Qualifier(value = httpResponseDataChannelName) MessageChannel responseChannel,
+            DefaultHttpHeaderMapper defaultHeaderMapper) {
+<span class="nc" id="L220">        HttpRequestHandlingMessagingGateway gateway = getDefaultGateway(requestChannel, responseChannel, &quot;/activity/&quot; + DOWNLOAD_LOGS, defaultHeaderMapper);</span>
+<span class="nc" id="L221">        gateway.setRequestPayloadType(DownloadLogDates.class);</span>
+<span class="nc" id="L222">        Map&lt;String, Expression&gt; headerExpressions = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L223">        headerExpressions.put(&quot;currentActivity&quot;, spelParser.parseExpression(&quot;'&quot; + DOWNLOAD_LOGS.toString() + &quot;'&quot;));</span>
+<span class="nc" id="L224">        gateway.setHeaderExpressions(headerExpressions );</span>
+<span class="nc" id="L225">        return gateway;</span>
+    }
+
+    @Bean
+    @Autowired
+    public HttpRequestHandlingMessagingGateway defaultActivityGateway(@Qualifier(value = lowercaseHeadersChannelName) MessageChannel requestChannel,
+            @Qualifier(value = httpResponseDataChannelName) MessageChannel responseChannel,
+            DefaultHttpHeaderMapper defaultHeaderMapper) {
+<span class="nc" id="L233">        HttpRequestHandlingMessagingGateway gateway = getDefaultGateway(requestChannel, responseChannel, &quot;/activity/{activityName}&quot;, defaultHeaderMapper);</span>
+<span class="nc" id="L234">        Map&lt;String, Expression&gt; headerExpressions = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L235">        headerExpressions.put(&quot;currentActivity&quot;, spelParser.parseExpression(&quot;#pathVariables.activityName&quot;));</span>
+<span class="nc" id="L236">        gateway.setHeaderExpressions(headerExpressions );</span>
+<span class="nc" id="L237">        return gateway;</span>
+    }
+
+    @Bean
+    @Autowired
+    public HttpRequestHandlingMessagingGateway defaultFileActivityGateway(
+            @Qualifier(uploadFirmwareChannelName) MessageChannel fileRequestChannel,
+            @Qualifier(httpResponseDataChannelName) MessageChannel responseChannel,
+            DefaultHttpHeaderMapper defaultHeaderMapper) {
+<span class="nc" id="L246">        HttpRequestHandlingMessagingGateway gateway = getDefaultGateway(fileRequestChannel, responseChannel, &quot;/fileActivity/{activityName}&quot;, defaultHeaderMapper);</span>
+<span class="nc" id="L247">        Map&lt;String, Expression&gt; headerExpressions = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L248">        headerExpressions.put(&quot;currentActivity&quot;, spelParser.parseExpression(&quot;#pathVariables.activityName&quot;));</span>
+<span class="nc" id="L249">        gateway.setHeaderExpressions(headerExpressions );</span>
+<span class="nc" id="L250">        return gateway;</span>
+    }
+
+    public HttpRequestHandlingMessagingGateway getDefaultGateway(
+            MessageChannel requestChannel, MessageChannel responseChannel, String pathPattern, DefaultHttpHeaderMapper defaultHeaderMapper) {
+<span class="nc" id="L255">        HttpRequestHandlingMessagingGateway httpGateway = new HttpRequestHandlingMessagingGateway(true);</span>
+<span class="nc" id="L256">        RequestMapping requestMapping = new RequestMapping();</span>
+<span class="nc" id="L257">        requestMapping.setMethods(HttpMethod.POST);</span>
+<span class="nc" id="L258">        requestMapping.setPathPatterns(pathPattern);</span>
+<span class="nc" id="L259">        httpGateway.setRequestMapping(requestMapping);</span>
+<span class="nc" id="L260">        httpGateway.setRequestChannel(requestChannel);</span>
+<span class="nc" id="L261">        httpGateway.setReplyChannel(responseChannel);</span>
+<span class="nc" id="L262">        httpGateway.setHeaderMapper(defaultHeaderMapper);</span>
+<span class="nc" id="L263">        return httpGateway;</span>
+    }
+
+    @Bean(name = &quot;defaultHeaderMapper&quot;)
+    DefaultHttpHeaderMapper getDefaultHeaderMapper() {
+<span class="nc" id="L268">        DefaultHttpHeaderMapper instance = new DefaultHttpHeaderMapper();</span>
+<span class="nc" id="L269">        String[] arr = new String[3];</span>
+<span class="nc" id="L270">        arr[0] = HeaderKeys.PRIVATE_KEY.toString();</span>
+<span class="nc" id="L271">        arr[1] = HeaderKeys.IP_ADDRESS.toString();</span>
+<span class="nc" id="L272">        arr[2] = HeaderKeys.BANDWIDTH_LIMIT.toString();</span>
+
+<span class="nc" id="L274">        instance.setInboundHeaderNames(arr);</span>
+<span class="nc" id="L275">        return instance;</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = uploadFirmwareChannelName,
+            outputChannel = lowercaseHeadersChannelName,
+            adviceChain = AdviceConfiguration.REDIRECT_ERROR_CHANNEL_ADVICE_NAME)
+    TemporaryFileStorageTransformer uploadFirmware(@Value(&quot;${rmas.staticData.localPath}&quot;) String localPath,
+            @Value(&quot;${rmas.uploadFileStorageSubdirectory:temp}&quot;) String tempDir) {
+<span class="nc" id="L285">        return new TemporaryFileStorageTransformer(localPath,tempDir);</span>
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = lowercaseHeadersChannelName,
+            outputChannel = addSecurityContextHeaderChannelName,
+            adviceChain = AdviceConfiguration.REDIRECT_ERROR_CHANNEL_ADVICE_NAME)
+    LowercaseHeaderTransformer lowercaseHeaderTransformer() {
+<span class="nc" id="L293">        return new LowercaseHeaderTransformer();</span>
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = addSecurityContextHeaderChannelName,
+            outputChannel = connectionDetailsChannelName,
+            adviceChain = AdviceConfiguration.REDIRECT_ERROR_CHANNEL_ADVICE_NAME)
+    AddSecurityContextHeaderTransformer addSecurityHeaderTransformer() {
+<span class="nc" id="L301">        return new AddSecurityContextHeaderTransformer();</span>
+    }
+
+    @Bean
+    @Filter(inputChannel = connectionParamsValidationChannelName,
+            outputChannel = validationFilterChannelName,
+            discardChannel = httpResponseDataChannelName,
+            adviceChain = AdviceConfiguration.LOG_AND_IGNORE_ADVICE_NAME)
+    ValidationFilter validationFilter() {
+<span class="nc" id="L310">        return new ValidationFilter();</span>
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = validationFilterChannelName,
+            outputChannel = connectionParamsInHeaderChannelName,
+            adviceChain = AdviceConfiguration.REDIRECT_ERROR_CHANNEL_ADVICE_NAME)
+    AddConnectionParamsToHeaderTransformer addConnectionParamsToHeaderTransformer() {
+<span class="nc" id="L318">        return new AddConnectionParamsToHeaderTransformer();</span>
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = connectionParamsInHeaderChannelName,
+            outputChannel = duplicatorChannelName,
+            adviceChain = AdviceConfiguration.REDIRECT_ERROR_CHANNEL_ADVICE_NAME)
+    IdGeneratorTransformer activityIdGenerator() {
+<span class="nc" id="L326">        return new IdGeneratorTransformer();</span>
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = duplicatorChannelName, adviceChain = AdviceConfiguration.REDIRECT_ERROR_CHANNEL_ADVICE_NAME)
+    RecipientListRouter activityMessageDuplicator(@Qualifier(value = connectionParamsChannelName) MessageChannel connectionParamsChannel,
+            @Qualifier(value = activityIdChannelName) MessageChannel activityIdChannel) {
+<span class="nc" id="L333">        RecipientListRouter router = new RecipientListRouter();</span>
+<span class="nc" id="L334">        router.setChannels(Arrays.asList(connectionParamsChannel, activityIdChannel));</span>
+<span class="nc" id="L335">        return router;</span>
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = activityIdChannelName,
+            outputChannel = httpResponseDataChannelName,
+            adviceChain = AdviceConfiguration.REDIRECT_ERROR_CHANNEL_ADVICE_NAME)
+    ExtractActivityIdTransformer extractActivityId() {
+<span class="nc" id="L343">        return new ExtractActivityIdTransformer();</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = connectionParamsChannelName,
+            adviceChain = AdviceConfiguration.REDIRECT_ERROR_CHANNEL_ADVICE_NAME)
+    HeaderValueRouter activityMessageChannelRouter() {
+<span class="nc" id="L351">        HeaderValueRouter router = new HeaderValueRouter(HeaderKeys.CURRENT_ACTIVITY.toString());</span>
+<span class="nc" id="L352">        router.setChannelMapping(ActivityEnum.UPDATE_KEY.toString(), updateKeyChannelName);</span>
+<span class="nc" id="L353">        router.setChannelMapping(ActivityEnum.STATIC_DATA.toString(), staticDataChannelName);</span>
+<span class="nc" id="L354">        router.setChannelMapping(FileActivityEnum.UPLOAD_FIRMWARE.toString(), uploadingFirmwareFileChannelName);</span>
+<span class="nc" id="L355">        router.setChannelMapping(ActivityEnum.DOWNLOAD_LOGS.toString(), downloadLogsChannelName);</span>
+<span class="nc" id="L356">        router.setChannelMapping(ActivityEnum.UPGRADE_FIRMWARE.toString(), upgradeFirmwareChannelName);</span>
+<span class="nc" id="L357">        router.setChannelMapping(ActivityEnum.DOWNGRADE_FIRMWARE.toString(), downgradeFirmwareChannelName);</span>
+<span class="nc" id="L358">        router.setChannelMapping(ActivityEnum.RESET_DEVICE.toString(), resetDeviceChannelName);</span>
+<span class="nc" id="L359">        router.setChannelMapping(ActivityEnum.VERIFY.toString(), verifyChannelName);</span>
+<span class="nc" id="L360">        router.setChannelMapping(ActivityEnum.REMOVE_OLD_SSH_PUBLIC_KEYS.toString(), removeOldSshPublicKeysChannelName);</span>
+<span class="nc" id="L361">        return router;</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = staticDataChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    StaticDataEndpoint getStaticData(@Value(&quot;${rmas.staticData.localPath}&quot;) String staticDataRelativeOutputDir) {
+<span class="nc" id="L369">        return new StaticDataEndpoint(staticDataRelativeOutputDir);</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = updateKeyChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    UpdateKeyEndpoint updateKey() {
+<span class="nc" id="L377">        return new UpdateKeyEndpoint();</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = downloadLogsChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    DownloadLogsEndpoint downloadLogs(@Value(&quot;${rmas.downloadLogs.localPath}&quot;) String downloadDataDir) {
+<span class="nc" id="L385">        return new DownloadLogsEndpoint(downloadDataDir);</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = uploadingFirmwareFileChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    UploadFirmwareEnpoint uploadFirmwareEnpoint() {
+<span class="nc" id="L393">        return new UploadFirmwareEnpoint();</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = upgradeFirmwareChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    UpgradeFirmwareEndpoint upgradeFirmware() {
+<span class="nc" id="L401">        return new UpgradeFirmwareEndpoint();</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = downgradeFirmwareChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    DowngradeFirmwareEndpoint downgradeFirmware() {
+<span class="nc" id="L409">        return new DowngradeFirmwareEndpoint();</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = resetDeviceChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    ResetDeviceEndpoint resetDeviceEndpoint() {
+<span class="nc" id="L417">        return new ResetDeviceEndpoint();</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = removeOldSshPublicKeysChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    RemoveOldSshPublicKeysEndpoint removeOldSshPublicKeysEndpoint() {
+<span class="nc" id="L425">        return new RemoveOldSshPublicKeysEndpoint();</span>
+    }
+
+    @Bean
+    @Autowired
+    @ServiceActivator(inputChannel = verifyChannelName,
+            outputChannel = LoggingChannelConfiguration.DEBUG_LOGGING_CHANNEL_NAME)
+    VerifyEndpoint verifyEndpoint() {
+<span class="nc" id="L433">        return new VerifyEndpoint();</span>
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = AdviceConfiguration.ERROR_CHANNEL_NAME,
+            outputChannel = httpResponseDataChannelName,
+            adviceChain = AdviceConfiguration.LOG_AND_IGNORE_ADVICE_NAME)
+    ExceptionToHttpResponseTransformer exceptionToHttpResponseTransformer() {
+<span class="nc" id="L441">        return new ExceptionToHttpResponseTransformer();</span>
+    }
+
+    @Bean
+    public Unmarshaller unmarshaller() {
+<span class="nc" id="L446">        Unmarshaller unmarshaller = new StaticDeviceDataXMLToDeviceUnmarshaller();</span>
+<span class="nc" id="L447">        return unmarshaller;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

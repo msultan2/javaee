@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>StaticDeviceDataXMLToDeviceUnmarshaller.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">730_RMAS - Shared - Web Back-End</a> &gt; <a href="index.source.html" class="el_package">com.ssl.rmas.utils</a> &gt; <span class="el_source">StaticDeviceDataXMLToDeviceUnmarshaller.java</span></div><h1>StaticDeviceDataXMLToDeviceUnmarshaller.java</h1><pre class="source lang-java linenums">package com.ssl.rmas.utils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.oxm.UnmarshallingFailureException;
+import org.springframework.oxm.XmlMappingException;
+import org.springframework.oxm.support.AbstractMarshaller;
+import org.w3c.dom.Node;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.ssl.rmas.entities.Device;
+
+<span class="nc" id="L37">public class StaticDeviceDataXMLToDeviceUnmarshaller extends AbstractMarshaller {</span>
+
+<span class="nc" id="L39">    private final Logger logger = LoggerFactory.getLogger(StaticDeviceDataXMLToDeviceUnmarshaller.class);</span>
+
+    @Override
+    public boolean supports(Class&lt;?&gt; clazz) {
+<span class="nc" id="L43">        return Device.class.equals(clazz);</span>
+    }
+
+    @Override
+    protected void marshalDomNode(Object graph, Node node) throws XmlMappingException {
+<span class="nc" id="L48">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected void marshalXmlEventWriter(Object graph, XMLEventWriter eventWriter) throws XmlMappingException {
+<span class="nc" id="L53">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected void marshalXmlStreamWriter(Object graph, XMLStreamWriter streamWriter) throws XmlMappingException {
+<span class="nc" id="L58">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected void marshalSaxHandlers(Object graph, ContentHandler contentHandler, LexicalHandler lexicalHandler)
+            throws XmlMappingException {
+<span class="nc" id="L64">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected void marshalOutputStream(Object graph, OutputStream outputStream)
+            throws XmlMappingException, IOException {
+<span class="nc" id="L70">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected void marshalWriter(Object graph, Writer writer) throws XmlMappingException, IOException {
+<span class="nc" id="L75">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected Object unmarshalDomNode(Node node) throws XmlMappingException {
+<span class="nc" id="L80">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected Object unmarshalXmlEventReader(XMLEventReader eventReader) {
+<span class="nc" id="L85">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected Object unmarshalXmlStreamReader(XMLStreamReader streamReader) {
+<span class="nc" id="L90">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected Object unmarshalSaxReader(XMLReader xmlReader, InputSource inputSource)
+            throws XmlMappingException, IOException {
+
+        try {
+<span class="nc" id="L98">            DeviceContentHandler contentHandler = new DeviceContentHandler();</span>
+<span class="nc" id="L99">            xmlReader.setContentHandler(contentHandler);</span>
+<span class="nc" id="L100">            xmlReader.parse(inputSource);</span>
+<span class="nc" id="L101">            return contentHandler.getDevice();</span>
+<span class="nc" id="L102">        } catch (SAXException e) {</span>
+<span class="nc" id="L103">            throw new UnmarshallingFailureException(&quot;SAX reader exception&quot;, e);</span>
+        }
+    }
+
+    @Override
+    protected Object unmarshalInputStream(InputStream inputStream) throws XmlMappingException, IOException {
+<span class="nc" id="L109">        throw new UnsupportedOperationException();</span>
+    }
+
+    @Override
+    protected Object unmarshalReader(Reader reader) throws XmlMappingException, IOException {
+<span class="nc" id="L114">        throw new UnsupportedOperationException();</span>
+    }
+
+<span class="nc" id="L117">    private class DeviceContentHandler extends DefaultHandler {</span>
+<span class="nc" id="L118">        private final String rmasSchemaUri = &quot;http//www.nmcs2.org/schemas/RAP2&quot;;</span>
+<span class="nc" id="L119">        private Device device = null;</span>
+<span class="nc" id="L120">        private Stack&lt;String&gt; elementStack = new Stack&lt;&gt;();</span>
+<span class="nc" id="L121">        private Stack&lt;StringBuilder&gt; elementText = new Stack&lt;&gt;();</span>
+
+        @Override
+        public void startDocument() throws SAXException {
+<span class="nc" id="L125">            this.device = new Device();</span>
+<span class="nc" id="L126">            super.startDocument();</span>
+<span class="nc" id="L127">        }</span>
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes)
+                throws SAXException {
+<span class="nc" id="L132">            elementStack.push(uri + &quot;:&quot; + localName);</span>
+<span class="nc" id="L133">            elementText.push(new StringBuilder());</span>
+<span class="nc" id="L134">            logger.trace(&quot;Start of element uri: {}, localName: {}, qName: {}, attributes: {}&quot;, uri, localName, qName, attributes);</span>
+<span class="nc" id="L135">        }</span>
+
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+<span class="nc" id="L139">            elementStack.pop();</span>
+<span class="nc" id="L140">            String elementTextString = elementText.pop().toString().trim();</span>
+<span class="nc" id="L141">            logger.trace(&quot;End of element uri: {}, localName: {}, qName: {} with text {}&quot;, uri, localName, qName, elementTextString);</span>
+
+<span class="nc bnc" id="L143" title="All 2 branches missed.">            if(rmasSchemaUri.equals(uri)) {</span>
+<span class="nc bnc" id="L144" title="All 59 branches missed.">                switch(localName) {</span>
+                    case &quot;ipAddress&quot;:
+<span class="nc" id="L146">                        device.setIpAddress(elementTextString);</span>
+<span class="nc" id="L147">                        break;</span>
+                    case &quot;manufacturerName&quot;:
+<span class="nc" id="L149">                        device.setManufacturer(elementTextString);</span>
+<span class="nc" id="L150">                        break;</span>
+                    case &quot;manufacturerTypeNo&quot;:
+<span class="nc" id="L152">                        device.setManufacturerType(elementTextString);</span>
+<span class="nc" id="L153">                        break;</span>
+                    case &quot;serialNo&quot;:
+<span class="nc" id="L155">                        device.setSerialNumber(elementTextString);</span>
+<span class="nc" id="L156">                        break;</span>
+                    case &quot;hardwareVersion&quot;:
+<span class="nc" id="L158">                        device.setHardwareVersion(elementTextString);</span>
+<span class="nc" id="L159">                        break;</span>
+                    case &quot;firmwareVersion&quot;:
+<span class="nc" id="L161">                        device.setFirmwareVersion(elementTextString);</span>
+<span class="nc" id="L162">                        break;</span>
+                    case &quot;hostName&quot;:
+                        try {
+<span class="nc" id="L165">                            device.setHostname(new URI(elementTextString));</span>
+<span class="nc" id="L166">                        } catch (URISyntaxException e) {</span>
+<span class="nc" id="L167">                            throw new SAXException(&quot;Failed to create hostname&quot;, e);</span>
+<span class="nc" id="L168">                        }</span>
+                        break;
+                    case &quot;haGeographicAddress&quot;:
+<span class="nc" id="L171">                        device.setHaGeographicAddress(elementTextString);</span>
+<span class="nc" id="L172">                        break;</span>
+                    case &quot;latitude&quot;:
+<span class="nc" id="L174">                        device.setLatitude(Double.parseDouble(elementTextString));</span>
+<span class="nc" id="L175">                        break;</span>
+                    case &quot;longitude&quot;:
+<span class="nc" id="L177">                        device.setLongitude(Double.parseDouble(elementTextString));</span>
+<span class="nc" id="L178">                        break;</span>
+                    case &quot;manufacturerSpecificData&quot;:
+<span class="nc" id="L180">                        device.setManufacturerSpecificData(elementTextString);</span>
+<span class="nc" id="L181">                        break;</span>
+                    case &quot;etrs89Position&quot;:
+                    case &quot;devicetype&quot;:
+                    case &quot;deviceList&quot;:
+                    case &quot;staticDeviceData&quot;:
+<span class="nc" id="L186">                        break;</span>
+                    default:
+<span class="nc bnc" id="L188" title="All 4 branches missed.">                        if(elementStack.size()&gt;2 &amp;&amp; elementStack.contains(rmasSchemaUri + &quot;:deviceList&quot;)) {</span>
+<span class="nc" id="L189">                            Map&lt;String, List&lt;String&gt;&gt; deviceTypeList = device.getDeviceList();</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">                            if(deviceTypeList==null) {</span>
+<span class="nc" id="L191">                                deviceTypeList = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L192">                                device.setDeviceList(deviceTypeList);</span>
+                            }
+                            //We are processing the device list
+<span class="nc bnc" id="L195" title="All 2 branches missed.">                            if((rmasSchemaUri + &quot;:devicetype&quot;).equals(elementStack.peek())) {</span>
+                                //We are processing a type
+<span class="nc" id="L197">                                logger.trace(&quot;Processed type {}&quot;, localName);</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">                                if(!deviceTypeList.containsKey(localName)) {</span>
+<span class="nc" id="L199">                                    deviceTypeList.put(localName, new ArrayList&lt;String&gt;());</span>
+                                }
+                            } else {
+                                //We are processing a sub type
+<span class="nc" id="L203">                                String deviceTypeParent = elementStack.peek().replace(rmasSchemaUri + &quot;:&quot;, &quot;&quot;);</span>
+<span class="nc" id="L204">                                logger.trace(&quot;Processed type {} sub type {}&quot;, deviceTypeParent, localName);</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">                                if(!deviceTypeList.containsKey(deviceTypeParent)) {</span>
+<span class="nc" id="L206">                                    deviceTypeList.put(deviceTypeParent, new ArrayList&lt;String&gt;());</span>
+                                }
+<span class="nc" id="L208">                                deviceTypeList.get(deviceTypeParent).add(localName);</span>
+                            }
+<span class="nc" id="L210">                        } else {</span>
+<span class="nc" id="L211">                            logger.debug(&quot;Unhandled element {} with text {}&quot;, localName, elementTextString);</span>
+                        }
+                }
+            } else {
+<span class="nc" id="L215">                logger.debug(&quot;Unhandled element {}:{} with text {}&quot;, uri, localName, elementTextString);</span>
+            }
+<span class="nc" id="L217">        }</span>
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+<span class="nc" id="L221">            elementText.peek().append(ch, start, length);</span>
+<span class="nc" id="L222">        }</span>
+
+        public Device getDevice() {
+<span class="nc" id="L225">            return device;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

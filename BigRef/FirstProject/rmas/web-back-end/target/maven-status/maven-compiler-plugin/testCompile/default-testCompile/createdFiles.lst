@@ -1,0 +1,6 @@
+com/ssl/rmas/init/RestMvcConfigTest.class
+com/ssl/rmas/endpoints/ResetPasswordEndpointTest.class
+com/ssl/rmas/jwt/JWTAuthenticationFilterTest.class
+com/ssl/rmas/security/ssh/ByteArrayToStringPublicKeyConverterTest.class
+com/ssl/rmas/managers/MongoBackedResultsManagerTest.class
+com/ssl/rmas/security/ssh/ByteArrayToStringPrivateKeyConverterTest.class

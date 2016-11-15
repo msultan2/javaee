@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DownloadLogsManager.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">730_RMAS - Shared - Web Back-End</a> &gt; <a href="index.source.html" class="el_package">com.ssl.rmas.managers</a> &gt; <span class="el_source">DownloadLogsManager.java</span></div><h1>DownloadLogsManager.java</h1><pre class="source lang-java linenums">/*
+ * THIS SOFTWARE IS PROVIDED BY SIMULATION SYSTEMS LTD ``AS IS'' AND
+ * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SIMULATION
+ * SYSTEMS LTD BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Copyright 2016 (C) Simulation Systems Ltd. All Rights Reserved.
+ */
+package com.ssl.rmas.managers;
+
+import static com.ssl.rmas.entities.OperationResult.Status.FAILURE;
+import static com.ssl.rmas.utils.ErrorMessage.FAILED_TO_DOWNLOAD_ONE_OR_MORE_FILES;
+import static com.ssl.rmas.utils.ErrorMessage.FAILED_TO_READ_DIRECTORY_ON_DEVICE;
+import static com.ssl.rmas.utils.ErrorMessage.FILES_NOT_FOUND_ON_ROADSIDE_DEVICE;
+import static java.util.stream.Collectors.toList;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Predicate;
+
+import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import com.jcraft.jsch.JSchException;
+import com.ssl.rmas.entities.OperationResult;
+import com.ssl.rmas.entities.OperationResult.Status;
+import com.ssl.rmas.ssh.manager.ConnectionParams;
+import com.ssl.rmas.utils.ssh.SshManager;
+
+@Component
+@PropertySource(&quot;classpath:config/application.properties&quot;)
+<span class="nc" id="L53">public class DownloadLogsManager {</span>
+
+<span class="nc" id="L55">    private static final Logger LOGGER = LoggerFactory.getLogger(DownloadLogsManager.class);</span>
+    private static final String LOG_FILE_NAME_FORMAT = &quot;yyyyMMdd&quot;;
+    private static final String LOG_FILE_EXTENSION = &quot;log&quot;;
+<span class="nc" id="L58">    static final Path LOG_FILE_DIRECTORY_ON_DEVICE = Paths.get(&quot;logs&quot;);</span>
+
+    @Autowired
+    private SshManager sshManager;
+
+    @Value(&quot;${rmas.downloadLogs.cache:true}&quot;)
+    private String cacheLogs;
+
+    OperationResult downloadLogFiles(final String outputDir, final Authentication currentUser, OperationResult opResult, ConnectionParams connectionParams, LocalDate fromDate, LocalDate toDate) {
+<span class="nc" id="L67">        List&lt;Path&gt; logFiles = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L68">        Path downloadDestinationDir = Paths.get(System.getProperty(&quot;user.home&quot;), outputDir, connectionParams.getIpAddress());</span>
+<span class="nc" id="L69">        boolean createdOutputDir = downloadDestinationDir.toFile().mkdirs();</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if(createdOutputDir) {</span>
+<span class="nc" id="L71">            LOGGER.debug(&quot;Created output directory {}&quot;, downloadDestinationDir);</span>
+        }
+        try {
+<span class="nc" id="L74">            logFiles = getLogFilePaths(currentUser, opResult.getActivityId(), connectionParams, fromDate, toDate);</span>
+<span class="nc" id="L75">        } catch (JSchException ex) {</span>
+<span class="nc" id="L76">            LOGGER.debug(FILES_NOT_FOUND_ON_ROADSIDE_DEVICE + &quot; Exception thrown is: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L77">            opResult.setStatus(FAILURE);</span>
+<span class="nc" id="L78">            opResult.addErrorMessage(sshManager.getErrorMessage(ex));</span>
+<span class="nc" id="L79">        } catch (IOException ex) {</span>
+<span class="nc" id="L80">            opResult.setStatus(FAILURE);</span>
+<span class="nc" id="L81">            opResult.addErrorMessage(FAILED_TO_READ_DIRECTORY_ON_DEVICE);</span>
+<span class="nc" id="L82">        }</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (!FAILURE.equals(opResult.getStatus())) {</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            if (!logFiles.isEmpty()) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">                if (Boolean.TRUE.equals(Boolean.valueOf(cacheLogs))) {</span>
+<span class="nc" id="L86">                    logFiles = logFiles.stream().filter(isNotDownloadedPredicate(downloadDestinationDir)).collect(toList());</span>
+                }
+<span class="nc" id="L88">                opResult = sshManager.downloadFiles(currentUser, opResult, logFiles, connectionParams, downloadDestinationDir);</span>
+<span class="nc" id="L89">                opResult.setResult(downloadDestinationDir.toString());</span>
+<span class="nc" id="L90">                LOGGER.debug(&quot;Download Log Files, operation result: {}&quot;, opResult);</span>
+<span class="nc" id="L91">                opResult = areLogsBetween2DatesInFolder(fromDate, toDate, opResult, downloadDestinationDir);</span>
+            } else {
+<span class="nc" id="L93">                opResult.setStatus(FAILURE);</span>
+<span class="nc" id="L94">                opResult.addErrorMessage(FILES_NOT_FOUND_ON_ROADSIDE_DEVICE);</span>
+            }
+        }
+<span class="nc" id="L97">        return opResult;</span>
+    }
+
+    private List&lt;Path&gt; getLogFilePaths(final Authentication currentUser, UUID activityId, final ConnectionParams connectionParams, final LocalDate dateFrom, final LocalDate dateTo) throws IOException, JSchException {
+<span class="nc" id="L101">        List&lt;Path&gt; files = sshManager.getFilePaths(currentUser, activityId, LOG_FILE_DIRECTORY_ON_DEVICE, connectionParams);</span>
+<span class="nc" id="L102">        return files.stream()</span>
+<span class="nc" id="L103">                .filter(this::isLogFile)</span>
+<span class="nc" id="L104">                .filter(file -&gt; isDateWithinRange(file, dateFrom, dateTo))</span>
+<span class="nc" id="L105">                .collect(toList());</span>
+    }
+
+    private OperationResult areLogsBetween2DatesInFolder(LocalDate fromDate, LocalDate toDate, OperationResult result, Path downloadDestinationDir) {
+<span class="nc" id="L109">        LocalDate currentDate = fromDate;</span>
+<span class="nc" id="L110">        boolean atLeastOneSuccess = false;</span>
+<span class="nc" id="L111">        boolean atLeastOneFailure = false;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        while (isBeforeInclusive(currentDate, toDate)) {</span>
+<span class="nc" id="L113">            Path buildLogFileName = this.getPathFrom(currentDate, downloadDestinationDir);</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            if (buildLogFileName.toFile().exists()) {</span>
+<span class="nc" id="L115">                atLeastOneSuccess = true;</span>
+            } else {
+<span class="nc" id="L117">                result.addErrorMessage(FAILED_TO_DOWNLOAD_ONE_OR_MORE_FILES);</span>
+<span class="nc" id="L118">                atLeastOneFailure = true;</span>
+            }
+<span class="nc" id="L120">            currentDate = currentDate.plusDays(1);</span>
+<span class="nc" id="L121">        }</span>
+<span class="nc" id="L122">        Status status = Status.getStatus(atLeastOneSuccess, atLeastOneFailure);</span>
+<span class="nc" id="L123">        result.setStatus(status);</span>
+<span class="nc" id="L124">        return result;</span>
+    }
+
+    private Predicate&lt;Path&gt; isNotDownloadedPredicate(Path downloadDestinationDir) {
+<span class="nc" id="L128">        return file -&gt; {</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (LocalDate.now().equals(getDateFrom(file))) {</span>
+<span class="nc" id="L130">                return true;</span>
+            }
+<span class="nc" id="L132">            Path outputFile = downloadDestinationDir.resolve(file.getFileName());</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            return !outputFile.toFile().exists();</span>
+        };
+    }
+
+    private boolean isLogFile(final Path file) {
+<span class="nc bnc" id="L138" title="All 6 branches missed.">        return hasValidExtension(file) &amp;&amp; isNotStaticDataFile(file) &amp;&amp; hasValidFormatName(file);</span>
+    }
+
+    private boolean hasValidExtension(final Path file) {
+<span class="nc" id="L142">        String fileExtension = FilenameUtils.getExtension(file.toString());</span>
+<span class="nc" id="L143">        return fileExtension.equals(LOG_FILE_EXTENSION);</span>
+    }
+
+    private boolean isNotStaticDataFile(final Path file) {
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        return !file.getFileName().toString().equals(&quot;staticdata.log&quot;);</span>
+    }
+
+    private boolean hasValidFormatName(final Path file) {
+<span class="nc" id="L151">        String fileNameWithoutExtension = removeExtension(file);</span>
+        try {
+<span class="nc" id="L153">            LocalDate.parse(fileNameWithoutExtension, DateTimeFormatter.ofPattern(LOG_FILE_NAME_FORMAT));</span>
+<span class="nc" id="L154">            return true;</span>
+<span class="nc" id="L155">        } catch (DateTimeParseException ex) {</span>
+<span class="nc" id="L156">            return false;</span>
+        }
+    }
+
+    private boolean isDateWithinRange(final Path file, final LocalDate dateFrom, final LocalDate dateTo) {
+<span class="nc" id="L161">        LocalDate fileDate = getDateFrom(file);</span>
+<span class="nc bnc" id="L162" title="All 4 branches missed.">        return isAfterInclusive(fileDate, dateFrom) &amp;&amp; isBeforeInclusive(fileDate, dateTo);</span>
+    }
+
+    private boolean isAfterInclusive(final LocalDate fileDate, final LocalDate dateFrom) {
+<span class="nc bnc" id="L166" title="All 4 branches missed.">        return fileDate.isAfter(dateFrom) || fileDate.equals(dateFrom);</span>
+    }
+
+    private boolean isBeforeInclusive(final LocalDate fileDate, final LocalDate dateTo) {
+<span class="nc bnc" id="L170" title="All 4 branches missed.">        return fileDate.isBefore(dateTo) || fileDate.equals(dateTo);</span>
+    }
+
+    private String removeExtension(final Path file) {
+<span class="nc" id="L174">        return FilenameUtils.removeExtension(file.getFileName().toString());</span>
+    }
+
+    private LocalDate getDateFrom(final Path file) {
+<span class="nc" id="L178">        String filenameWithoutExtension = removeExtension(file);</span>
+<span class="nc" id="L179">        return LocalDate.parse(filenameWithoutExtension, DateTimeFormatter.ofPattern(LOG_FILE_NAME_FORMAT));</span>
+    }
+
+    private Path getPathFrom(final LocalDate date, final Path downloadDestinationDir) {
+<span class="nc" id="L183">        Path path = Paths.get(downloadDestinationDir.toString(), date.format(DateTimeFormatter.ofPattern(LOG_FILE_NAME_FORMAT)) + &quot;.&quot; + LOG_FILE_EXTENSION);</span>
+<span class="nc" id="L184">        return path;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

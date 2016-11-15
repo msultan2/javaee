@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= application.name %></title>
+        <link rel="icon" type="image/png" href="images/icon.png" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <%= style_block %>
+    </head>
+    <body ng-app="rmasApp">
+        <div ng-include="'shared/header.html'" ng-cloak class="header-container ng-cloak"></div>
+        <div ng-controller="alertController" ng-cloak class="ng-cloak">
+            <uib-alert ng-repeat="alert in alertsHolder.alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg | errorMessageFilter}}</uib-alert>
+        </div>
+        <div ng-view ng-cloak class="content-container ng-cloak"></div>
+        <%= script_block %>
+    </body>
+</html>

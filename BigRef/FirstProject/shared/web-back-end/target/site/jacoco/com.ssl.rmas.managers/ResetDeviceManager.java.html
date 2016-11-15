@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ResetDeviceManager.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">730_RMAS - Shared - Web Back-End</a> &gt; <a href="index.source.html" class="el_package">com.ssl.rmas.managers</a> &gt; <span class="el_source">ResetDeviceManager.java</span></div><h1>ResetDeviceManager.java</h1><pre class="source lang-java linenums">/*
+ * THIS SOFTWARE IS PROVIDED BY SIMULATION SYSTEMS LTD ``AS IS'' AND
+ * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SIMULATION
+ * SYSTEMS LTD BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Copyright 2016 (C) Simulation Systems Ltd. All Rights Reserved.
+ *
+ */
+package com.ssl.rmas.managers;
+
+import com.ssl.rmas.entities.OperationResult;
+import com.ssl.rmas.ssh.manager.ConnectionParams;
+import com.ssl.rmas.utils.ErrorMessage;
+import com.ssl.rmas.utils.ssh.SshManager;
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="nc" id="L32">public class ResetDeviceManager {</span>
+
+    private SshManager sshManager;
+<span class="nc" id="L35">    private final Logger LOGGER = LoggerFactory.getLogger(ResetDeviceManager.class);</span>
+    private static final String COMMAND_RESULT_SUCCESS = &quot;ok&quot;;
+    private static final String COMMAND = &quot;devicereset&quot;;
+
+    @Autowired
+    public void setSshManager(SshManager sshManager) {
+<span class="nc" id="L41">        this.sshManager = sshManager;</span>
+<span class="nc" id="L42">    }</span>
+
+    OperationResult resetDevice(final Authentication currentUser, OperationResult opResult, ConnectionParams connectionParams) {
+        try {
+<span class="nc" id="L46">            opResult = sshManager.executeCommand(currentUser, opResult, COMMAND, connectionParams);</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">            if (!OperationResult.Status.FAILURE.equals(opResult.getStatus())) {</span>
+<span class="nc" id="L48">                opResult = updateResultFromDeviceResponse(opResult);</span>
+            }
+<span class="nc" id="L50">        } catch (IOException ex) {</span>
+<span class="nc" id="L51">            LOGGER.debug(COMMAND, &quot; command failed for activity id {}&quot;, opResult.getActivityId(), ex);</span>
+<span class="nc" id="L52">            opResult.setStatus(OperationResult.Status.FAILURE);</span>
+<span class="nc" id="L53">            opResult.addErrorMessage(ErrorMessage.FAILED_TO_RESET_DEVICE);</span>
+<span class="nc" id="L54">        }</span>
+<span class="nc" id="L55">        return opResult;</span>
+    }
+
+    private OperationResult updateResultFromDeviceResponse(OperationResult opResult) {
+<span class="nc bnc" id="L59" title="All 6 branches missed.">        switch (opResult.getResult()) {</span>
+            case COMMAND_RESULT_SUCCESS:
+<span class="nc" id="L61">                opResult.setStatus(OperationResult.Status.SUCCESS);</span>
+<span class="nc" id="L62">                break;</span>
+            default:
+<span class="nc" id="L64">                opResult.setStatus(OperationResult.Status.FAILURE);</span>
+<span class="nc" id="L65">                opResult.addErrorMessage(ErrorMessage.UNEXPECTED_RESPONSE);</span>
+<span class="nc" id="L66">                LOGGER.info(&quot;{} command failed for activity id {} because of a invalid response {}&quot;, COMMAND, opResult.getActivityId(), opResult.getResult());</span>
+                break;
+        }
+<span class="nc" id="L69">        opResult.setResult(&quot;&quot;);</span>
+<span class="nc" id="L70">        return opResult;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

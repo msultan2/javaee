@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ErrorMessage.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">730_RMAS - Shared - Entities</a> &gt; <a href="index.source.html" class="el_package">com.ssl.rmas.utils</a> &gt; <span class="el_source">ErrorMessage.java</span></div><h1>ErrorMessage.java</h1><pre class="source lang-java linenums">/*
+ * THIS SOFTWARE IS PROVIDED BY SIMULATION SYSTEMS LTD ``AS IS'' AND
+ * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SIMULATION
+ * SYSTEMS LTD BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Copyright 2016 (C) Simulation Systems Ltd. All Rights Reserved.
+ */
+package com.ssl.rmas.utils;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+
+<span class="nc" id="L21">public enum ErrorMessage {</span>
+
+<span class="nc" id="L23">    UNKNOWN(&quot;Unknown&quot;),</span>
+<span class="nc" id="L24">    FAILED_TO_CONNECT_TO_DEVICE(&quot;Failed to connect to device&quot;),</span>
+<span class="nc" id="L25">    FAILED_TO_DOWNLOAD_ONE_OR_MORE_FILES(&quot;Failed to download one or more files&quot;),</span>
+<span class="nc" id="L26">    DEVICE_ALREADY_IN_USE(&quot;Device is currently in use&quot;),</span>
+<span class="nc" id="L27">    DEVICE_IS_NOT_CURRENTLY_VISIBLE_ON_NETWORK(&quot;Device not currently visible on the network&quot;),</span>
+<span class="nc" id="L28">    PRIVATE_KEY_USED_TO_CONNECT_TO_DEVICE_WAS_INCORRECT(&quot;Incorrect private key&quot;),</span>
+<span class="nc" id="L29">    FAILED_TO_READ_DIRECTORY_ON_DEVICE(&quot;Failed to read directory on device&quot;),</span>
+<span class="nc" id="L30">    FILES_NOT_FOUND_ON_ROADSIDE_DEVICE(&quot;File(s) not found on the roadside device&quot;),</span>
+<span class="nc" id="L31">    FAILED_TO_UPDATE_KEY_ON_DEVICE(&quot;Failed to update the key on the device&quot;),</span>
+<span class="nc" id="L32">    FAILED_TO_UPGRADE_FIRMWARE_ON_DEVICE(&quot;Failed to upgrade firmware on the device&quot;),</span>
+<span class="nc" id="L33">    FAILED_TO_DOWNGRADE_FIRMWARE_ON_DEVICE(&quot;Failed to downgrade firmware on the device&quot;),</span>
+<span class="nc" id="L34">    FAILED_TO_RESET_DEVICE(&quot;Failed to reset device&quot;),</span>
+<span class="nc" id="L35">    FAILED_TO_VERIFY_ON_DEVICE(&quot;Failed to execute verify command on the device&quot;),</span>
+<span class="nc" id="L36">    FIRMWARE_INVALID(&quot;The firmware is invalid&quot;),</span>
+<span class="nc" id="L37">    FIRMWARE_NOT_FOUND_ON_ROADSIDE_DEVICE(&quot;Failed to find firmware file(s) on the device&quot;),</span>
+<span class="nc" id="L38">    TEMPORARY_FILE_NOT_FOUND(&quot;The temporary file is not found in the respective folder&quot;),</span>
+<span class="nc" id="L39">    DEVICE_DIRECTORY_NOT_FOUND(&quot;The directory to upload file is not found in the device&quot;),</span>
+<span class="nc" id="L40">    ERROR_WHILE_UPLOADING_FILE(&quot;Error occured while uploading the file&quot;),</span>
+<span class="nc" id="L41">    FAILED_TO_UPLOAD_FILE(&quot;Failed to upload file to the device&quot;),</span>
+<span class="nc" id="L42">    FAILED_TO_UPLOAD_ONE_OR_MORE_FILES(&quot;Failed to upload one or more files&quot;),</span>
+<span class="nc" id="L43">    FAILED_TO_PROCESS_FILES(&quot;Failed to process files&quot;),</span>
+<span class="nc" id="L44">    THERE_ARE_NO_FILES_TO_UPLOAD(&quot;There are no files to upload&quot;),</span>
+<span class="nc" id="L45">    DEVICE_DETAILS_UPDATED(&quot;Device details updated&quot;),</span>
+<span class="nc" id="L46">    ERROR_GETTING_PUBLIC_KEY(&quot;Error getting public key&quot;),</span>
+<span class="nc" id="L47">    UNEXPECTED_RESPONSE(&quot;Unexpected response from device&quot;),</span>
+<span class="nc" id="L48">    GENERIC_ERROR(&quot;Error processing the request&quot;),</span>
+<span class="nc" id="L49">    FORBIDDEN(&quot;Request is forbidden&quot;),</span>
+<span class="nc" id="L50">    BAD_REQUEST(&quot;Invalid request&quot;),</span>
+<span class="nc" id="L51">    FAILED_TO_REMOVE_OLD_SSH_PUBLIC_KEYS(&quot;Failed to remove old SSH public keys&quot;),</span>
+<span class="nc" id="L52">    INVALID_PASSWORD_RESET_TOKEN(&quot;Invalid password reset token&quot;),</span>
+<span class="nc" id="L53">    INVALID_PASSWORD(&quot;Invalid password&quot;),</span>
+<span class="nc" id="L54">    KEY_PAIR_GENERATION_ERROR(&quot;Could not generate SSH key pair&quot;),</span>
+<span class="nc" id="L55">    MULTIPLE_SSH_KEYS(&quot;Multiple SSH keys&quot;);</span>
+
+    private final String message;
+
+<span class="nc" id="L59">    private ErrorMessage(final String message) {</span>
+<span class="nc" id="L60">        this.message = message;</span>
+<span class="nc" id="L61">    }</span>
+
+    @Override
+    @JsonValue
+    public String toString() {
+<span class="nc" id="L66">        return message;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

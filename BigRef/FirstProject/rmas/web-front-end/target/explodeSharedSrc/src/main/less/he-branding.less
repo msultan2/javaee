@@ -1,0 +1,68 @@
+
+@he-primary-dark: rgb(0, 46, 95);
+@he-primary-light: rgb(0, 139, 203);
+@he-primary-light-shade: shade(@he-primary-light, 25%);
+@he-primary-text: rgb(74, 74, 74);
+
+@he-secondary-dark-purple: rgb(91, 19, 86);
+@he-secondary-medium-purple: rgb(203, 38, 134);
+@he-secondary-light-purple: rgb(160, 160, 190);
+
+@he-secondary-dark-red: rgb(177, 32, 9);
+@he-secondary-medium-red: rgb(220, 8, 20);
+@he-secondary-light-red: rgb(179, 161, 110);
+
+@he-secondary-dark-yellow: rgb(179, 93, 0);
+@he-secondary-medium-yellow: rgb(244, 150, 0);
+@he-secondary-light-yellow: rgb(253, 198, 0);
+
+@he-secondary-dark-green: rgb(69, 124, 31);
+@he-secondary-medium-green: rgb(134, 163, 21);
+@he-secondary-light-green: rgb(128, 186, 39);
+
+@he-secondary-dark-teal: rgb(0, 166, 170);
+@he-secondary-medium-teal: rgb(104, 129, 129);
+@he-secondary-light-teal: rgb(188, 197, 196);
+
+@he-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+//See http://www.w3.org/Style/Examples/007/units.en.html for details on why px is used below.
+//At 96dpi the recommended 11pt is 15px.
+@he-font-size: 15px;
+//At 96dpi the recommended 16pt is 22px.
+@he-line-height: 22px;
+
+@he-line-height-ratio: 22/15;
+
+//-----------------------------------------------------------------
+// Below this line is overrides to the standard bootstrap variables
+//-----------------------------------------------------------------
+
+@brand-primary:         @he-primary-light;
+@text-color:            @he-primary-text;
+
+@state-success-text:    @he-secondary-dark-green;
+@brand-success:         @he-secondary-medium-green;
+@state-success-bg:      tint(@he-secondary-light-green, 75%);
+
+@state-info-text:       @he-secondary-dark-teal;
+@brand-info:            @he-secondary-medium-teal;
+@state-info-bg:         tint(@he-secondary-light-teal, 75%);
+
+@state-warning-text:    @he-secondary-dark-yellow;
+@brand-warning:         @he-secondary-medium-yellow;
+@state-warning-bg:      tint(@he-secondary-light-yellow, 75%);
+
+@state-danger-text:     @he-secondary-dark-red;
+@brand-danger:          @he-secondary-medium-red;
+@state-danger-bg:       tint(@he-secondary-light-red, 75%);
+
+@font-family-base:      @he-font-family;
+
+@font-size-base:        @he-font-size;
+
+@line-height-base:      @he-line-height-ratio;
+
+@line-height-computed:  @he-line-height;
+
+@navbar-height:         65px;

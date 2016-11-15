@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>StaticDataManager.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">730_RMAS - Shared - Web Back-End</a> &gt; <a href="index.source.html" class="el_package">com.ssl.rmas.managers</a> &gt; <span class="el_source">StaticDataManager.java</span></div><h1>StaticDataManager.java</h1><pre class="source lang-java linenums">/*
+ * THIS SOFTWARE IS PROVIDED BY SIMULATION SYSTEMS LTD ``AS IS'' AND
+ * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SIMULATION
+ * SYSTEMS LTD BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Copyright 2016 (C) Simulation Systems Ltd. All Rights Reserved.
+ */
+package com.ssl.rmas.managers;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import com.ssl.rmas.entities.OperationResult;
+import com.ssl.rmas.ssh.manager.ConnectionParams;
+import com.ssl.rmas.utils.ssh.SshManager;
+
+@Component
+<span class="nc" id="L35">public class StaticDataManager {</span>
+
+<span class="nc" id="L37">    private static final Logger LOGGER = LoggerFactory.getLogger(StaticDataManager.class);</span>
+<span class="nc" id="L38">    private static final Path STATICDATA_REMOTE_PATH = Paths.get(&quot;logs&quot;, &quot;staticdata.log&quot;);</span>
+
+    private SshManager sshManager;
+    private StaticDataProcessor staticDataProcessor;
+
+    OperationResult getStaticData(final Authentication currentUser, OperationResult opResult, final ConnectionParams connectionParams,
+            final String relativeOutputDir) {
+<span class="nc" id="L45">        LOGGER.debug(&quot;Getting staticdata.log...&quot;);</span>
+<span class="nc" id="L46">        final Path absoluteOutputDir = Paths.get(System.getProperty(&quot;user.home&quot;), relativeOutputDir, connectionParams.getIpAddress());</span>
+<span class="nc" id="L47">        final Path absoluteOutputFile = absoluteOutputDir.resolve(STATICDATA_REMOTE_PATH.getFileName());</span>
+<span class="nc" id="L48">        boolean createdOutputDir = absoluteOutputDir.toFile().mkdirs();</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if(createdOutputDir) {</span>
+<span class="nc" id="L50">            LOGGER.debug(&quot;Created output directory {}&quot;, absoluteOutputDir);</span>
+        }
+<span class="nc" id="L52">        opResult = sshManager.downloadFiles(currentUser, opResult, Collections.singletonList(STATICDATA_REMOTE_PATH), connectionParams, absoluteOutputDir);</span>
+
+<span class="nc" id="L54">        staticDataProcessor.processStaticData(connectionParams.getIpAddress(), opResult, absoluteOutputFile);</span>
+
+<span class="nc" id="L56">        LOGGER.debug(&quot;Got staticdata.log, operation result: {}&quot;, opResult);</span>
+<span class="nc" id="L57">        return opResult;</span>
+    }
+
+    @Autowired
+    @Required
+    public void setSshManager(SshManager sshManager) {
+<span class="nc" id="L63">        this.sshManager = sshManager;</span>
+<span class="nc" id="L64">    }</span>
+
+    @Autowired
+    @Required
+    public void setStaticDataProcessor(StaticDataProcessor staticDataProcessor) {
+<span class="nc" id="L69">        this.staticDataProcessor = staticDataProcessor;</span>
+<span class="nc" id="L70">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

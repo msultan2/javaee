@@ -1,0 +1,6 @@
+/home/mohamed/git-repos/730_rmas/rmas/web-back-end/src/test/java/com/ssl/rmas/init/RestMvcConfigTest.java
+/home/mohamed/git-repos/730_rmas/rmas/web-back-end/src/test/java/com/ssl/rmas/endpoints/ResetPasswordEndpointTest.java
+/home/mohamed/git-repos/730_rmas/rmas/web-back-end/src/test/java/com/ssl/rmas/jwt/JWTAuthenticationFilterTest.java
+/home/mohamed/git-repos/730_rmas/rmas/web-back-end/src/test/java/com/ssl/rmas/security/ssh/ByteArrayToStringPrivateKeyConverterTest.java
+/home/mohamed/git-repos/730_rmas/rmas/web-back-end/src/test/java/com/ssl/rmas/security/ssh/ByteArrayToStringPublicKeyConverterTest.java
+/home/mohamed/git-repos/730_rmas/rmas/web-back-end/src/test/java/com/ssl/rmas/managers/MongoBackedResultsManagerTest.java

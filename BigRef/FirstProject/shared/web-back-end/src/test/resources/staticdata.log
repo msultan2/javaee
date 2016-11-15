@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<staticDeviceData xmlns="http//www.nmcs2.org/schemas/RAP2">
+<manufacturerName>SSL</manufacturerName>
+  <manufacturerTypeNo>0</manufacturerTypeNo>
+  <serialNo>207838</serialNo>
+  <hardwareVersion>A</hardwareVersion>
+  <firmwareVersion>7.0</firmwareVersion>
+  <hostName>M99-1234A.alm.ha.org</hostName>
+  <haGeographicAddress>M99-1234A</haGeographicAddress>
+  <etrs89Position>
+    <latitude>51.392588</latitude>
+    <longitude>-2.825793</longitude>
+  </etrs89Position>
+  <ipAddress>10.163.49.68</ipAddress>
+  <deviceList>
+    <devicetype><ami><signal94xxstandard/></ami></devicetype>
+    <devicetype><ami><signal94xxstandard/></ami></devicetype>
+    <devicetype><ami><signal94xxstandard/></ami></devicetype>
+    <devicetype><ami><signal94xxstandard/></ami></devicetype>
+    <devicetype><alm/></devicetype>
+  </deviceList>
+  <manufacturerSpecificData>cpu=Vortex6357DX,issue=Sxxxx</manufacturerSpecificData>
+</staticDeviceData>

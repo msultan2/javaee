@@ -1,0 +1,42 @@
+<div class="container-fluid">
+    <div ng-show="messageLevel === 'success'" class="alert alert-success">{{message}}</div>
+    <div ng-show="messageLevel === 'error'" class="alert alert-danger">{{message}}</div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-9 col-md-7 col-lg-6 col-centered">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Login</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="user-registration-form" name="userLoginForm" novalidate class="form-horizontal">
+                        <div class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userLoginForm.username)}">
+                            <label for="username" class="col-sm-3 control-label">Username</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="username" name="username" ng-model="user.username" placeholder="Username" required>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{'has-error has-feedback' : isInvalidUserInput(userLoginForm.password)}">
+                            <label for="password" class="col-sm-3 control-label">Password</label>
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control" id="password" name="password" ng-model="user.password" placeholder="Password" required>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div>
+                                <div class="btn-toolbar">
+                                    <button type="submit" class="btn btn-primary" ng-click="login()" ng-disabled="userLoginForm.$invalid || isLoggingIn()">Log in</button>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="btn-toolbar">
+                                    <a class="btn btn-default" role="button" ng-href="{{userRegistrationPath}}">Sign Up</a>
+                                    <a class="btn btn-default" role="button" ng-href="{{requestResetPasswordPath}}">Reset Password</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

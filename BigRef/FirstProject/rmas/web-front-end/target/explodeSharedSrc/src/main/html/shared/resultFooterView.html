@@ -1,0 +1,2 @@
+<button class="btn btn-primary" ng-show="results.status && results.status!=='FAILURE'" type="button" ng-click="close()">Ok</button>
+<button class="btn btn-primary" ng-show="message.level === 'error'|| (angular.isDefined(results.status) && results.status==='FAILURE')" type="button" ng-click="dismiss()">Close</button>

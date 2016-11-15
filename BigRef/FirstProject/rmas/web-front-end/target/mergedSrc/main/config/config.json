@@ -1,0 +1,52 @@
+{
+    "application": {
+        "name": "Highways England Remote Maintenance Access Service",
+        "brand": "RMAS"
+    },
+    "paths": {
+        "frontToBackEnd": "../rmas-core/",        
+        "backEnd": {
+            "activity": "activity/",
+            "fileActivity": "fileActivity/",
+            "activityResult": "activityResult/",
+            "refreshToken": "refreshToken",
+            "staticData": "staticData",
+            "resetDevice": "resetDevice",
+            "userRegistrations": "userRegistrations",
+            "userRegistrationRequests": "userRegistrations/search/findUsersPendingRequests",
+            "allHEApprovers": "users/search/findAllHEApprovers",
+            "users": "users/",
+            "resetPassword": "resetPassword",
+            "login": "login",
+            "devices": "devices",
+            "rmasKeysOperations": "rmasKeys/",
+            "currentPublicKey": "search/findCurrentPublicKey",
+            "generateSshKeyPair": "generateKeyPair",
+            "filteredDevices": "devices/search/findFilteredDevices"
+        },
+        "frontEnd": {
+            "requestResetPassword": "/#/requestResetPassword",
+            "deviceOperation": "/#/deviceOperation",
+            "registration": "/#/registration",
+            "devices": "#/devices",
+            "userRegistrationRequests": "#/pendingUserRegistrationRequests",
+            "sshKeys": "#/sshKeys"
+        }
+    },
+    "time": {
+        "activityIdStartPollWaitTimeInMilliseconds": 500,
+        "activityIdPollWaitTimeInMilliseconds": 1000,
+        "cacheTimeoutInMinutes": 5
+    },
+    "enabledActivities": {
+        "downloadLogs": false,
+        "uploadFirmware": false,
+        "upgradeFirmware": false,
+        "downgradeFirmware": false,
+        "updateKey": false,
+        "staticData": true,
+        "verify": false,
+        "removeOldSshPublicKeys": false,
+        "resetDevice": true
+    }
+}

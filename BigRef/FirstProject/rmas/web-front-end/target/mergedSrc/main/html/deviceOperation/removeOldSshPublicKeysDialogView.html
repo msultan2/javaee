@@ -1,0 +1,17 @@
+<form role="form" ng-submit="ok()">
+    <div class="container-fluid">
+        <div class="modal-header">
+            <h1 class="modal-title">Remove Old SSH Public Keys</h1>
+        </div>
+        <div class="modal-body" ng-show="message.level !== 'error'">
+            <div class="row">
+                <label>Status:&nbsp;</label> {{results.status || "Connecting to device.."}}
+            </div>
+            <div error-message-directive></div>
+        </div>
+        <div ng-show="message.level === 'error'" class="alert alert-danger">{{message.text| errorMessageFilter}}</div>
+        <div class="modal-footer">
+            <div ng-include="'shared/resultFooterView.html'" ></div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,5 @@
+com/ssl/rmas/ssh/manager/ConnectionParams.class
+com/ssl/rmas/ssh/manager/jsch/JSchSession.class
+com/ssl/rmas/utils/ssh/SshManager.class
+com/ssl/rmas/ssh/manager/jsch/JSchChannel.class
+com/ssl/rmas/ssh/manager/jsch/Slf4JLogger.class

@@ -1,0 +1,72 @@
+<div class="container-fluid full-width">
+    <div class="page-header" >
+        <h1>Device List</h1>
+    </div>
+    <form class="form">
+        <div class="panel panel-default">
+            <div class="panel-body ">
+                <div class="row" ng-repeat="filter in devices.filters track by $index">
+                    <div class="form-inline text-center">
+                        <div class="form-group">
+                            <label for="ipaddress">Device IP address</label>&nbsp;
+                            <input type="text" ng-model="filter.ipAddress" class="form-control"  id="ipAddress">&nbsp;
+                        </div>
+                        <div class="form-group">
+                            <label for="maintenanceContractRegion">Maintenance Region</label>&nbsp;
+                            <input type="text" ng-model="filter.maintenanceContractRegion" class="form-control" id="maintenanceContractRegion">&nbsp;
+                        </div>
+                        <div class="  form-group">
+                            <label for="manufacturer">Manufacturer</label>&nbsp;
+                            <input type="text" ng-model="filter.manufacturer" class="form-control" id="manufacturer">&nbsp;
+                        </div>
+                        <div class="  form-group">
+                            <label for="rccRegion">RCC Region</label>&nbsp;
+                            <input type="text" ng-model="filter.rccRegion" class="form-control" id="rccRegion">&nbsp;
+                        </div>
+                        <div class=" form-group">
+                            <button class="btn btn-primary btn-sm" type="submit" ng-click="deleteFilterRow($index)" ng-disabled="deleteDisabled()"><span class="glyphicon glyphicon-minus"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-warning btn-sm pull-right  margin-space-right" type="submit" ng-click="reset()">Reset</button>
+                <button class="btn btn-primary btn-sm pull-right  margin-space-right" type="submit" ng-click="getDeviceList()">Search</button>
+                <button class="btn btn-primary btn-sm pull-right  margin-space-right" type="submit" ng-click="addFilterRow()"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Maintenance Region</th>
+                        <th>Manufacturer</th>
+                        <th class="hidden-xs">RCC Region</th>
+                        <th class="hidden-xs hidden-sm">Enrolment Date</th>
+                        <th class="hidden-xs hidden-sm hidden-md">Bandwidth Limit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="device in devices.list">
+                        <td><a ng-href="{{deviceOperationPath}}/{{device.ipAddress}}">{{device.ipAddress}}</a></td>
+                        <td>{{device.maintenanceContractRegion}}</td>
+                        <td>{{device.manufacturer}}</td>
+                        <td class="hidden-xs">{{device.rccRegion}}</td>
+                        <td class="hidden-xs hidden-sm">{{device.enrolmentDate| date:'yyyy-MM-dd'}}</td>
+                        <td class="hidden-xs hidden-sm hidden-md">{{device.bandwidthLimit}}</td>
+                    </tr>
+                </tbody>
+                <tfoot ng-show="devices.maxReached" class="text-center">
+                    <tr>
+                        <td colspan="6">{{devices.maxReachedMessage|errorMessageFilter}}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="container-fluid">
+    <div class="page-header" >
+        <h1>Device Operation</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Device Details</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">Device IP address: {{deviceDetails.ipAddress}}</div>
+                        <div class="col-md-4">Maintenance region: {{deviceDetails.maintenanceContractRegion}}</div>
+                        <div class="col-md-4">RCC region: {{deviceDetails.rccRegion}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">Enrolment date: {{deviceDetails.enrolmentDate | date:'yyyy-MM-dd'}}</div>
+                        <div class="col-md-4">Manufacturer: {{deviceDetails.manufacturer}}</div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3" ng-show="enabledActivities.uploadFirmware || enabledActivities.verify || enabledActivities.upgradeFirmware || enabledActivities.downgradeFirmware">
+            <div class="panel panel-default">
+                <div class="panel-heading">Firmware</div>
+                <div class="panel-body">
+                    <button ng-show="enabledActivities.uploadFirmware" class="btn btn-primary btn-block" ng-click="openUploadFirmwareDialog()">Upload firmware</button>
+                    <button ng-show="enabledActivities.verify" class="btn btn-primary btn-block" ng-click="openVerifyDialog()">Verify firmware</button>
+                    <button ng-show="enabledActivities.upgradeFirmware" class="btn btn-primary btn-block" ng-click="openUpgradeFirmwareDialog()">Upgrade firmware</button>
+                    <button ng-show="enabledActivities.downgradeFirmware" class="btn btn-primary btn-block" ng-click="openDowngradeFirmwareDialog()">Downgrade firmware</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" ng-show="enabledActivities.updateKey || enabledActivities.removeOldSshPublicKeys">
+            <div class="panel panel-default">
+                <div class="panel-heading">Access Keys</div>
+                <div class="panel-body">
+                    <button ng-show="enabledActivities.updateKey" class="btn btn-primary btn-block" ng-click="openUpdateKeyDialog()">Update key</button>
+                    <button ng-show="enabledActivities.removeOldSshPublicKeys" class="btn btn-primary btn-block" ng-click="openRemoveOldSshPublicKeysDialog()">Remove old keys</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" ng-show="enabledActivities.staticData || enabledActivities.resetDevice">
+            <div class="panel panel-default">
+                <div class="panel-heading">State</div>
+                <div class="panel-body">
+                    <button ng-show="enabledActivities.staticData" class="btn btn-primary btn-block" ng-click="openDownloadStaticDataDialog()">Refresh device data</button>
+                    <button ng-show="enabledActivities.resetDevice" class="btn btn-primary btn-block" ng-click="openResetDeviceDialog()">Reset device</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" ng-show="enabledActivities.downloadLogs">
+            <div class="panel panel-default">
+                <div class="panel-heading">Logs</div>
+                <div class="panel-body">
+                    <button ng-show="enabledActivities.downloadLogs" class="btn btn-primary btn-block" ng-click="openDownloadLogsDialog()">Download logs</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
